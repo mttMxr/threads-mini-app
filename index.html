@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Threads Factory Bot</title>
+    <title>Threads Factory Pro</title>
     <style>
         * {
             margin: 0;
@@ -20,10 +20,10 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
-            line-height: 1.4;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            line-height: 1.6;
             position: relative;
             overflow: hidden;
         }
@@ -36,51 +36,74 @@
             overflow-y: auto;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
-        /* Header */
+        /* Premium Header */
         .header {
             text-align: center;
-            padding: 16px 20px;
-            background: var(--tg-theme-bg-color, #ffffff);
-            border-bottom: 1px solid var(--tg-theme-hint-color, rgba(0,0,0,0.1));
+            padding: 24px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
         .avatar {
-            width: 50px;
-            height: 50px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 10px;
-            font-size: 20px;
+            margin: 0 auto 16px;
+            font-size: 32px;
             color: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 3px solid rgba(255,255,255,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         .bot-name {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 3px;
-            color: var(--tg-theme-text-color, #000000);
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: -0.5px;
         }
 
         .bot-description {
-            font-size: 13px;
-            color: var(--tg-theme-hint-color, rgba(0,0,0,0.6));
-            margin-bottom: 10px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 12px;
+            font-weight: 500;
         }
 
         .learn-more {
-            color: var(--tg-theme-button-color, #0088cc);
+            color: #ffffff;
             text-decoration: none;
-            font-size: 11px;
-            font-weight: 500;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .learn-more:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-1px);
         }
 
         /* Main Content */
@@ -90,43 +113,47 @@
         }
 
         .section-title {
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 700;
-            margin: 15px 0 10px;
-            color: var(--tg-theme-text-color, #000000);
+            margin: 20px 0 16px;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
-        /* Menu Items */
+        /* Premium Menu Items */
         .menu-item {
             display: flex;
             align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--tg-theme-hint-color, rgba(0,0,0,0.1));
+            padding: 20px;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: all 0.3s ease;
             -webkit-tap-highlight-color: transparent;
-            min-height: 50px;
-        }
-
-        .menu-item:last-child {
-            border-bottom: none;
+            min-height: 70px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
         .menu-item:active {
-            background: var(--tg-theme-secondary-bg-color, rgba(0,0,0,0.05));
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .menu-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 12px;
-            font-size: 14px;
+            margin-right: 16px;
+            font-size: 20px;
             color: white;
             flex-shrink: 0;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
         }
 
         .menu-text {
@@ -135,94 +162,119 @@
         }
 
         .menu-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--tg-theme-text-color, #000000);
-            margin-bottom: 2px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .menu-subtitle {
-            font-size: 12px;
-            color: var(--tg-theme-hint-color, rgba(0,0,0,0.6));
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            font-weight: 500;
         }
 
         .menu-arrow {
-            width: 12px;
-            height: 12px;
-            opacity: 0.5;
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
             flex-shrink: 0;
         }
 
-        /* Buttons */
+        /* Premium Buttons */
         .btn {
             border: 0;
-            border-radius: 8px;
-            padding: 10px 16px;
-            font-size: 14px;
-            font-weight: 600;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
-            color: var(--tg-theme-button-text-color, white);
-            background: var(--tg-theme-button-color, #0088cc);
+            color: #ffffff;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
             width: 100%;
-            margin-top: 12px;
-            transition: all 0.2s ease;
+            margin-top: 16px;
+            transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
             text-align: center;
             -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 8px 24px rgba(255,107,107,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:active::before {
+            left: 100%;
         }
 
         .btn:active {
             transform: scale(0.98);
-            opacity: 0.9;
+            box-shadow: 0 4px 16px rgba(255,107,107,0.4);
         }
 
         .btn-secondary {
-            background: var(--tg-theme-secondary-bg-color, rgba(0,0,0,0.1));
-            color: var(--tg-theme-text-color, #000000);
-            border: 1px solid var(--tg-theme-hint-color, rgba(0,0,0,0.2));
+            background: rgba(255,255,255,0.2);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
         }
 
         .btn-disabled {
-            background: var(--tg-theme-hint-color, rgba(0,0,0,0.2));
-            color: var(--tg-theme-hint-color, rgba(0,0,0,0.6));
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
             cursor: not-allowed;
+            box-shadow: none;
         }
 
-        /* Progress Bar */
+        /* Premium Progress Bar */
         .progress-container {
-            padding: 12px;
-            background: var(--tg-theme-secondary-bg-color, rgba(0,0,0,0.05));
-            border-radius: 8px;
-            margin: 12px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            margin: 16px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .progress-bar {
             width: 100%;
-            height: 3px;
-            background: var(--tg-theme-hint-color, rgba(0,0,0,0.2));
-            border-radius: 2px;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
-            background: var(--tg-theme-button-color, #0088cc);
-            border-radius: 2px;
+            background: linear-gradient(90deg, #ff6b6b, #ee5a24);
+            border-radius: 3px;
             transition: width 0.3s ease;
             width: 0%;
+            box-shadow: 0 0 10px rgba(255,107,107,0.5);
         }
 
         /* Form Sections */
         .form-section {
             display: none;
-            padding: 16px;
+            padding: 20px;
             min-height: calc(100vh - 200px);
             overflow: visible;
         }
@@ -232,61 +284,71 @@
         }
 
         .form-title {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--tg-theme-text-color, #000000);
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .step-indicator {
-            font-size: 12px;
-            color: var(--tg-theme-hint-color, rgba(0,0,0,0.6));
-            margin-bottom: 16px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 20px;
+            font-weight: 500;
         }
 
         .input-group {
-            margin-bottom: 12px;
+            margin-bottom: 20px;
         }
 
         .input-group label {
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
             font-weight: 600;
-            color: var(--tg-theme-text-color, #000000);
-            font-size: 13px;
+            color: #ffffff;
+            font-size: 14px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
         .input-group input,
         .input-group textarea,
         .input-group select {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--tg-theme-hint-color, rgba(0,0,0,0.2));
-            border-radius: 6px;
-            background: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
-            font-size: 13px;
-            transition: border-color 0.2s ease;
+            padding: 16px 20px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
+            font-size: 14px;
+            transition: all 0.3s ease;
             font-family: inherit;
+            backdrop-filter: blur(10px);
+        }
+
+        .input-group input::placeholder,
+        .input-group textarea::placeholder {
+            color: rgba(255,255,255,0.6);
         }
 
         .input-group input:focus,
         .input-group textarea:focus,
         .input-group select:focus {
             outline: none;
-            border-color: var(--tg-theme-button-color, #0088cc);
-            box-shadow: 0 0 0 2px rgba(0,136,204,0.1);
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 3px rgba(255,107,107,0.2);
+            background: rgba(255,255,255,0.15);
         }
 
         .btn-group {
             display: flex;
-            gap: 8px;
-            margin-top: 16px;
+            gap: 12px;
+            margin-top: 24px;
             position: sticky;
             bottom: 0;
-            background: var(--tg-theme-bg-color, #ffffff);
-            padding: 12px 0;
-            border-top: 1px solid var(--tg-theme-hint-color, rgba(0,0,0,0.1));
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px 0;
+            border-top: 1px solid rgba(255,255,255,0.2);
         }
 
         .btn-group .btn {
@@ -297,109 +359,127 @@
         /* Status Indicators */
         .status-indicator {
             display: inline-block;
-            width: 5px;
-            height: 5px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            margin-right: 5px;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
         }
 
         .status-success {
             background: #4CAF50;
+            box-shadow: 0 0 10px rgba(76,175,80,0.5);
         }
 
         .status-error {
             background: #F44336;
+            box-shadow: 0 0 10px rgba(244,67,54,0.5);
         }
 
         .status-pending {
             background: #FF9800;
+            box-shadow: 0 0 10px rgba(255,152,0,0.5);
         }
 
         /* Checkbox styling */
         input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            accent-color: var(--tg-theme-button-color, #0088cc);
+            width: 20px;
+            height: 20px;
+            accent-color: #ff6b6b;
+            border-radius: 4px;
         }
 
         /* Better spacing for form elements */
         .checkbox-group {
-            margin-top: 8px;
+            margin-top: 12px;
         }
 
         .checkbox-item {
             display: flex;
             align-items: center;
-            margin-bottom: 8px;
-            padding: 6px 0;
+            margin-bottom: 12px;
+            padding: 8px 0;
         }
 
         .checkbox-item input[type="checkbox"] {
-            margin-right: 8px;
+            margin-right: 12px;
             flex-shrink: 0;
         }
 
         .checkbox-item label {
             margin: 0;
-            font-weight: normal;
-            font-size: 13px;
-            color: var(--tg-theme-text-color, #000000);
+            font-weight: 500;
+            font-size: 14px;
+            color: #ffffff;
         }
 
-        /* Step cards */
+        /* Premium Step cards */
         .step-card {
-            background: var(--tg-theme-secondary-bg-color, rgba(0,0,0,0.05));
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 8px;
-            border-left: 3px solid transparent;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
         .step-card.completed {
-            border-left-color: #4CAF50;
+            border-left: 4px solid #4CAF50;
+            background: rgba(76,175,80,0.1);
         }
 
         .step-card.current {
-            border-left-color: var(--tg-theme-button-color, #0088cc);
+            border-left: 4px solid #ff6b6b;
+            background: rgba(255,107,107,0.1);
+            transform: scale(1.02);
         }
 
         .step-card.pending {
-            border-left-color: var(--tg-theme-hint-color, rgba(0,0,0,0.3));
+            border-left: 4px solid rgba(255,255,255,0.3);
         }
 
         .step-header {
             display: flex;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
         .step-icon {
-            width: 20px;
-            height: 20px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 8px;
-            font-size: 10px;
+            margin-right: 12px;
+            font-size: 14px;
             color: white;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
         }
 
         .step-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--tg-theme-text-color, #000000);
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
         .step-status {
             margin-left: auto;
-            font-size: 11px;
-            color: var(--tg-theme-hint-color, rgba(0,0,0,0.6));
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+            font-weight: 600;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 8px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
         }
 
         /* Telegram Web App specific styles */
         .tg-web-app {
-            background: var(--tg-theme-bg-color, #ffffff);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         /* Fix for Telegram Web App viewport */
@@ -411,32 +491,62 @@
             }
         }
 
-        /* Scrollbar styling */
+        /* Premium Scrollbar styling */
         ::-webkit-scrollbar {
-            width: 4px;
+            width: 6px;
         }
 
         ::-webkit-scrollbar-track {
-            background: transparent;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: var(--tg-theme-hint-color, rgba(0,0,0,0.2));
-            border-radius: 2px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: var(--tg-theme-hint-color, rgba(0,0,0,0.3));
+            background: rgba(255,255,255,0.5);
+        }
+
+        /* Premium animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-item {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .menu-item:nth-child(1) { animation-delay: 0.1s; }
+        .menu-item:nth-child(2) { animation-delay: 0.2s; }
+        .menu-item:nth-child(3) { animation-delay: 0.3s; }
+        .menu-item:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Premium glass effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
         }
     </style>
 </head>
 <body class="tg-web-app">
     <div class="container">
-        <!-- Header Section -->
+        <!-- Premium Header Section -->
         <div class="header">
             <div class="avatar">🏭</div>
-            <div class="bot-name">THREADS FACTORY BOT</div>
-            <div class="bot-description">Автоматизация публикаций в Threads</div>
+            <div class="bot-name">THREADS FACTORY PRO</div>
+            <div class="bot-description">Премиум автоматизация публикаций</div>
             <a href="#" class="learn-more">Узнать больше ></a>
         </div>
 
@@ -444,9 +554,9 @@
         <div class="main-content">
             <div class="section-title">Главное меню</div>
 
-            <!-- Menu Items -->
+            <!-- Premium Menu Items -->
             <div class="menu-item" onclick="showSection('quick-start')">
-                <div class="menu-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">🎯</div>
+                <div class="menu-icon" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);">🎯</div>
                 <div class="menu-text">
                     <div class="menu-title">БЫСТРЫЙ СТАРТ</div>
                     <div class="menu-subtitle">Запуск комбайна за 6 шагов</div>
@@ -457,7 +567,7 @@
             </div>
 
             <div class="menu-item" onclick="showSection('projects')">
-                <div class="menu-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">📊</div>
+                <div class="menu-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">📊</div>
                 <div class="menu-text">
                     <div class="menu-title">Мои проекты</div>
                     <div class="menu-subtitle">Управление активными проектами</div>
@@ -504,7 +614,7 @@
 
                 <div class="step-card current">
                     <div class="step-header">
-                        <div class="step-icon" style="background: var(--tg-theme-button-color, #0088cc);">⏳</div>
+                        <div class="step-icon" style="background: #ff6b6b;">⏳</div>
                         <div class="step-title">ШАГ 2: Создай системный промпт</div>
                         <div class="step-status">Текущий</div>
                     </div>
@@ -512,7 +622,7 @@
 
                 <div class="step-card pending">
                     <div class="step-header">
-                        <div class="step-icon" style="background: var(--tg-theme-hint-color, rgba(0,0,0,0.3));">⏳</div>
+                        <div class="step-icon" style="background: rgba(255,255,255,0.3);">⏳</div>
                         <div class="step-title">ШАГ 3: Настрой контент-план</div>
                         <div class="step-status">Ожидает</div>
                     </div>
@@ -520,7 +630,7 @@
 
                 <div class="step-card pending">
                     <div class="step-header">
-                        <div class="step-icon" style="background: var(--tg-theme-hint-color, rgba(0,0,0,0.3));">⏳</div>
+                        <div class="step-icon" style="background: rgba(255,255,255,0.3);">⏳</div>
                         <div class="step-title">ШАГ 4: Установи расписание</div>
                         <div class="step-status">Ожидает</div>
                     </div>
@@ -528,7 +638,7 @@
 
                 <div class="step-card pending">
                     <div class="step-header">
-                        <div class="step-icon" style="background: var(--tg-theme-hint-color, rgba(0,0,0,0.3));">⏳</div>
+                        <div class="step-icon" style="background: rgba(255,255,255,0.3);">⏳</div>
                         <div class="step-title">ШАГ 5: Протестируй публикацию</div>
                         <div class="step-status">Ожидает</div>
                     </div>
@@ -536,7 +646,7 @@
 
                 <div class="step-card pending">
                     <div class="step-header">
-                        <div class="step-icon" style="background: var(--tg-theme-hint-color, rgba(0,0,0,0.3));">⏳</div>
+                        <div class="step-icon" style="background: rgba(255,255,255,0.3);">⏳</div>
                         <div class="step-title">ШАГ 6: ЗАПУСТИТЬ КОМБАЙН! 🔥</div>
                         <div class="step-status">Ожидает</div>
                     </div>
@@ -558,7 +668,7 @@
                         <div class="step-title">Фитнес-блог</div>
                         <div class="step-status">🟢 Активен</div>
                     </div>
-                    <div style="font-size: 12px; color: var(--tg-theme-hint-color); margin-top: 8px;">
+                    <div style="font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 12px;">
                         Опубликовано: 47 постов<br>
                         Следующий пост: сегодня в 17:00
                     </div>
@@ -577,15 +687,15 @@
                 <div class="input-group">
                     <label>Threads Token</label>
                     <input type="password" id="threadsToken" placeholder="threads_token_...">
-                    <div style="margin-top: 4px;">
+                    <div style="margin-top: 8px;">
                         <span class="status-indicator status-pending"></span>
-                        <span style="font-size: 10px; color: var(--tg-theme-hint-color);">Не настроен</span>
+                        <span style="font-size: 12px; color: rgba(255,255,255,0.8);">Не настроен</span>
                     </div>
                 </div>
 
-                <div style="background: var(--tg-theme-secondary-bg-color, rgba(0,0,0,0.05)); padding: 12px; border-radius: 8px; margin: 12px 0;">
-                    <h3 style="margin-bottom: 8px; color: var(--tg-theme-text-color); font-size: 12px;">API ключи настроены автоматически</h3>
-                    <div style="font-size: 11px; color: var(--tg-theme-hint-color);">
+                <div class="glass-effect" style="padding: 16px; margin: 16px 0;">
+                    <h3 style="margin-bottom: 12px; color: #ffffff; font-size: 14px; font-weight: 700;">API ключи настроены автоматически</h3>
+                    <div style="font-size: 12px; color: rgba(255,255,255,0.8);">
                         ✅ OpenAI API - настроен<br>
                         ✅ Image API - настроен<br>
                         ⚠️ Threads Token - требуется настройка
@@ -602,24 +712,24 @@
             <div id="profile" class="form-section">
                 <div class="form-title">👤 Профиль</div>
                 
-                <div style="background: var(--tg-theme-secondary-bg-color, rgba(0,0,0,0.05)); padding: 12px; border-radius: 8px; margin: 12px 0;">
-                    <h3 style="margin-bottom: 10px; color: var(--tg-theme-text-color); font-size: 13px;">Статистика</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="glass-effect" style="padding: 16px; margin: 16px 0;">
+                    <h3 style="margin-bottom: 12px; color: #ffffff; font-size: 14px; font-weight: 700;">Статистика</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                         <div style="text-align: center;">
-                            <div style="font-size: 18px; font-weight: 700; color: var(--tg-theme-button-color, #0088cc);">3</div>
-                            <div style="font-size: 10px; color: var(--tg-theme-hint-color);">Активных проекта</div>
+                            <div style="font-size: 20px; font-weight: 800; color: #ff6b6b;">3</div>
+                            <div style="font-size: 11px; color: rgba(255,255,255,0.8);">Активных проекта</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 18px; font-weight: 700; color: #4CAF50;">156</div>
-                            <div style="font-size: 10px; color: var(--tg-theme-hint-color);">Всего постов</div>
+                            <div style="font-size: 20px; font-weight: 800; color: #4CAF50;">156</div>
+                            <div style="font-size: 11px; color: rgba(255,255,255,0.8);">Всего постов</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 18px; font-weight: 700; color: #FF9800;">2,847</div>
-                            <div style="font-size: 10px; color: var(--tg-theme-hint-color);">Общий охват</div>
+                            <div style="font-size: 20px; font-weight: 800; color: #FF9800;">2,847</div>
+                            <div style="font-size: 11px; color: rgba(255,255,255,0.8);">Общий охват</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 18px; font-weight: 700; color: #9C27B0;">89</div>
-                            <div style="font-size: 10px; color: var(--tg-theme-hint-color);">Лайков</div>
+                            <div style="font-size: 20px; font-weight: 800; color: #9C27B0;">89</div>
+                            <div style="font-size: 11px; color: rgba(255,255,255,0.8);">Лайков</div>
                         </div>
                     </div>
                 </div>
@@ -644,12 +754,12 @@
         tg.enableClosingConfirmation();
 
         // Устанавливаем тему
-        document.documentElement.style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color || '#ffffff');
-        document.documentElement.style.setProperty('--tg-theme-text-color', tg.themeParams.text_color || '#000000');
-        document.documentElement.style.setProperty('--tg-theme-hint-color', tg.themeParams.hint_color || 'rgba(0,0,0,0.6)');
-        document.documentElement.style.setProperty('--tg-theme-button-color', tg.themeParams.button_color || '#0088cc');
-        document.documentElement.style.setProperty('--tg-theme-button-text-color', tg.themeParams.button_text_color || '#ffffff');
-        document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', tg.themeParams.secondary_bg_color || 'rgba(0,0,0,0.05)');
+        document.documentElement.style.setProperty('--tg-theme-bg-color', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
+        document.documentElement.style.setProperty('--tg-theme-text-color', '#ffffff');
+        document.documentElement.style.setProperty('--tg-theme-hint-color', 'rgba(255,255,255,0.8)');
+        document.documentElement.style.setProperty('--tg-theme-button-color', '#ff6b6b');
+        document.documentElement.style.setProperty('--tg-theme-button-text-color', '#ffffff');
+        document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', 'rgba(255,255,255,0.1)');
 
         function showSection(sectionId) {
             // Скрываем все секции
