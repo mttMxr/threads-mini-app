@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.41">
-    <title>Threads Factory Pro v22.41</title>
+    <meta name="version" content="22.42">
+    <title>Threads Factory Pro v22.42</title>
     <style>
         * {
             margin: 0;
@@ -637,7 +637,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.41</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.42</div>
             </div>
         </div>
         
@@ -1394,7 +1394,7 @@
             
             console.log('Request Data:', requestData);
             
-            fetch(`${BASE_URL}/submit-task`, {
+            fetch(`${BASE_URL}/generate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1410,7 +1410,7 @@
                 return response.json();
             })
             .then(data => {
-                console.log('Submit response:', data);
+                console.log('Generate response:', data);
                 
                 if (data.code === 200 && data.data && data.data.taskId) {
                     currentTaskId = data.data.taskId;
@@ -1418,6 +1418,13 @@
                     
                     // Запускаем адаптивную проверку
                     startAdaptiveCheck(data.data.taskId, type, originalPrompt);
+                } else if (data.code === 200 && data.data && data.data.imageUrl) {
+                    // Прямой результат без отслеживания
+                    const urls = Array.isArray(data.data.imageUrl) ? data.data.imageUrl : [data.data.imageUrl];
+                    isGenerating = false;
+                    hideProgress();
+                    showResults(urls, type, null, originalPrompt);
+                    console.log('✅ Генерация завершена сразу!');
                 } else {
                     isGenerating = false;
                     hideProgress();
