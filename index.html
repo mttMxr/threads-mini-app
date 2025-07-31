@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.39">
-    <title>Threads Factory Pro v22.39</title>
+    <meta name="version" content="22.40">
+    <title>Threads Factory Pro v22.40</title>
     <style>
         * {
             margin: 0;
@@ -637,7 +637,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.39</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.40</div>
             </div>
         </div>
         
@@ -1635,12 +1635,13 @@
             const requestData = {
                 taskType: 'mj_upscale',
                 fileUrl: imageUrl,
-                index: index
+                index: index,
+                version: '6'
             };
             
             console.log('Upscale request data:', requestData);
             
-            fetch(`${BASE_URL}/generate`, {
+            fetch(`${BASE_URL}/submit-task`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1680,12 +1681,13 @@
             const requestData = {
                 taskType: 'mj_vary',
                 fileUrl: imageUrl,
-                index: index
+                index: index,
+                version: '6'
             };
             
             console.log('Vary request data:', requestData);
             
-            fetch(`${BASE_URL}/generate`, {
+            fetch(`${BASE_URL}/submit-task`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1720,19 +1722,33 @@
             console.log('Image URL:', url);
             
             try {
-                // Создаем временную ссылку для скачивания
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `generated-image-${Date.now()}.jpg`;
-                link.target = '_blank';
-                
-                // Добавляем в DOM, кликаем и удаляем
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                console.log('✅ Скачивание запущено');
-                showAlert('⬇️ Скачивание запущено!');
+                // Сначала получаем изображение как blob
+                fetch(url)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        // Создаем URL для blob
+                        const blobUrl = URL.createObjectURL(blob);
+                        
+                        // Создаем ссылку для скачивания
+                        const link = document.createElement('a');
+                        link.href = blobUrl;
+                        link.download = `generated-image-${Date.now()}.jpg`;
+                        
+                        // Добавляем в DOM, кликаем и удаляем
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        // Очищаем blob URL
+                        setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+                        
+                        console.log('✅ Скачивание запущено');
+                        showAlert('⬇️ Файл скачивается...');
+                    })
+                    .catch(error => {
+                        console.error('Download fetch error:', error);
+                        showAlert('❌ Ошибка при загрузке изображения');
+                    });
             } catch (error) {
                 console.error('Download error:', error);
                 showAlert('❌ Ошибка при скачивании');
@@ -1845,7 +1861,7 @@
             
             // Проверяем статус каждые 5 секунд
             const checkStatus = () => {
-                fetch(`https://api.kie.ai/api/v1/mj/query?taskId=${taskId}`, {
+                fetch(`https://api.kie.ai/api/v1/mj/query-task?taskId=${taskId}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${API_KEY}`
