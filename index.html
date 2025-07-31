@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.49">
-    <title>Threads Factory Pro v22.49</title>
+    <meta name="version" content="22.50">
+    <title>Threads Factory Pro v22.50</title>
     <style>
         * {
             margin: 0;
@@ -254,88 +254,7 @@
             transition: width 0.3s ease;
         }
         
-        .results-area {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-radius: 16px 16px 0 0;
-            padding: 20px;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-            max-height: 60vh;
-            overflow-y: auto;
-            display: none;
-            z-index: 100;
-        }
-        
-        .results-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            color: #333;
-        }
-        
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        
-        .result-item {
-            position: relative;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .result-item img {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-        }
-        
-        .result-actions {
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
-            right: 8px;
-            display: flex;
-            gap: 4px;
-        }
-        
-        .action-btn {
-            flex: 1;
-            padding: 6px 8px;
-            border: none;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            background: rgba(255,255,255,0.9);
-            color: #333;
-            transition: all 0.3s ease;
-        }
-        
-        .action-btn:hover {
-            background: white;
-            transform: scale(1.05);
-        }
-        
-        .close-results {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            font-size: 12px;
-        }
+
         
         .step-guide {
             background: white;
@@ -704,6 +623,40 @@
         .history-image:hover {
             transform: scale(1.05);
         }
+        
+        .history-image-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .history-image-actions {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            display: flex;
+            gap: 2px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .history-image-container:hover .history-image-actions {
+            opacity: 1;
+        }
+        
+        .history-action-btn {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 6px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .history-action-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
 
         .turbo-info {
             display: flex;
@@ -742,7 +695,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.49</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.50</div>
             </div>
         </div>
         
@@ -1178,12 +1131,7 @@
         </div>
     </div>
     
-    <!-- Результаты -->
-    <div class="results-area" id="resultsArea">
-        <button class="close-results" onclick="hideResults()">×</button>
-        <div class="results-title">🎨 Результаты генерации</div>
-        <div class="results-grid" id="resultsGrid"></div>
-    </div>
+
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
@@ -1303,11 +1251,18 @@
                     <div class="history-timestamp">${item.timestamp} • ${item.type}</div>
                     <div class="history-images">
                         ${item.urls.map((url, index) => `
-                            <img src="${url}" 
-                                 alt="Generated image ${index + 1}" 
-                                 class="history-image" 
-                                 onclick="openImageModal('${url}')"
-                                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+0J/QvtC60LDQt9GL0LLQsNGC0Yw8L3RleHQ+Cjwvc3ZnPg=='">
+                            <div class="history-image-container">
+                                <img src="${url}" 
+                                     alt="Generated image ${index + 1}" 
+                                     class="history-image" 
+                                     onclick="openImageModal('${url}')"
+                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+0J/QvtC60LDQt9GL0LLQsNGC0Yw8L3RleHQ+Cjwvc3ZnPg==='">
+                                <div class="history-image-actions">
+                                    <button class="history-action-btn" onclick="upscaleImage('${url}', ${index + 1})">🔍</button>
+                                    <button class="history-action-btn" onclick="varyImage('${url}', ${index + 1})">🔄</button>
+                                    <button class="history-action-btn" onclick="downloadImage('${url}')">⬇️</button>
+                                </div>
+                            </div>
                         `).join('')}
                     </div>
                 `;
@@ -1361,7 +1316,6 @@
             }
             
             isGenerating = true;
-            showProgress();
             
             // Асинхронно улучшаем промпт и запускаем генерацию
             enhancePrompt(originalPrompt).then(enhancedPrompt => {
@@ -1370,7 +1324,6 @@
             }).catch(error => {
                 console.error('Prompt enhancement failed:', error);
                 isGenerating = false;
-                hideProgress();
                 console.log('❌ Ошибка перевода промпта');
             });
         }
@@ -1395,7 +1348,6 @@
             }
             
             isGenerating = true;
-            showProgress();
             
             // Асинхронно улучшаем промпт и запускаем генерацию
             enhancePrompt(originalPrompt).then(enhancedPrompt => {
@@ -1404,7 +1356,6 @@
             }).catch(error => {
                 console.error('Prompt enhancement failed:', error);
                 isGenerating = false;
-                hideProgress();
                 console.log('❌ Ошибка перевода промпта');
             });
         }
@@ -1425,7 +1376,6 @@
                 return;
             }
             
-            showProgress();
             callMidjourneyAPI('video', {
                 prompt: prompt,
                 imageUrl: imageUrl,
@@ -1443,10 +1393,8 @@
                 return;
             }
             
-            showProgress();
             // Здесь будет логика для Describe
             console.log('🔍 Функция Describe будет доступна в следующем обновлении');
-            hideProgress();
         }
         
         function blendImages() {
@@ -1463,10 +1411,8 @@
                 return;
             }
             
-            showProgress();
             // Здесь будет логика для Blend
             console.log('🌄 + 🌆 Функция Blend будет доступна в следующем обновлении');
-            hideProgress();
         }
         
         function editImage() {
@@ -1670,79 +1616,7 @@
             }
         }
         
-        function showProgress() {
-            console.log('=== SHOW PROGRESS DEBUG ===');
-            const currentPage = document.querySelector('.page.active').id;
-            console.log('Current page:', currentPage);
-            
-            let progressId = 'inlineProgress';
-            
-            if (currentPage === 'mj-img2img') {
-                progressId = 'inlineProgressImg2Img';
-            }
-            
-            console.log('Progress ID:', progressId);
-            const progressElement = document.getElementById(progressId);
-            console.log('Progress element:', progressElement);
-            
-            if (progressElement) {
-                progressElement.style.display = 'block';
-                updateInlineProgress('🎨 Генерация началась...', progressId);
-                console.log('✅ Progress shown');
-            } else {
-                console.error('❌ Progress element not found');
-            }
-        }
-        
-        function updateProgress(text) {
-            const currentPage = document.querySelector('.page.active').id;
-            let progressId = 'inlineProgress';
-            
-            if (currentPage === 'mj-img2img') {
-                progressId = 'inlineProgressImg2Img';
-            }
-            
-            updateInlineProgress(text, progressId);
-        }
-        
-        function updateInlineProgress(text, progressId = 'inlineProgress') {
-            const textId = progressId === 'inlineProgress' ? 'inlineProgressText' : 'inlineProgressTextImg2Img';
-            const fillId = progressId === 'inlineProgress' ? 'inlineProgressFill' : 'inlineProgressFillImg2Img';
-            
-            document.getElementById(textId).textContent = text;
-            
-            // Анимируем прогресс-бар
-            const progressBar = document.getElementById(fillId);
-            if (progressBar) {
-                // Плавная анимация от 0 до 90%
-                const currentWidth = parseInt(progressBar.style.width) || 0;
-                const targetWidth = Math.min(90, currentWidth + 5);
-                progressBar.style.width = targetWidth + '%';
-            }
-        }
-        
-        function hideProgress() {
-            console.log('=== HIDE PROGRESS DEBUG ===');
-            const currentPage = document.querySelector('.page.active').id;
-            console.log('Current page:', currentPage);
-            
-            let progressId = 'inlineProgress';
-            
-            if (currentPage === 'mj-img2img') {
-                progressId = 'inlineProgressImg2Img';
-            }
-            
-            console.log('Progress ID:', progressId);
-            const progressElement = document.getElementById(progressId);
-            console.log('Progress element:', progressElement);
-            
-            if (progressElement) {
-                progressElement.style.display = 'none';
-                console.log('✅ Progress hidden');
-            } else {
-                console.error('❌ Progress element not found for hiding');
-            }
-        }
+
         
         function showResults(urls, type, taskId, originalPrompt) {
             console.log('=== SHOW RESULTS DEBUG ===');
@@ -1750,9 +1624,6 @@
             console.log('type:', type);
             console.log('taskId:', taskId);
             console.log('originalPrompt:', originalPrompt);
-            
-            const resultsGrid = document.getElementById('resultsGrid');
-            resultsGrid.innerHTML = '';
             
             // Получаем промпт
             const prompt = originalPrompt || 
@@ -1763,39 +1634,13 @@
             
             console.log('Final prompt for history:', prompt);
             
-            // Добавляем в архив
-            addToArchive(urls, type, prompt);
-            
-            // Добавляем в историю
+            // Добавляем в историю (без всплывающего окна)
             addToHistory(prompt, urls, type, null);
             
-            urls.forEach((url, index) => {
-                const resultItem = document.createElement('div');
-                resultItem.className = 'result-item';
-                
-                resultItem.innerHTML = `
-                    <img src="${url}" 
-                         alt="Generated image ${index + 1}" 
-                         onclick="openImageModal('${url}')"
-                         style="height: 150px; cursor: pointer;"
-                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7Qn9C+0LrQsNC30YvQstCw0YLRjCDQv9C+0LrQsNC30YvQstCw0YLRjDwvdGV4dD4KPC9zdmc+'">
-                    <div class="result-actions">
-                        <button class="action-btn" onclick="upscaleImage('${url}', ${index + 1})">🔍 Upscale</button>
-                        <button class="action-btn" onclick="varyImage('${url}', ${index + 1})">🔄 Vary</button>
-                        <button class="action-btn" onclick="downloadImage('${url}')">⬇️ Скачать</button>
-                    </div>
-                `;
-                
-                resultsGrid.appendChild(resultItem);
-            });
-            
-            document.getElementById('resultsArea').style.display = 'block';
             console.log(`✅ Готово! Сгенерировано ${urls.length} изображений`);
         }
         
-        function hideResults() {
-            document.getElementById('resultsArea').style.display = 'none';
-        }
+
         
         function upscaleImage(imageUrl, index) {
             const BASE_URL = 'https://api.kie.ai/api/v1/mj';
@@ -1934,69 +1779,10 @@
             document.getElementById(valueId).textContent = slider.value;
         }
         
-        // Архив изображений
-        let imageArchive = [];
-        
-        function addToArchive(urls, type, prompt) {
-            const archiveItem = {
-                urls: urls,
-                type: type,
-                prompt: prompt,
-                timestamp: new Date().toLocaleString('ru-RU'),
-                id: Date.now()
-            };
-            
-            imageArchive.unshift(archiveItem); // Добавляем в начало
-            localStorage.setItem('mjArchive', JSON.stringify(imageArchive));
-            updateArchiveDisplay();
-        }
-        
-        function updateArchiveDisplay() {
-            const archiveGrid = document.getElementById('archiveResultsGrid');
-            if (!archiveGrid) return;
-            
-            archiveGrid.innerHTML = '';
-            
-            imageArchive.forEach(item => {
-                item.urls.forEach((url, index) => {
-                    const resultItem = document.createElement('div');
-                    resultItem.className = 'result-item';
-                    
-                    resultItem.innerHTML = `
-                        <img src="${url}" alt="Archived image ${index + 1}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7Qn9C+0LrQsNC30YvQstCw0YLRjCDQv9C+0LrQsNC30YvQstCw0YLRjDwvdGV4dD4KPC9zdmc+'" style="height: 150px;">
-                        <div class="result-actions">
-                            <button class="action-btn" onclick="downloadImage('${url}')">⬇️ Скачать</button>
-                            <button class="action-btn" onclick="deleteFromArchive(${item.id})">🗑️ Удалить</button>
-                        </div>
-                        <div style="padding: 8px; font-size: 11px; color: #666;">
-                            <div><strong>${item.type}</strong></div>
-                            <div>${item.timestamp}</div>
-                        </div>
-                    `;
-                    
-                    archiveGrid.appendChild(resultItem);
-                });
-            });
-        }
-        
-        function deleteFromArchive(id) {
-            imageArchive = imageArchive.filter(item => item.id !== id);
-            localStorage.setItem('mjArchive', JSON.stringify(imageArchive));
-            updateArchiveDisplay();
-            console.log('🗑️ Удалено из архива');
-        }
-        
-        // Загружаем архив при старте
-        function loadArchive() {
-            const saved = localStorage.getItem('mjArchive');
-            if (saved) {
-                imageArchive = JSON.parse(saved);
-            }
-        }
+
         
         // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', function() {
-            loadArchive();
             loadHistory(); // Загружаем историю при старте
             loadActiveTasks(); // Загружаем активные задачи при старте
             
@@ -2158,10 +1944,7 @@
                     if (data.code === 200 && data.data && data.data.successFlag === 1) {
                         console.log('✅ Задача завершена!');
                         removeActiveTask(taskId);
-                        showAlert('✅ Готово! Результат получен');
-                        
-                        // Скрываем прогресс-бар
-                        hideProgress();
+
                         
                         // Показываем результат
                         if (data.data.resultInfoJson && data.data.resultInfoJson.resultUrls) {
@@ -2171,10 +1954,7 @@
                     } else if (data.code === 200 && data.data && (data.data.successFlag === 2 || data.data.successFlag === 3)) {
                         console.log('❌ Задача провалилась');
                         removeActiveTask(taskId);
-                        showAlert('❌ Задача провалилась: ' + (data.data.errorMessage || 'Неизвестная ошибка'));
-                        
-                        // Скрываем прогресс-бар
-                        hideProgress();
+                        console.log('❌ Задача провалилась: ' + (data.data.errorMessage || 'Неизвестная ошибка'));
                     } else {
                         // Продолжаем отслеживание
                         setTimeout(checkStatus, 5000);
