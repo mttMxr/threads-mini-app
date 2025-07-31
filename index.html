@@ -398,68 +398,180 @@
             color: #ffffff;
         }
 
-        /* Premium Step cards */
+        /* Premium Step Cards - полностью новый дизайн */
         .step-card {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(20px);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 12px;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
 
-        .step-card.completed {
-            border-left: 4px solid #4CAF50;
-            background: rgba(76,175,80,0.1);
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #ee5a24);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .step-card.current {
-            border-left: 4px solid #ff6b6b;
-            background: rgba(255,107,107,0.1);
-            transform: scale(1.02);
+        .step-card.completed::before {
+            opacity: 1;
         }
 
-        .step-card.pending {
-            border-left: 4px solid rgba(255,255,255,0.3);
+        .step-card:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .step-header {
             display: flex;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .step-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 12px;
-            font-size: 14px;
+            margin-right: 16px;
+            font-size: 24px;
             color: white;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            opacity: 0.9;
+        }
+
+        .step-icon.completed::before {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+
+        .step-icon.current::before {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .step-icon.pending::before {
+            background: linear-gradient(135deg, #9e9e9e 0%, #757575 100%);
+        }
+
+        .step-icon span {
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-content {
+            flex: 1;
+            min-width: 0;
         }
 
         .step-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             color: #ffffff;
+            margin-bottom: 4px;
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
-        .step-status {
-            margin-left: auto;
-            font-size: 12px;
+        .step-description {
+            font-size: 14px;
             color: rgba(255,255,255,0.8);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .step-status {
+            display: flex;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .status-completed {
+            background: #4CAF50;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+        }
+
+        .status-current {
+            background: #ff6b6b;
+            box-shadow: 0 0 8px rgba(255, 107, 107, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        .status-pending {
+            background: #9e9e9e;
+        }
+
+        .status-text {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
             font-weight: 600;
-            background: rgba(255,255,255,0.2);
-            padding: 4px 8px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
+        }
+
+        /* Анимации */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-card {
+            animation: slideInUp 0.6s ease forwards;
+        }
+
+        .step-card:nth-child(1) { animation-delay: 0.1s; }
+        .step-card:nth-child(2) { animation-delay: 0.2s; }
+        .step-card:nth-child(3) { animation-delay: 0.3s; }
+        .step-card:nth-child(4) { animation-delay: 0.4s; }
+        .step-card:nth-child(5) { animation-delay: 0.5s; }
+        .step-card:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Premium glass effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
         }
 
         /* Telegram Web App specific styles */
@@ -515,14 +627,6 @@
         .menu-item:nth-child(2) { animation-delay: 0.2s; }
         .menu-item:nth-child(3) { animation-delay: 0.3s; }
         .menu-item:nth-child(4) { animation-delay: 0.4s; }
-
-        /* Premium glass effect */
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-        }
     </style>
 </head>
 <body class="tg-web-app">
@@ -588,51 +692,99 @@
                 <div class="form-title">🎯 ЗАПУСК THREADS КОМБАЙНА</div>
                 <div class="step-indicator">Пройди 6 простых шагов и запусти автопубликации:</div>
                 
-                <div class="step-card completed">
+                <div class="step-card completed" onclick="showStep(1)">
                     <div class="step-header">
-                        <div class="step-icon" style="background: #4CAF50;">✅</div>
-                        <div class="step-title">ШАГ 1: Подключи Threads аккаунт</div>
-                        <div class="step-status">Готово</div>
+                        <div class="step-icon completed">
+                            <span>🔗</span>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-title">ШАГ 1: Подключи Threads аккаунт</div>
+                            <div class="step-description">Успешно подключен к вашему аккаунту.</div>
+                        </div>
+                    </div>
+                    <div class="step-status">
+                        <span class="status-indicator status-completed"></span>
+                        <span class="status-text">Готово</span>
                     </div>
                 </div>
 
-                <div class="step-card current">
+                <div class="step-card current" onclick="showStep(2)">
                     <div class="step-header">
-                        <div class="step-icon" style="background: #ff6b6b;">⏳</div>
-                        <div class="step-title">ШАГ 2: Создай системный промпт</div>
-                        <div class="step-status">Текущий</div>
+                        <div class="step-icon current">
+                            <span>⚙️</span>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-title">ШАГ 2: Создай системный промпт</div>
+                            <div class="step-description">Настройте системный промпт для генерации контента.</div>
+                        </div>
+                    </div>
+                    <div class="step-status">
+                        <span class="status-indicator status-current"></span>
+                        <span class="status-text">Текущий</span>
                     </div>
                 </div>
 
-                <div class="step-card pending">
+                <div class="step-card pending" onclick="showStep(3)">
                     <div class="step-header">
-                        <div class="step-icon" style="background: rgba(255,255,255,0.3);">⏳</div>
-                        <div class="step-title">ШАГ 3: Настрой контент-план</div>
-                        <div class="step-status">Ожидает</div>
+                        <div class="step-icon pending">
+                            <span>📋</span>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-title">ШАГ 3: Настрой контент-план</div>
+                            <div class="step-description">Определите тему и ключевые слова для контента.</div>
+                        </div>
+                    </div>
+                    <div class="step-status">
+                        <span class="status-indicator status-pending"></span>
+                        <span class="status-text">Ожидает</span>
                     </div>
                 </div>
 
-                <div class="step-card pending">
+                <div class="step-card pending" onclick="showStep(4)">
                     <div class="step-header">
-                        <div class="step-icon" style="background: rgba(255,255,255,0.3);">⏳</div>
-                        <div class="step-title">ШАГ 4: Установи расписание</div>
-                        <div class="step-status">Ожидает</div>
+                        <div class="step-icon pending">
+                            <span>⏰</span>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-title">ШАГ 4: Установи расписание</div>
+                            <div class="step-description">Настройте время и частоту публикаций.</div>
+                        </div>
+                    </div>
+                    <div class="step-status">
+                        <span class="status-indicator status-pending"></span>
+                        <span class="status-text">Ожидает</span>
                     </div>
                 </div>
 
-                <div class="step-card pending">
+                <div class="step-card pending" onclick="showStep(5)">
                     <div class="step-header">
-                        <div class="step-icon" style="background: rgba(255,255,255,0.3);">⏳</div>
-                        <div class="step-title">ШАГ 5: Протестируй публикацию</div>
-                        <div class="step-status">Ожидает</div>
+                        <div class="step-icon pending">
+                            <span>🧪</span>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-title">ШАГ 5: Протестируй публикацию</div>
+                            <div class="step-description">Проверьте, как работает ваш комбайн на тестовом посте.</div>
+                        </div>
+                    </div>
+                    <div class="step-status">
+                        <span class="status-indicator status-pending"></span>
+                        <span class="status-text">Ожидает</span>
                     </div>
                 </div>
 
-                <div class="step-card pending">
+                <div class="step-card pending" onclick="showStep(6)">
                     <div class="step-header">
-                        <div class="step-icon" style="background: rgba(255,255,255,0.3);">⏳</div>
-                        <div class="step-title">ШАГ 6: ЗАПУСТИТЬ КОМБАЙН! 🔥</div>
-                        <div class="step-status">Ожидает</div>
+                        <div class="step-icon pending">
+                            <span>🚀</span>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-title">ШАГ 6: ЗАПУСТИТЬ КОМБАЙН! 🔥</div>
+                            <div class="step-description">Нажмите кнопку "Запустить комбайн" для активации.</div>
+                        </div>
+                    </div>
+                    <div class="step-status">
+                        <span class="status-indicator status-pending"></span>
+                        <span class="status-text">Ожидает</span>
                     </div>
                 </div>
 
@@ -649,8 +801,14 @@
                 <div class="step-card">
                     <div class="step-header">
                         <div class="step-icon" style="background: #4CAF50;">🏃</div>
-                        <div class="step-title">Фитнес-блог</div>
-                        <div class="step-status">🟢 Активен</div>
+                        <div class="step-content">
+                            <div class="step-title">Фитнес-блог</div>
+                            <div class="step-description">Управление постом "Фитнес-блог".</div>
+                        </div>
+                        <div class="step-status">
+                            <span class="status-indicator status-completed"></span>
+                            <span class="status-text">🟢 Активен</span>
+                        </div>
                     </div>
                     <div style="font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 12px;">
                         Опубликовано: 47 постов<br>
@@ -773,6 +931,23 @@
             // Начинаем с шага 2 (промпт)
             currentStep = 2;
             tg.showAlert('Переходим к настройке системного промпта!');
+        }
+
+        function showStep(stepNumber) {
+            // Скрываем все шаги
+            document.querySelectorAll('.step-card').forEach(step => {
+                step.classList.remove('active');
+            });
+
+            // Показываем нужный шаг
+            const step = document.querySelector(`.step-card:nth-child(${stepNumber})`);
+            if (step) {
+                step.classList.add('active');
+                // Прокручиваем к началу шага
+                step.scrollTop = 0;
+                // Прокручиваем к шагу
+                step.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
 
         // Обработка нажатий на кнопки
