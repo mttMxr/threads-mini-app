@@ -6,8 +6,8 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="version" content="22.5">
-    <title>Threads Factory Pro v22.5</title>
+    <meta name="version" content="22.6">
+    <title>Threads Factory Pro v22.6</title>
     <style>
         * {
             margin: 0;
@@ -438,7 +438,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.5</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.6</div>
             </div>
         </div>
         
@@ -1028,7 +1028,7 @@
             
             console.log('Sending request:', requestData);
             
-            fetch(`${BASE_URL}/submit-task`, {
+            fetch(`${BASE_URL}/generate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1068,7 +1068,7 @@
             
             while (attempts < maxAttempts) {
                 try {
-                    const response = await fetch(`${BASE_URL}/record-info?taskId=${taskId}`, {
+                    const response = await fetch(`${BASE_URL}/task-status?taskId=${taskId}`, {
                         headers: {
                             'Authorization': `Bearer ${API_KEY}`
                         }
@@ -1182,7 +1182,7 @@
                 callBackUrl: ''
             };
             
-            fetch(`${BASE_URL}/generateUpscale`, {
+            fetch(`${BASE_URL}/upscale`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1221,7 +1221,7 @@
                 callBackUrl: ''
             };
             
-            fetch(`${BASE_URL}/generateVary`, {
+            fetch(`${BASE_URL}/vary`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
