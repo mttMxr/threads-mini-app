@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.28">
-    <title>Threads Factory Pro v22.28</title>
+    <meta name="version" content="22.29">
+    <title>Threads Factory Pro v22.29</title>
     <style>
         * {
             margin: 0;
@@ -637,7 +637,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.28</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.29</div>
             </div>
         </div>
         
@@ -1217,6 +1217,11 @@
         
         // Функции для истории генераций
         function addToHistory(prompt, urls, type, enhancedPrompt = null) {
+            console.log('=== ADD TO HISTORY DEBUG ===');
+            console.log('prompt:', prompt);
+            console.log('enhancedPrompt:', enhancedPrompt);
+            console.log('type:', type);
+            
             const historyItem = {
                 id: Date.now(),
                 prompt: prompt,
@@ -1225,6 +1230,8 @@
                 type: type,
                 timestamp: new Date().toLocaleString('ru-RU')
             };
+            
+            console.log('History item:', historyItem);
             
             generationHistory.unshift(historyItem); // Добавляем в начало
             localStorage.setItem('generationHistory', JSON.stringify(generationHistory));
@@ -1637,6 +1644,12 @@
         }
         
         function showResults(urls, type, taskId, originalPrompt) {
+            console.log('=== SHOW RESULTS DEBUG ===');
+            console.log('urls:', urls);
+            console.log('type:', type);
+            console.log('taskId:', taskId);
+            console.log('originalPrompt:', originalPrompt);
+            
             const resultsGrid = document.getElementById('resultsGrid');
             resultsGrid.innerHTML = '';
             
@@ -1647,12 +1660,15 @@
                           document.getElementById('mjVideoPrompt')?.value || 
                           'Сгенерированное изображение';
             
+            console.log('Final prompt for history:', prompt);
+            
             // Добавляем в архив
             addToArchive(urls, type, prompt);
             
             // Добавляем в историю с переработанным промптом
             // Если есть originalPrompt, значит это переработанный промпт от OpenAI
             const enhancedPrompt = originalPrompt ? originalPrompt : null;
+            console.log('Enhanced prompt for history:', enhancedPrompt);
             addToHistory(prompt, urls, type, enhancedPrompt);
             
             urls.forEach((url, index) => {
