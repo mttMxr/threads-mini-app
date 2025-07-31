@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>ThreadsZavod - Автоматизация публикаций</title>
+    <title>Threads Factory Bot</title>
     <style>
         * {
             margin: 0;
@@ -81,34 +81,6 @@
             text-decoration: none;
             font-size: 11px;
             font-weight: 500;
-        }
-
-        /* Search Bar */
-        .search-container {
-            padding: 10px 20px;
-            background: var(--tg-theme-bg-color, #ffffff);
-            position: sticky;
-            top: 100px;
-            z-index: 99;
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid var(--tg-theme-hint-color, rgba(0,0,0,0.2));
-            border-radius: 8px;
-            background: var(--tg-theme-secondary-bg-color, rgba(0,0,0,0.05));
-            color: var(--tg-theme-text-color, #000000);
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .search-icon {
-            width: 12px;
-            height: 12px;
-            opacity: 0.6;
         }
 
         /* Main Content */
@@ -187,58 +159,6 @@
             flex-shrink: 0;
         }
 
-        /* Steps Grid - Компактный дизайн */
-        .steps-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin: 12px 0;
-        }
-
-        .step-card {
-            background: var(--tg-theme-secondary-bg-color, rgba(0,0,0,0.05));
-            border-radius: 8px;
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-            -webkit-tap-highlight-color: transparent;
-            min-height: 70px;
-        }
-
-        .step-card:active {
-            border-color: var(--tg-theme-button-color, #0088cc);
-            transform: scale(0.98);
-            background: var(--tg-theme-button-color, #0088cc);
-            color: white;
-        }
-
-        .step-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 6px;
-            font-size: 14px;
-            color: white;
-        }
-
-        .step-title {
-            font-size: 11px;
-            font-weight: 600;
-            margin-bottom: 2px;
-            color: var(--tg-theme-text-color, #000000);
-        }
-
-        .step-desc {
-            font-size: 9px;
-            color: var(--tg-theme-hint-color, rgba(0,0,0,0.6));
-            line-height: 1.2;
-        }
-
         /* Buttons */
         .btn {
             border: 0;
@@ -267,6 +187,12 @@
             background: var(--tg-theme-secondary-bg-color, rgba(0,0,0,0.1));
             color: var(--tg-theme-text-color, #000000);
             border: 1px solid var(--tg-theme-hint-color, rgba(0,0,0,0.2));
+        }
+
+        .btn-disabled {
+            background: var(--tg-theme-hint-color, rgba(0,0,0,0.2));
+            color: var(--tg-theme-hint-color, rgba(0,0,0,0.6));
+            cursor: not-allowed;
         }
 
         /* Progress Bar */
@@ -310,6 +236,12 @@
             font-weight: 700;
             margin-bottom: 12px;
             color: var(--tg-theme-text-color, #000000);
+        }
+
+        .step-indicator {
+            font-size: 12px;
+            color: var(--tg-theme-hint-color, rgba(0,0,0,0.6));
+            margin-bottom: 16px;
         }
 
         .input-group {
@@ -383,39 +315,86 @@
             background: #FF9800;
         }
 
-        /* Loading Animation */
-        .loading {
+        /* Checkbox styling */
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--tg-theme-button-color, #0088cc);
+        }
+
+        /* Better spacing for form elements */
+        .checkbox-group {
+            margin-top: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 6px 0;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            font-weight: normal;
+            font-size: 13px;
+            color: var(--tg-theme-text-color, #000000);
+        }
+
+        /* Step cards */
+        .step-card {
+            background: var(--tg-theme-secondary-bg-color, rgba(0,0,0,0.05));
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 3px solid transparent;
+        }
+
+        .step-card.completed {
+            border-left-color: #4CAF50;
+        }
+
+        .step-card.current {
+            border-left-color: var(--tg-theme-button-color, #0088cc);
+        }
+
+        .step-card.pending {
+            border-left-color: var(--tg-theme-hint-color, rgba(0,0,0,0.3));
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .step-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 120px;
-            color: var(--tg-theme-hint-color, rgba(0,0,0,0.6));
-        }
-
-        .spinner {
-            width: 18px;
-            height: 18px;
-            border: 2px solid var(--tg-theme-secondary-bg-color, rgba(0,0,0,0.1));
-            border-top: 2px solid var(--tg-theme-button-color, #0088cc);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
             margin-right: 8px;
+            font-size: 10px;
+            color: white;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .step-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--tg-theme-text-color, #000000);
         }
 
-        /* Responsive Design */
-        @media (max-width: 480px) {
-            .steps-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .btn-group {
-                flex-direction: column;
-            }
+        .step-status {
+            margin-left: auto;
+            font-size: 11px;
+            color: var(--tg-theme-hint-color, rgba(0,0,0,0.6));
         }
 
         /* Telegram Web App specific styles */
@@ -449,37 +428,6 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--tg-theme-hint-color, rgba(0,0,0,0.3));
         }
-
-        /* Checkbox styling */
-        input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            accent-color: var(--tg-theme-button-color, #0088cc);
-        }
-
-        /* Better spacing for form elements */
-        .checkbox-group {
-            margin-top: 8px;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-            padding: 6px 0;
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            margin-right: 8px;
-            flex-shrink: 0;
-        }
-
-        .checkbox-item label {
-            margin: 0;
-            font-weight: normal;
-            font-size: 13px;
-            color: var(--tg-theme-text-color, #000000);
-        }
     </style>
 </head>
 <body class="tg-web-app">
@@ -487,75 +435,54 @@
         <!-- Header Section -->
         <div class="header">
             <div class="avatar">🏭</div>
-            <div class="bot-name">ThreadsZavod</div>
+            <div class="bot-name">THREADS FACTORY BOT</div>
             <div class="bot-description">Автоматизация публикаций в Threads</div>
             <a href="#" class="learn-more">Узнать больше ></a>
         </div>
 
-        <!-- Search Bar -->
-        <div class="search-container">
-            <div class="search-bar">
-                <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                </svg>
-                <span style="color: var(--tg-theme-hint-color);">Поиск настроек...</span>
-            </div>
-        </div>
-
         <!-- Main Content -->
         <div class="main-content">
-            <div class="section-title">Настройки</div>
+            <div class="section-title">Главное меню</div>
 
             <!-- Menu Items -->
             <div class="menu-item" onclick="showSection('quick-start')">
                 <div class="menu-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">🎯</div>
                 <div class="menu-text">
-                    <div class="menu-title">Быстрый старт</div>
-                    <div class="menu-subtitle">Настройка за 5 минут</div>
+                    <div class="menu-title">БЫСТРЫЙ СТАРТ</div>
+                    <div class="menu-subtitle">Запуск комбайна за 6 шагов</div>
                 </div>
                 <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
                 </svg>
             </div>
 
-            <div class="menu-item" onclick="showSection('api-keys')">
-                <div class="menu-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">🔑</div>
+            <div class="menu-item" onclick="showSection('projects')">
+                <div class="menu-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">📊</div>
                 <div class="menu-text">
-                    <div class="menu-title">API Ключи</div>
-                    <div class="menu-subtitle">Настройка ключей доступа</div>
+                    <div class="menu-title">Мои проекты</div>
+                    <div class="menu-subtitle">Управление активными проектами</div>
                 </div>
                 <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
                 </svg>
             </div>
 
-            <div class="menu-item" onclick="showSection('content-plan')">
-                <div class="menu-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">📅</div>
+            <div class="menu-item" onclick="showSection('settings')">
+                <div class="menu-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">⚙️</div>
                 <div class="menu-text">
-                    <div class="menu-title">Контент-план</div>
-                    <div class="menu-subtitle">Планирование публикаций</div>
+                    <div class="menu-title">Настройки</div>
+                    <div class="menu-subtitle">API ключи и конфигурация</div>
                 </div>
                 <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
                 </svg>
             </div>
 
-            <div class="menu-item" onclick="showSection('schedule')">
-                <div class="menu-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">⏰</div>
+            <div class="menu-item" onclick="showSection('profile')">
+                <div class="menu-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">👤</div>
                 <div class="menu-text">
-                    <div class="menu-title">Расписание</div>
-                    <div class="menu-subtitle">Время публикаций</div>
-                </div>
-                <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                </svg>
-            </div>
-
-            <div class="menu-item" onclick="showSection('statistics')">
-                <div class="menu-icon" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">📊</div>
-                <div class="menu-text">
-                    <div class="menu-title">Статистика</div>
-                    <div class="menu-subtitle">Анализ результатов</div>
+                    <div class="menu-title">Профиль</div>
+                    <div class="menu-subtitle">Личные данные и статистика</div>
                 </div>
                 <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
@@ -564,44 +491,54 @@
 
             <!-- Quick Start Section -->
             <div id="quick-start" class="form-section">
-                <div class="form-title">🎯 Быстрый старт</div>
+                <div class="form-title">🎯 ЗАПУСК THREADS КОМБАЙНА</div>
+                <div class="step-indicator">Пройди 6 простых шагов и запусти автопубликации:</div>
                 
-                <div class="progress-container">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
+                <div class="step-card completed">
+                    <div class="step-header">
+                        <div class="step-icon" style="background: #4CAF50;">✅</div>
+                        <div class="step-title">ШАГ 1: Подключи API ключи</div>
+                        <div class="step-status">Готово</div>
                     </div>
                 </div>
 
-                <div class="steps-grid">
-                    <div class="step-card" onclick="showStep(1)">
-                        <div class="step-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">🔑</div>
-                        <div class="step-title">API Ключи</div>
-                        <div class="step-desc">Настройка ключей</div>
+                <div class="step-card current">
+                    <div class="step-header">
+                        <div class="step-icon" style="background: var(--tg-theme-button-color, #0088cc);">⏳</div>
+                        <div class="step-title">ШАГ 2: Создай системный промпт</div>
+                        <div class="step-status">Текущий</div>
                     </div>
-                    <div class="step-card" onclick="showStep(2)">
-                        <div class="step-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">📝</div>
-                        <div class="step-title">Системный промпт</div>
-                        <div class="step-desc">Создание промпта</div>
+                </div>
+
+                <div class="step-card pending">
+                    <div class="step-header">
+                        <div class="step-icon" style="background: var(--tg-theme-hint-color, rgba(0,0,0,0.3));">⏳</div>
+                        <div class="step-title">ШАГ 3: Настрой контент-план</div>
+                        <div class="step-status">Ожидает</div>
                     </div>
-                    <div class="step-card" onclick="showStep(3)">
-                        <div class="step-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">📅</div>
-                        <div class="step-title">Контент-план</div>
-                        <div class="step-desc">Настройка плана</div>
+                </div>
+
+                <div class="step-card pending">
+                    <div class="step-header">
+                        <div class="step-icon" style="background: var(--tg-theme-hint-color, rgba(0,0,0,0.3));">⏳</div>
+                        <div class="step-title">ШАГ 4: Установи расписание</div>
+                        <div class="step-status">Ожидает</div>
                     </div>
-                    <div class="step-card" onclick="showStep(4)">
-                        <div class="step-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">⏰</div>
-                        <div class="step-title">Расписание</div>
-                        <div class="step-desc">Время публикаций</div>
+                </div>
+
+                <div class="step-card pending">
+                    <div class="step-header">
+                        <div class="step-icon" style="background: var(--tg-theme-hint-color, rgba(0,0,0,0.3));">⏳</div>
+                        <div class="step-title">ШАГ 5: Протестируй публикацию</div>
+                        <div class="step-status">Ожидает</div>
                     </div>
-                    <div class="step-card" onclick="showStep(5)">
-                        <div class="step-icon" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">✨</div>
-                        <div class="step-title">Тестирование</div>
-                        <div class="step-desc">Проверка настроек</div>
-                    </div>
-                    <div class="step-card" onclick="showStep(6)">
-                        <div class="step-icon" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">🚀</div>
-                        <div class="step-title">Запуск</div>
-                        <div class="step-desc">Активация комбайна</div>
+                </div>
+
+                <div class="step-card pending">
+                    <div class="step-header">
+                        <div class="step-icon" style="background: var(--tg-theme-hint-color, rgba(0,0,0,0.3));">⏳</div>
+                        <div class="step-title">ШАГ 6: ЗАПУСТИТЬ КОМБАЙН! 🔥</div>
+                        <div class="step-status">Ожидает</div>
                     </div>
                 </div>
 
@@ -611,16 +548,38 @@
                 </div>
             </div>
 
-            <!-- API Keys Section -->
-            <div id="api-keys" class="form-section">
-                <div class="form-title">🔑 API Ключи</div>
+            <!-- Projects Section -->
+            <div id="projects" class="form-section">
+                <div class="form-title">📊 МОИ ПРОЕКТЫ</div>
+                
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-icon" style="background: #4CAF50;">🏃</div>
+                        <div class="step-title">Фитнес-блог</div>
+                        <div class="step-status">🟢 Активен</div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--tg-theme-hint-color); margin-top: 8px;">
+                        Опубликовано: 47 постов<br>
+                        Следующий пост: сегодня в 17:00
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="goBack()">Назад</button>
+                    <button class="btn">➕ Создать новый проект</button>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings" class="form-section">
+                <div class="form-title">⚙️ Настройки</div>
                 
                 <div class="input-group">
                     <label>OpenAI API Key</label>
                     <input type="password" id="openaiKey" placeholder="sk-...">
                     <div style="margin-top: 4px;">
-                        <span class="status-indicator status-pending"></span>
-                        <span style="font-size: 10px; color: var(--tg-theme-hint-color);">Не настроен</span>
+                        <span class="status-indicator status-success"></span>
+                        <span style="font-size: 10px; color: var(--tg-theme-hint-color);">Настроен</span>
                     </div>
                 </div>
 
@@ -628,8 +587,8 @@
                     <label>4o Image API Key</label>
                     <input type="password" id="kieKey" placeholder="aaa5f123518fb3a74e7e915dfe2b7832">
                     <div style="margin-top: 4px;">
-                        <span class="status-indicator status-pending"></span>
-                        <span style="font-size: 10px; color: var(--tg-theme-hint-color);">Не настроен</span>
+                        <span class="status-indicator status-success"></span>
+                        <span style="font-size: 10px; color: var(--tg-theme-hint-color);">Настроен</span>
                     </div>
                 </div>
 
@@ -637,142 +596,39 @@
                     <label>Threads Token</label>
                     <input type="password" id="threadsToken" placeholder="threads_token_...">
                     <div style="margin-top: 4px;">
-                        <span class="status-indicator status-pending"></span>
-                        <span style="font-size: 10px; color: var(--tg-theme-hint-color);">Не настроен</span>
+                        <span class="status-indicator status-success"></span>
+                        <span style="font-size: 10px; color: var(--tg-theme-hint-color);">Настроен</span>
                     </div>
                 </div>
 
                 <div class="btn-group">
                     <button class="btn btn-secondary" onclick="goBack()">Назад</button>
-                    <button class="btn" onclick="saveStep1()">Сохранить</button>
+                    <button class="btn">Сохранить</button>
                 </div>
             </div>
 
-            <!-- Content Plan Section -->
-            <div id="content-plan" class="form-section">
-                <div class="form-title">📅 Контент-план</div>
-                
-                <div class="input-group">
-                    <label>Постов в день</label>
-                    <input type="number" id="postsPerDay" min="1" max="10" value="3">
-                </div>
-
-                <div class="input-group">
-                    <label>Типы контента</label>
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="contentTips" checked>
-                            <label for="contentTips">💡 Полезные советы</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="contentStories" checked>
-                            <label for="contentStories">📖 Истории из опыта</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="contentQuestions" checked>
-                            <label for="contentQuestions">❓ Вопросы аудитории</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>Генерация изображений</label>
-                    <select id="generateImages">
-                        <option value="yes">✅ Да, генерировать</option>
-                        <option value="no">❌ Нет, только текст</option>
-                    </select>
-                </div>
-
-                <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="goBack()">Назад</button>
-                    <button class="btn" onclick="saveStep3()">Сохранить</button>
-                </div>
-            </div>
-
-            <!-- Schedule Section -->
-            <div id="schedule" class="form-section">
-                <div class="form-title">⏰ Расписание публикаций</div>
-                
-                <div class="input-group">
-                    <label>Время публикаций</label>
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="timeMorning" checked>
-                            <label for="timeMorning">🌅 Утро (9:00-11:00)</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="timeAfternoon" checked>
-                            <label for="timeAfternoon">☀️ День (14:00-16:00)</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="timeEvening" checked>
-                            <label for="timeEvening">🌆 Вечер (19:00-21:00)</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>Дни недели</label>
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="dayMonday" checked>
-                            <label for="dayMonday">Понедельник</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="dayTuesday" checked>
-                            <label for="dayTuesday">Вторник</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="dayWednesday" checked>
-                            <label for="dayWednesday">Среда</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="dayThursday" checked>
-                            <label for="dayThursday">Четверг</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="dayFriday" checked>
-                            <label for="dayFriday">Пятница</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="daySaturday" checked>
-                            <label for="daySaturday">Суббота</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="daySunday" checked>
-                            <label for="daySunday">Воскресенье</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="goBack()">Назад</button>
-                    <button class="btn" onclick="saveStep4()">Сохранить</button>
-                </div>
-            </div>
-
-            <!-- Statistics Section -->
-            <div id="statistics" class="form-section">
-                <div class="form-title">📊 Статистика</div>
+            <!-- Profile Section -->
+            <div id="profile" class="form-section">
+                <div class="form-title">👤 Профиль</div>
                 
                 <div style="background: var(--tg-theme-secondary-bg-color, rgba(0,0,0,0.05)); padding: 12px; border-radius: 8px; margin: 12px 0;">
-                    <h3 style="margin-bottom: 10px; color: var(--tg-theme-text-color); font-size: 13px;">Последние 7 дней</h3>
+                    <h3 style="margin-bottom: 10px; color: var(--tg-theme-text-color); font-size: 13px;">Статистика</h3>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div style="text-align: center;">
-                            <div style="font-size: 18px; font-weight: 700; color: var(--tg-theme-button-color, #0088cc);">24</div>
-                            <div style="font-size: 10px; color: var(--tg-theme-hint-color);">Постов</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--tg-theme-button-color, #0088cc);">3</div>
+                            <div style="font-size: 10px; color: var(--tg-theme-hint-color);">Активных проекта</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 18px; font-weight: 700; color: #4CAF50;">1,234</div>
-                            <div style="font-size: 10px; color: var(--tg-theme-hint-color);">Охват</div>
+                            <div style="font-size: 18px; font-weight: 700; color: #4CAF50;">156</div>
+                            <div style="font-size: 10px; color: var(--tg-theme-hint-color);">Всего постов</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 18px; font-weight: 700; color: #FF9800;">89</div>
-                            <div style="font-size: 10px; color: var(--tg-theme-hint-color);">Лайки</div>
+                            <div style="font-size: 18px; font-weight: 700; color: #FF9800;">2,847</div>
+                            <div style="font-size: 10px; color: var(--tg-theme-hint-color);">Общий охват</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 18px; font-weight: 700; color: #9C27B0;">12</div>
-                            <div style="font-size: 10px; color: var(--tg-theme-hint-color);">Комментарии</div>
+                            <div style="font-size: 18px; font-weight: 700; color: #9C27B0;">89</div>
+                            <div style="font-size: 10px; color: var(--tg-theme-hint-color);">Лайков</div>
                         </div>
                     </div>
                 </div>
@@ -821,43 +677,6 @@
             }
         }
 
-        function updateProgress(step) {
-            const progress = (step / 6) * 100;
-            const progressFill = document.getElementById('progressFill');
-            if (progressFill) {
-                progressFill.style.width = progress + '%';
-            }
-        }
-
-        function showStep(step) {
-            currentStep = step;
-            updateProgress(step);
-            
-            // Показываем соответствующую секцию в зависимости от шага
-            switch(step) {
-                case 1:
-                    showSection('api-keys');
-                    break;
-                case 2:
-                    tg.showAlert('Шаг 2: Системный промпт - настройка в разработке');
-                    break;
-                case 3:
-                    showSection('content-plan');
-                    break;
-                case 4:
-                    showSection('schedule');
-                    break;
-                case 5:
-                    tg.showAlert('Шаг 5: Тестирование - настройка в разработке');
-                    break;
-                case 6:
-                    tg.showAlert('Шаг 6: Запуск - настройка в разработке');
-                    break;
-                default:
-                    showSection('quick-start');
-            }
-        }
-
         function goBack() {
             // Скрываем все секции, возвращаемся к главному меню
             document.querySelectorAll('.form-section').forEach(section => {
@@ -866,59 +685,9 @@
         }
 
         function startSetup() {
-            showStep(1);
-        }
-
-        function saveStep1() {
-            setupData.openaiKey = document.getElementById('openaiKey').value;
-            setupData.kieKey = document.getElementById('kieKey').value;
-            setupData.threadsToken = document.getElementById('threadsToken').value;
-            
-            // Показываем уведомление
-            tg.showAlert('Настройки сохранены!');
-            
-            setTimeout(() => {
-                goBack();
-            }, 1000);
-        }
-
-        function saveStep3() {
-            setupData.postsPerDay = document.getElementById('postsPerDay').value;
-            setupData.contentTypes = {
-                tips: document.getElementById('contentTips').checked,
-                stories: document.getElementById('contentStories').checked,
-                questions: document.getElementById('contentQuestions').checked
-            };
-            setupData.generateImages = document.getElementById('generateImages').value;
-            
-            tg.showAlert('Контент-план сохранен!');
-            
-            setTimeout(() => {
-                goBack();
-            }, 1000);
-        }
-
-        function saveStep4() {
-            setupData.scheduleTimes = {
-                morning: document.getElementById('timeMorning').checked,
-                afternoon: document.getElementById('timeAfternoon').checked,
-                evening: document.getElementById('timeEvening').checked
-            };
-            setupData.scheduleDays = {
-                monday: document.getElementById('dayMonday').checked,
-                tuesday: document.getElementById('dayTuesday').checked,
-                wednesday: document.getElementById('dayWednesday').checked,
-                thursday: document.getElementById('dayThursday').checked,
-                friday: document.getElementById('dayFriday').checked,
-                saturday: document.getElementById('daySaturday').checked,
-                sunday: document.getElementById('daySunday').checked
-            };
-            
-            tg.showAlert('Расписание сохранено!');
-            
-            setTimeout(() => {
-                goBack();
-            }, 1000);
+            // Начинаем с шага 2 (промпт)
+            currentStep = 2;
+            tg.showAlert('Переходим к настройке системного промпта!');
         }
 
         // Обработка нажатий на кнопки
