@@ -497,7 +497,7 @@
                 <div class="step-card completed">
                     <div class="step-header">
                         <div class="step-icon" style="background: #4CAF50;">✅</div>
-                        <div class="step-title">ШАГ 1: Подключи API ключи</div>
+                        <div class="step-title">ШАГ 1: Подключи Threads аккаунт</div>
                         <div class="step-status">Готово</div>
                     </div>
                 </div>
@@ -575,29 +575,20 @@
                 <div class="form-title">⚙️ Настройки</div>
                 
                 <div class="input-group">
-                    <label>OpenAI API Key</label>
-                    <input type="password" id="openaiKey" placeholder="sk-...">
-                    <div style="margin-top: 4px;">
-                        <span class="status-indicator status-success"></span>
-                        <span style="font-size: 10px; color: var(--tg-theme-hint-color);">Настроен</span>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>4o Image API Key</label>
-                    <input type="password" id="kieKey" placeholder="aaa5f123518fb3a74e7e915dfe2b7832">
-                    <div style="margin-top: 4px;">
-                        <span class="status-indicator status-success"></span>
-                        <span style="font-size: 10px; color: var(--tg-theme-hint-color);">Настроен</span>
-                    </div>
-                </div>
-
-                <div class="input-group">
                     <label>Threads Token</label>
                     <input type="password" id="threadsToken" placeholder="threads_token_...">
                     <div style="margin-top: 4px;">
-                        <span class="status-indicator status-success"></span>
-                        <span style="font-size: 10px; color: var(--tg-theme-hint-color);">Настроен</span>
+                        <span class="status-indicator status-pending"></span>
+                        <span style="font-size: 10px; color: var(--tg-theme-hint-color);">Не настроен</span>
+                    </div>
+                </div>
+
+                <div style="background: var(--tg-theme-secondary-bg-color, rgba(0,0,0,0.05)); padding: 12px; border-radius: 8px; margin: 12px 0;">
+                    <h3 style="margin-bottom: 8px; color: var(--tg-theme-text-color); font-size: 12px;">API ключи настроены автоматически</h3>
+                    <div style="font-size: 11px; color: var(--tg-theme-hint-color);">
+                        ✅ OpenAI API - настроен<br>
+                        ✅ Image API - настроен<br>
+                        ⚠️ Threads Token - требуется настройка
                     </div>
                 </div>
 
