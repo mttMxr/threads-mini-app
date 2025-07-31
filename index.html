@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.14">
-    <title>Threads Factory Pro v22.14</title>
+    <meta name="version" content="22.15">
+    <title>Threads Factory Pro v22.15</title>
     <style>
         * {
             margin: 0;
@@ -488,6 +488,106 @@
             width: 0%;
             transition: width 0.3s ease;
         }
+        
+        /* Модальное окно просмотра изображения */
+        .image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .image-modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .image-modal img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+        .image-modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        /* История генераций */
+        .generation-history {
+            margin-top: 20px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .history-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .history-item {
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: #f8f9fa;
+        }
+        
+        .history-prompt {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .history-timestamp {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .history-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .history-image {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .history-image:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -496,7 +596,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.14</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.15</div>
             </div>
         </div>
         
@@ -678,6 +778,14 @@
                     <div class="inline-progress-bar">
                         <div class="inline-progress-fill" id="inlineProgressFill"></div>
                     </div>
+                </div>
+                
+                <!-- История генераций -->
+                <div class="generation-history" id="generationHistory">
+                    <div class="history-title">
+                        📚 История генераций
+                    </div>
+                    <div id="historyItems"></div>
                 </div>
             </div>
             
@@ -905,6 +1013,14 @@
         </div>
     </div>
     
+    <!-- Модальное окно просмотра изображения -->
+    <div class="image-modal" id="imageModal">
+        <div class="image-modal-content">
+            <button class="image-modal-close" onclick="closeImageModal()">×</button>
+            <img id="modalImage" src="" alt="Full size image">
+        </div>
+    </div>
+    
     <!-- Результаты -->
     <div class="results-area" id="resultsArea">
         <button class="close-results" onclick="hideResults()">×</button>
@@ -941,6 +1057,68 @@
         let currentTaskId = null;
         let isGenerating = false;
         let checkInterval = null;
+        let generationHistory = [];
+        
+        // Функции для модального окна
+        function openImageModal(imageUrl) {
+            document.getElementById('modalImage').src = imageUrl;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+        
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+        
+        // Функции для истории генераций
+        function addToHistory(prompt, urls, type) {
+            const historyItem = {
+                id: Date.now(),
+                prompt: prompt,
+                urls: urls,
+                type: type,
+                timestamp: new Date().toLocaleString('ru-RU')
+            };
+            
+            generationHistory.unshift(historyItem); // Добавляем в начало
+            localStorage.setItem('generationHistory', JSON.stringify(generationHistory));
+            updateHistoryDisplay();
+        }
+        
+        function updateHistoryDisplay() {
+            const historyContainer = document.getElementById('historyItems');
+            if (!historyContainer) return;
+            
+            historyContainer.innerHTML = '';
+            
+            generationHistory.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                historyItem.innerHTML = `
+                    <div class="history-prompt">${item.prompt}</div>
+                    <div class="history-timestamp">${item.timestamp} • ${item.type}</div>
+                    <div class="history-images">
+                        ${item.urls.map((url, index) => `
+                            <img src="${url}" 
+                                 alt="Generated image ${index + 1}" 
+                                 class="history-image" 
+                                 onclick="openImageModal('${url}')"
+                                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+0J/QvtC60LDQt9GL0LLQsNGC0Yw8L3RleHQ+Cjwvc3ZnPg=='">
+                        `).join('')}
+                    </div>
+                `;
+                
+                historyContainer.appendChild(historyItem);
+            });
+        }
+        
+        function loadHistory() {
+            const saved = localStorage.getItem('generationHistory');
+            if (saved) {
+                generationHistory = JSON.parse(saved);
+                updateHistoryDisplay();
+            }
+        }
         
         function generateImage() {
             if (isGenerating) {
@@ -1298,19 +1476,28 @@
             const resultsGrid = document.getElementById('resultsGrid');
             resultsGrid.innerHTML = '';
             
-            // Add to archive
+            // Получаем промпт
             const prompt = document.getElementById('mjPrompt')?.value || 
                           document.getElementById('mjImg2ImgPrompt')?.value || 
                           document.getElementById('mjVideoPrompt')?.value || 
                           'Сгенерированное изображение';
+            
+            // Добавляем в архив
             addToArchive(urls, type, prompt);
+            
+            // Добавляем в историю
+            addToHistory(prompt, urls, type);
             
             urls.forEach((url, index) => {
                 const resultItem = document.createElement('div');
                 resultItem.className = 'result-item';
                 
                 resultItem.innerHTML = `
-                    <img src="${url}" alt="Generated image ${index + 1}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7Qn9C+0LrQsNC30YvQstCw0YLRjCDQv9C+0LrQsNC30YvQstCw0YLRjDwvdGV4dD4KPC9zdmc+'" style="height: 150px;">
+                    <img src="${url}" 
+                         alt="Generated image ${index + 1}" 
+                         onclick="openImageModal('${url}')"
+                         style="height: 150px; cursor: pointer;"
+                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7Qn9C+0LrQsNC30YvQstCw0YLRjCDQv9C+0LrQsNC30YvQstCw0YLRjDwvdGV4dD4KPC9zdmc+'">
                     <div class="result-actions">
                         <button class="action-btn" onclick="upscaleImage('${url}', ${index + 1})">🔍 Upscale</button>
                         <button class="action-btn" onclick="varyImage('${url}', ${index + 1})">🔄 Vary</button>
@@ -1466,6 +1653,7 @@
         // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', function() {
             loadArchive();
+            loadHistory(); // Загружаем историю при старте
         });
     </script>
 </body>
