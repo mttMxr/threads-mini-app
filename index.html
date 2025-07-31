@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.46">
-    <title>Threads Factory Pro v22.46</title>
+    <meta name="version" content="22.47">
+    <title>Threads Factory Pro v22.47</title>
     <style>
         * {
             margin: 0;
@@ -637,7 +637,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.46</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.47</div>
             </div>
         </div>
         
@@ -1099,6 +1099,7 @@
         let isGenerating = false;
         let checkInterval = null;
         let generationHistory = [];
+        let lastGeneratedTaskId = null; // Сохраняем taskId последней генерации
         
             // Простая конфигурация API
             const API_KEY = '008016dd933ebb3715a956218253a571';
@@ -1420,6 +1421,7 @@
                 
                 if (data.code === 200 && data.data && data.data.taskId) {
                     currentTaskId = data.data.taskId;
+                    lastGeneratedTaskId = data.data.taskId; // Сохраняем для Upscale/Vary
                     console.log('✅ Task ID received:', data.data.taskId);
                     
                     // Запускаем адаптивную проверку
@@ -1685,10 +1687,14 @@
             console.log('Image URL:', imageUrl);
             console.log('Index:', index);
             
-            // Нужен taskId исходной генерации, а не URL изображения
-            // Пока используем заглушку
+            // Используем taskId последней генерации
+            if (!lastGeneratedTaskId) {
+                showAlert('❌ Сначала сгенерируйте изображение');
+                return;
+            }
+            
             const requestData = {
-                taskId: 'demo_task_id',  // Должен быть taskId исходной генерации
+                taskId: lastGeneratedTaskId,
                 imageIndex: index - 1,   // API использует 0-3, а мы передаем 1-4
                 waterMark: '',
                 callBackUrl: ''
@@ -1733,10 +1739,14 @@
             console.log('Image URL:', imageUrl);
             console.log('Index:', index);
             
-            // Нужен taskId исходной генерации, а не URL изображения
-            // Пока используем заглушку
+            // Используем taskId последней генерации
+            if (!lastGeneratedTaskId) {
+                showAlert('❌ Сначала сгенерируйте изображение');
+                return;
+            }
+            
             const requestData = {
-                taskId: 'demo_task_id',  // Должен быть taskId исходной генерации
+                taskId: lastGeneratedTaskId,
                 imageIndex: index,       // API использует 1-4
                 waterMark: '',
                 callBackUrl: ''
