@@ -6,8 +6,8 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="version" content="21.0">
-    <title>Threads Factory Pro v21.0</title>
+    <meta name="version" content="22.0">
+    <title>Threads Factory Pro v22.0</title>
     <style>
         * {
             margin: 0;
@@ -379,7 +379,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v21.0</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.0</div>
             </div>
         </div>
         
@@ -443,6 +443,41 @@
             <div class="page" id="midjourney">
                 <button class="back-btn" onclick="showPage('main-menu')">← Назад</button>
                 
+                <div class="menu-item" onclick="showPage('mj-text2img')">
+                    <h3>🎨 Text-to-Image</h3>
+                    <p>Создание изображений из текста</p>
+                </div>
+                
+                <div class="menu-item" onclick="showPage('mj-img2img')">
+                    <h3>🖼️ Image-to-Image</h3>
+                    <p>Изменение существующих изображений</p>
+                </div>
+                
+                <div class="menu-item" onclick="showPage('mj-img2video')">
+                    <h3>🎬 Image-to-Video</h3>
+                    <p>Создание видео из изображений</p>
+                </div>
+                
+                <div class="menu-item" onclick="showPage('mj-describe')">
+                    <h3>🔍 Describe</h3>
+                    <p>Описание изображений</p>
+                </div>
+                
+                <div class="menu-item" onclick="showPage('mj-blend')">
+                    <h3>🌄 + 🌆 Blend</h3>
+                    <p>Смешивание изображений</p>
+                </div>
+                
+                <div class="menu-item" onclick="showPage('mj-editor')">
+                    <h3>✂️ Редактор</h3>
+                    <p>Редактирование изображений</p>
+                </div>
+            </div>
+            
+            <!-- Text-to-Image -->
+            <div class="page" id="mj-text2img">
+                <button class="back-btn" onclick="showPage('midjourney')">← Назад</button>
+                
                 <div class="setting-group">
                     <div class="setting-title">🎨 Генерация изображений</div>
                     <textarea class="setting-input" id="mjPrompt" placeholder="Опишите что хотите создать..." rows="3"></textarea>
@@ -499,9 +534,167 @@
                 </div>
                 
                 <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="showPage('main-menu')">Отмена</button>
+                    <button class="btn btn-secondary" onclick="showPage('midjourney')">Отмена</button>
                     <button class="btn btn-primary" onclick="generateImage()">
                         🎨 Генерировать
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Image-to-Image -->
+            <div class="page" id="mj-img2img">
+                <button class="back-btn" onclick="showPage('midjourney')">← Назад</button>
+                
+                <div class="setting-group">
+                    <div class="setting-title">📝 Промпт</div>
+                    <textarea class="setting-input" id="mjImg2ImgPrompt" placeholder="Опишите как изменить изображение..." rows="3"></textarea>
+                </div>
+                
+                <div class="setting-group">
+                    <div class="setting-title">🖼️ URL изображения</div>
+                    <input type="url" class="setting-input" id="mjImageUrl" placeholder="https://example.com/image.jpg">
+                </div>
+                
+                <div class="setting-group">
+                    <div class="setting-title">🖼 Соотношение сторон</div>
+                    <select class="setting-input" id="mjImg2ImgAspectRatio">
+                        <option value="1:1">1:1 Квадрат</option>
+                        <option value="16:9">16:9 Горизонтальный</option>
+                        <option value="9:16">9:16 Вертикальный</option>
+                        <option value="4:3">4:3 Классический</option>
+                        <option value="3:4">3:4 Портрет</option>
+                    </select>
+                </div>
+                
+                <div class="setting-group">
+                    <div class="setting-title">⚡ Скорость</div>
+                    <select class="setting-input" id="mjImg2ImgSpeed">
+                        <option value="relaxed">Relaxed (Бесплатно)</option>
+                        <option value="fast">Fast (Быстро)</option>
+                        <option value="turbo">Turbo (Максимум)</option>
+                    </select>
+                </div>
+                
+                <div class="setting-group">
+                    <div class="setting-title">🖼 Версия модели</div>
+                    <select class="setting-input" id="mjImg2ImgVersion">
+                        <option value="7" selected>Midjourney v7</option>
+                        <option value="6">Midjourney v6</option>
+                        <option value="5.2">Midjourney v5.2</option>
+                        <option value="niji6">Niji v6 (Аниме)</option>
+                    </select>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="showPage('midjourney')">Отмена</button>
+                    <button class="btn btn-primary" onclick="generateImg2Img()">
+                        🖼️ Генерировать
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Image-to-Video -->
+            <div class="page" id="mj-img2video">
+                <button class="back-btn" onclick="showPage('midjourney')">← Назад</button>
+                
+                <div class="setting-group">
+                    <div class="setting-title">📝 Промпт</div>
+                    <textarea class="setting-input" id="mjVideoPrompt" placeholder="Опишите движение и эффекты для видео..." rows="3"></textarea>
+                </div>
+                
+                <div class="setting-group">
+                    <div class="setting-title">🖼️ URL изображения</div>
+                    <input type="url" class="setting-input" id="mjVideoImageUrl" placeholder="https://example.com/image.jpg">
+                </div>
+                
+                <div class="setting-group">
+                    <div class="setting-title">⚡ Скорость</div>
+                    <select class="setting-input" id="mjVideoSpeed">
+                        <option value="relaxed">Relaxed (Бесплатно)</option>
+                        <option value="fast">Fast (Быстро)</option>
+                        <option value="turbo">Turbo (Максимум)</option>
+                    </select>
+                </div>
+                
+                <div class="setting-group">
+                    <div class="setting-title">🖼 Версия модели</div>
+                    <select class="setting-input" id="mjVideoVersion">
+                        <option value="7" selected>Midjourney v7</option>
+                        <option value="6">Midjourney v6</option>
+                        <option value="5.2">Midjourney v5.2</option>
+                        <option value="niji6">Niji v6 (Аниме)</option>
+                    </select>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="showPage('midjourney')">Отмена</button>
+                    <button class="btn btn-primary" onclick="generateVideo()">
+                        🎬 Генерировать
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Describe -->
+            <div class="page" id="mj-describe">
+                <button class="back-btn" onclick="showPage('midjourney')">← Назад</button>
+                
+                <div class="setting-group">
+                    <div class="setting-title">🔍 Описание изображения</div>
+                    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+                        Загрузите изображение для получения его описания
+                    </p>
+                    <input type="file" class="setting-input" id="describeImage" accept="image/*">
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="showPage('midjourney')">Отмена</button>
+                    <button class="btn btn-primary" onclick="describeImage()">
+                        🔍 Описать
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Blend -->
+            <div class="page" id="mj-blend">
+                <button class="back-btn" onclick="showPage('midjourney')">← Назад</button>
+                
+                <div class="setting-group">
+                    <div class="setting-title">🌄 + 🌆 Смешивание изображений</div>
+                    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+                        Загрузите от 2 до 5 изображений для смешивания
+                    </p>
+                    <input type="file" class="setting-input" id="blendImages" accept="image/*" multiple>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="showPage('midjourney')">Отмена</button>
+                    <button class="btn btn-primary" onclick="blendImages()">
+                        🌄 + 🌆 Смешать
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Editor -->
+            <div class="page" id="mj-editor">
+                <button class="back-btn" onclick="showPage('midjourney')">← Назад</button>
+                
+                <div class="setting-group">
+                    <div class="setting-title">✂️ Редактор изображений</div>
+                    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+                        Загрузите изображение для редактирования
+                    </p>
+                    <input type="file" class="setting-input" id="editorImage" accept="image/*">
+                </div>
+                
+                <div class="setting-group">
+                    <div class="setting-title">📝 Промпт для редактирования</div>
+                    <textarea class="setting-input" id="editorPrompt" placeholder="Опишите что изменить в изображении..." rows="3"></textarea>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="showPage('midjourney')">Отмена</button>
+                    <button class="btn btn-primary" onclick="editImage()">
+                        ✂️ Редактировать
                     </button>
                 </div>
             </div>
@@ -603,7 +796,7 @@
             }
             
             showProgress();
-            callMidjourneyAPI({
+            callMidjourneyAPI('text2img', {
                 prompt: prompt,
                 aspectRatio: aspectRatio,
                 speed: speed,
@@ -613,13 +806,120 @@
             });
         }
         
-        function callMidjourneyAPI(params) {
+        function generateImg2Img() {
+            const prompt = document.getElementById('mjImg2ImgPrompt').value;
+            const imageUrl = document.getElementById('mjImageUrl').value;
+            const aspectRatio = document.getElementById('mjImg2ImgAspectRatio').value;
+            const speed = document.getElementById('mjImg2ImgSpeed').value;
+            const version = document.getElementById('mjImg2ImgVersion').value;
+            
+            if (!prompt.trim()) {
+                tg.showAlert('❌ Введите описание изменений');
+                return;
+            }
+            
+            if (!imageUrl.trim()) {
+                tg.showAlert('❌ Введите URL изображения');
+                return;
+            }
+            
+            showProgress();
+            callMidjourneyAPI('img2img', {
+                prompt: prompt,
+                imageUrl: imageUrl,
+                aspectRatio: aspectRatio,
+                speed: speed,
+                version: version
+            });
+        }
+        
+        function generateVideo() {
+            const prompt = document.getElementById('mjVideoPrompt').value;
+            const imageUrl = document.getElementById('mjVideoImageUrl').value;
+            const speed = document.getElementById('mjVideoSpeed').value;
+            const version = document.getElementById('mjVideoVersion').value;
+            
+            if (!prompt.trim()) {
+                tg.showAlert('❌ Введите описание движения');
+                return;
+            }
+            
+            if (!imageUrl.trim()) {
+                tg.showAlert('❌ Введите URL изображения');
+                return;
+            }
+            
+            showProgress();
+            callMidjourneyAPI('video', {
+                prompt: prompt,
+                imageUrl: imageUrl,
+                speed: speed,
+                version: version
+            });
+        }
+        
+        function describeImage() {
+            const fileInput = document.getElementById('describeImage');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                tg.showAlert('❌ Выберите изображение');
+                return;
+            }
+            
+            showProgress();
+            // Здесь будет логика для Describe
+            tg.showAlert('🔍 Функция Describe будет доступна в следующем обновлении');
+            hideProgress();
+        }
+        
+        function blendImages() {
+            const fileInput = document.getElementById('blendImages');
+            const files = fileInput.files;
+            
+            if (files.length < 2) {
+                tg.showAlert('❌ Выберите минимум 2 изображения');
+                return;
+            }
+            
+            if (files.length > 5) {
+                tg.showAlert('❌ Максимум 5 изображений');
+                return;
+            }
+            
+            showProgress();
+            // Здесь будет логика для Blend
+            tg.showAlert('🌄 + 🌆 Функция Blend будет доступна в следующем обновлении');
+            hideProgress();
+        }
+        
+        function editImage() {
+            const fileInput = document.getElementById('editorImage');
+            const prompt = document.getElementById('editorPrompt').value;
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                tg.showAlert('❌ Выберите изображение');
+                return;
+            }
+            
+            if (!prompt.trim()) {
+                tg.showAlert('❌ Введите промпт для редактирования');
+                return;
+            }
+            
+            showProgress();
+            // Здесь будет логика для Editor
+            tg.showAlert('✂️ Функция Editor будет доступна в следующем обновлении');
+            hideProgress();
+        }
+        
+        function callMidjourneyAPI(type, params) {
             const API_KEY = '008016dd933ebb3715a956218253a571';
             const BASE_URL = 'https://api.kie.ai/api/v1/mj';
             
-            const requestData = {
+            let requestData = {
                 prompt: params.prompt,
-                aspectRatio: params.aspectRatio || '1:1',
                 speed: params.speed || 'relaxed',
                 version: params.version || '7',
                 stylization: params.stylization || 100,
@@ -627,6 +927,23 @@
                 waterMark: '',
                 callBackUrl: ''
             };
+            
+            // Добавляем специфичные параметры для разных типов
+            if (type === 'text2img' || type === 'img2img') {
+                requestData.aspectRatio = params.aspectRatio || '1:1';
+            }
+            
+            if (type === 'img2img' || type === 'video') {
+                requestData.fileUrl = params.imageUrl;
+            }
+            
+            if (type === 'img2img') {
+                requestData.taskType = 'mj_img2img';
+            } else if (type === 'video') {
+                requestData.taskType = 'mj_video';
+            } else {
+                requestData.taskType = 'mj_txt2img';
+            }
             
             fetch(`${BASE_URL}/submit-task`, {
                 method: 'POST',
@@ -641,7 +958,8 @@
                 console.log('Submit response:', data);
                 
                 if (data.code === 200 && data.data && data.data.taskId) {
-                    waitForCompletion(data.data.taskId, 'image');
+                    currentTaskId = data.data.taskId; // Сохраняем taskId для апскейла/вариации
+                    waitForCompletion(data.data.taskId, type);
                 } else {
                     hideProgress();
                     tg.showAlert(`❌ Ошибка: ${data.msg || 'Неизвестная ошибка'}`);
@@ -757,11 +1075,81 @@
         }
         
         function upscaleImage(url, index) {
-            tg.showAlert(`🔍 Увеличение изображения ${index}...`);
+            const API_KEY = '008016dd933ebb3715a956218253a571';
+            const BASE_URL = 'https://api.kie.ai/api/v1/mj';
+            
+            showProgress();
+            
+            const requestData = {
+                taskId: currentTaskId,
+                imageIndex: index - 1, // 0-3
+                waterMark: '',
+                callBackUrl: ''
+            };
+            
+            fetch(`${BASE_URL}/generateUpscale`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${API_KEY}`
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Upscale response:', data);
+                
+                if (data.code === 200 && data.data && data.data.taskId) {
+                    waitForCompletion(data.data.taskId, 'upscale');
+                } else {
+                    hideProgress();
+                    tg.showAlert(`❌ Ошибка апскейла: ${data.msg || 'Неизвестная ошибка'}`);
+                }
+            })
+            .catch(error => {
+                console.error('Upscale error:', error);
+                hideProgress();
+                tg.showAlert(`❌ Ошибка апскейла: ${error.message}`);
+            });
         }
         
         function varyImage(url, index) {
-            tg.showAlert(`🔄 Вариация изображения ${index}...`);
+            const API_KEY = '008016dd933ebb3715a956218253a571';
+            const BASE_URL = 'https://api.kie.ai/api/v1/mj';
+            
+            showProgress();
+            
+            const requestData = {
+                taskId: currentTaskId,
+                imageIndex: index, // 1-4
+                waterMark: '',
+                callBackUrl: ''
+            };
+            
+            fetch(`${BASE_URL}/generateVary`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${API_KEY}`
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Vary response:', data);
+                
+                if (data.code === 200 && data.data && data.data.taskId) {
+                    waitForCompletion(data.data.taskId, 'vary');
+                } else {
+                    hideProgress();
+                    tg.showAlert(`❌ Ошибка вариации: ${data.msg || 'Неизвестная ошибка'}`);
+                }
+            })
+            .catch(error => {
+                console.error('Vary error:', error);
+                hideProgress();
+                tg.showAlert(`❌ Ошибка вариации: ${error.message}`);
+            });
         }
         
         function downloadImage(url) {
