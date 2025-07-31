@@ -6,8 +6,8 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="version" content="22.2">
-    <title>Threads Factory Pro v22.2</title>
+    <meta name="version" content="22.4">
+    <title>Threads Factory Pro v22.4</title>
     <style>
         * {
             margin: 0;
@@ -438,7 +438,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.2</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.4</div>
             </div>
         </div>
         
@@ -530,6 +530,11 @@
                 <div class="menu-item" onclick="showPage('mj-editor')">
                     <h3>✂️ Редактор</h3>
                     <p>Редактирование изображений</p>
+                </div>
+                
+                <div class="menu-item" onclick="showPage('mj-archive')">
+                    <h3>📁 Архив</h3>
+                    <p>Все сгенерированные изображения</p>
                 </div>
             </div>
             
@@ -762,6 +767,19 @@
                 </div>
             </div>
             
+            <!-- Архив -->
+            <div class="page" id="mj-archive">
+                <button class="back-btn" onclick="showPage('midjourney')">← Назад</button>
+                
+                <div class="setting-group">
+                    <div class="setting-title">📁 Архив сгенерированных изображений</div>
+                    <p style="font-size: 14px; color: #666;">
+                        Здесь будут отображаться все изображения, сгенерированные через MidJourney.
+                    </p>
+                    <div class="results-grid" id="archiveResultsGrid"></div>
+                </div>
+            </div>
+            
             <!-- Проекты -->
             <div class="page" id="projects">
                 <button class="back-btn" onclick="showPage('main-menu')">← Назад</button>
@@ -985,8 +1003,8 @@
                 prompt: params.prompt,
                 speed: params.speed || 'relaxed',
                 version: params.version || '7',
-                stylization: params.stylization || 100,
-                weirdness: params.weirdness || 100,
+                stylization: parseInt(params.stylization) || 100,
+                weirdness: parseInt(params.weirdness) || 100,
                 waterMark: '',
                 callBackUrl: ''
             };
@@ -1008,6 +1026,8 @@
                 requestData.taskType = 'mj_txt2img';
             }
             
+            console.log('Sending request:', requestData);
+            
             fetch(`${BASE_URL}/submit-task`, {
                 method: 'POST',
                 headers: {
@@ -1016,22 +1036,26 @@
                 },
                 body: JSON.stringify(requestData)
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
             .then(data => {
                 console.log('Submit response:', data);
                 
                 if (data.code === 200 && data.data && data.data.taskId) {
-                    currentTaskId = data.data.taskId; // Сохраняем taskId для апскейла/вариации
+                    currentTaskId = data.data.taskId;
                     waitForCompletion(data.data.taskId, type);
                 } else {
                     hideProgress();
-                    tg.showAlert(`❌ Ошибка: ${data.msg || 'Неизвестная ошибка'}`);
+                    const errorMsg = data.msg || data.error || 'Неизвестная ошибка';
+                    tg.showAlert(`❌ Ошибка: ${errorMsg}`);
                 }
             })
             .catch(error => {
                 console.error('Submit error:', error);
                 hideProgress();
-                tg.showAlert(`❌ Ошибка: ${error.message}`);
+                tg.showAlert(`❌ Ошибка сети: ${error.message}`);
             });
         }
         
@@ -1114,6 +1138,13 @@
             const resultsGrid = document.getElementById('resultsGrid');
             resultsGrid.innerHTML = '';
             
+            // Добавляем в архив
+            const prompt = document.getElementById('mjPrompt')?.value || 
+                          document.getElementById('mjImg2ImgPrompt')?.value || 
+                          document.getElementById('mjVideoPrompt')?.value || 
+                          'Сгенерированное изображение';
+            addToArchive(urls, type, prompt);
+            
             urls.forEach((url, index) => {
                 const resultItem = document.createElement('div');
                 resultItem.className = 'result-item';
@@ -1131,6 +1162,7 @@
             });
             
             document.getElementById('resultsArea').style.display = 'block';
+            tg.showAlert(`✅ Готово! Сгенерировано ${urls.length} изображений`);
         }
         
         function hideResults() {
@@ -1222,6 +1254,71 @@
         function updateSliderValue(slider, valueId) {
             document.getElementById(valueId).textContent = slider.value;
         }
+        
+        // Архив изображений
+        let imageArchive = [];
+        
+        function addToArchive(urls, type, prompt) {
+            const archiveItem = {
+                urls: urls,
+                type: type,
+                prompt: prompt,
+                timestamp: new Date().toLocaleString('ru-RU'),
+                id: Date.now()
+            };
+            
+            imageArchive.unshift(archiveItem); // Добавляем в начало
+            localStorage.setItem('mjArchive', JSON.stringify(imageArchive));
+            updateArchiveDisplay();
+        }
+        
+        function updateArchiveDisplay() {
+            const archiveGrid = document.getElementById('archiveResultsGrid');
+            if (!archiveGrid) return;
+            
+            archiveGrid.innerHTML = '';
+            
+            imageArchive.forEach(item => {
+                item.urls.forEach((url, index) => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
+                    
+                    resultItem.innerHTML = `
+                        <img src="${url}" alt="Archived image ${index + 1}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7Qn9C+0LrQsNC30YvQstCw0YLRjCDQv9C+0LrQsNC30YvQstCw0YLRjDwvdGV4dD4KPC9zdmc+'" style="height: 150px;">
+                        <div class="result-actions">
+                            <button class="action-btn" onclick="downloadImage('${url}')">⬇️ Скачать</button>
+                            <button class="action-btn" onclick="deleteFromArchive(${item.id})">🗑️ Удалить</button>
+                        </div>
+                        <div style="padding: 8px; font-size: 11px; color: #666;">
+                            <div><strong>${item.type}</strong></div>
+                            <div>${item.timestamp}</div>
+                        </div>
+                    `;
+                    
+                    archiveGrid.appendChild(resultItem);
+                });
+            });
+        }
+        
+        function deleteFromArchive(id) {
+            imageArchive = imageArchive.filter(item => item.id !== id);
+            localStorage.setItem('mjArchive', JSON.stringify(imageArchive));
+            updateArchiveDisplay();
+            tg.showAlert('🗑️ Удалено из архива');
+        }
+        
+        // Загружаем архив при старте
+        function loadArchive() {
+            const saved = localStorage.getItem('mjArchive');
+            if (saved) {
+                imageArchive = JSON.parse(saved);
+            }
+        }
+        
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            loadArchive();
+        });
     </script>
 </body>
 </html> 
