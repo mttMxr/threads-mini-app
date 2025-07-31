@@ -1552,22 +1552,14 @@
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        let tg = window.Telegram.WebApp;
-        let currentStep = 0;
-        let setupData = {};
-
         // Инициализация Telegram Web App
+        let tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        tg.enableClosingConfirmation();
 
-        // Устанавливаем тему
-        document.documentElement.style.setProperty('--tg-theme-bg-color', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
-        document.documentElement.style.setProperty('--tg-theme-text-color', '#ffffff');
-        document.documentElement.style.setProperty('--tg-theme-hint-color', 'rgba(255,255,255,0.8)');
-        document.documentElement.style.setProperty('--tg-theme-button-color', '#ff6b6b');
-        document.documentElement.style.setProperty('--tg-theme-button-text-color', '#ffffff');
-        document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', 'rgba(255,255,255,0.1)');
+        // Глобальные переменные для результатов
+        let currentResults = [];
+        let currentGenerationType = '';
 
         function showPage(pageId) {
             // Скрываем все страницы
@@ -1610,18 +1602,15 @@
             }
             
             // Показываем прогресс
-            tg.showAlert('🎨 Генерация изображения...\n\nЭто может занять 1-2 минуты.');
+            showProgress('🎨 Генерация изображения...', 'Это может занять 1-2 минуты.');
             
-            // Отправляем данные в бот
-            const data = {
-                action: 'generate_mj_image',
+            // Вызываем API напрямую
+            callMidjourneyAPI('text2img', {
                 prompt: prompt,
                 aspectRatio: aspectRatio,
                 speed: speed,
                 version: version
-            };
-            
-            tg.sendData(JSON.stringify(data));
+            });
         }
 
         function generateMJImg2Img() {
@@ -1642,19 +1631,16 @@
             }
             
             // Показываем прогресс
-            tg.showAlert('🖼️ Генерация Image-to-Image...\n\nЭто может занять 1-2 минуты.');
+            showProgress('🖼️ Генерация Image-to-Image...', 'Это может занять 1-2 минуты.');
             
-            // Отправляем данные в бот
-            const data = {
-                action: 'generate_mj_img2img',
+            // Вызываем API напрямую
+            callMidjourneyAPI('img2img', {
                 prompt: prompt,
                 imageUrl: imageUrl,
                 aspectRatio: aspectRatio,
                 speed: speed,
                 version: version
-            };
-            
-            tg.sendData(JSON.stringify(data));
+            });
         }
 
         function generateMJVideo() {
@@ -1674,18 +1660,168 @@
             }
             
             // Показываем прогресс
-            tg.showAlert('🎬 Генерация Image-to-Video...\n\nЭто может занять 2-3 минуты.');
+            showProgress('🎬 Генерация Image-to-Video...', 'Это может занять 2-3 минуты.');
             
-            // Отправляем данные в бот
-            const data = {
-                action: 'generate_mj_video',
+            // Вызываем API напрямую
+            callMidjourneyAPI('video', {
                 prompt: prompt,
                 imageUrl: imageUrl,
                 speed: speed,
                 version: version
-            };
+            });
+        }
+
+        async function callMidjourneyAPI(type, params) {
+            const API_KEY = '008016dd933ebb3715a956218253a571';
+            const BASE_URL = 'https://api.kie.ai/api/v1/mj';
             
-            tg.sendData(JSON.stringify(data));
+            try {
+                // Определяем тип задачи
+                let taskType = '';
+                let payload = {
+                    speed: params.speed || 'relaxed',
+                    version: params.version || '7'
+                };
+                
+                if (type === 'text2img') {
+                    taskType = 'mj_txt2img';
+                    payload.prompt = params.prompt;
+                    payload.aspectRatio = params.aspectRatio || '1:1';
+                } else if (type === 'img2img') {
+                    taskType = 'mj_img2img';
+                    payload.prompt = params.prompt;
+                    payload.fileUrl = params.imageUrl;
+                    payload.aspectRatio = params.aspectRatio || '1:1';
+                } else if (type === 'video') {
+                    taskType = 'mj_video';
+                    payload.prompt = params.prompt;
+                    payload.fileUrl = params.imageUrl;
+                }
+                
+                payload.taskType = taskType;
+                
+                // Отправляем запрос на генерацию
+                const response = await fetch(`${BASE_URL}/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if (result.code === 200 && result.data && result.data.taskId) {
+                    // Ждем завершения генерации
+                    await waitForCompletion(result.data.taskId, type);
+                } else {
+                    throw new Error(result.msg || 'Ошибка генерации');
+                }
+                
+            } catch (error) {
+                console.error('API Error:', error);
+                hideProgress();
+                tg.showAlert(`❌ Ошибка: ${error.message}`);
+            }
+        }
+
+        async function waitForCompletion(taskId, type) {
+            const API_KEY = '008016dd933ebb3715a956218253a571';
+            const BASE_URL = 'https://api.kie.ai/api/v1/mj';
+            
+            let attempts = 0;
+            const maxAttempts = 60; // 5 минут (5 секунд * 60)
+            
+            while (attempts < maxAttempts) {
+                try {
+                    const response = await fetch(`${BASE_URL}/record-info?taskId=${taskId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${API_KEY}`
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.data && result.data.successFlag === 1) {
+                        // Генерация завершена успешно
+                        const resultUrls = result.data.resultInfoJson?.resultUrls || [];
+                        if (resultUrls.length > 0) {
+                            currentResults = resultUrls;
+                            currentGenerationType = type;
+                            hideProgress();
+                            showResults(resultUrls, type === 'video' ? 'video' : 'image');
+                            return;
+                        } else {
+                            throw new Error('Не получены результаты');
+                        }
+                    } else if (result.data && result.data.successFlag === 0) {
+                        // Генерация еще в процессе
+                        updateProgress(`Генерация в процессе... (${attempts + 1}/${maxAttempts})`);
+                        await new Promise(resolve => setTimeout(resolve, 5000)); // Ждем 5 секунд
+                        attempts++;
+                    } else {
+                        throw new Error('Генерация не удалась');
+                    }
+                    
+                } catch (error) {
+                    console.error('Completion check error:', error);
+                    hideProgress();
+                    tg.showAlert(`❌ Ошибка проверки статуса: ${error.message}`);
+                    return;
+                }
+            }
+            
+            hideProgress();
+            tg.showAlert('⏰ Превышено время ожидания генерации');
+        }
+
+        function showProgress(title, message) {
+            // Создаем или обновляем прогресс-бар
+            let progressBar = document.getElementById('progress-bar');
+            if (!progressBar) {
+                progressBar = document.createElement('div');
+                progressBar.id = 'progress-bar';
+                progressBar.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(0, 0, 0, 0.9);
+                    color: white;
+                    padding: 20px;
+                    border-radius: 12px;
+                    z-index: 10000;
+                    text-align: center;
+                    min-width: 250px;
+                `;
+                document.body.appendChild(progressBar);
+            }
+            
+            progressBar.innerHTML = `
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">${title}</div>
+                <div style="font-size: 14px; margin-bottom: 15px;">${message}</div>
+                <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px;">
+                    <div id="progress-fill" style="width: 0%; height: 100%; background: #667eea; border-radius: 2px; transition: width 0.3s;"></div>
+                </div>
+            `;
+        }
+
+        function updateProgress(message) {
+            const progressBar = document.getElementById('progress-bar');
+            if (progressBar) {
+                const messageDiv = progressBar.querySelector('div:nth-child(2)');
+                if (messageDiv) {
+                    messageDiv.textContent = message;
+                }
+            }
+        }
+
+        function hideProgress() {
+            const progressBar = document.getElementById('progress-bar');
+            if (progressBar) {
+                progressBar.remove();
+            }
         }
 
         function showResults(results, type) {
@@ -1714,6 +1850,9 @@
             });
             
             resultsArea.style.display = 'block';
+            
+            // Показываем уведомление об успехе
+            tg.showAlert(`✅ Готово! Сгенерировано ${results.length} ${type === 'video' ? 'видео' : 'изображений'}`);
         }
 
         function hideResults() {
