@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.42">
-    <title>Threads Factory Pro v22.42</title>
+    <meta name="version" content="22.43">
+    <title>Threads Factory Pro v22.43</title>
     <style>
         * {
             margin: 0;
@@ -637,7 +637,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.42</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.43</div>
             </div>
         </div>
         
@@ -1410,11 +1410,16 @@
                 return response.json();
             })
             .then(data => {
-                console.log('Generate response:', data);
+                console.log('=== GENERATE RESPONSE DEBUG ===');
+                console.log('Full response:', data);
+                console.log('Response code:', data.code);
+                console.log('Response data:', data.data);
+                console.log('Has taskId:', data.data && data.data.taskId);
+                console.log('Has imageUrl:', data.data && data.data.imageUrl);
                 
                 if (data.code === 200 && data.data && data.data.taskId) {
                     currentTaskId = data.data.taskId;
-                    console.log('Task ID received:', data.data.taskId);
+                    console.log('✅ Task ID received:', data.data.taskId);
                     
                     // Запускаем адаптивную проверку
                     startAdaptiveCheck(data.data.taskId, type, originalPrompt);
@@ -1428,14 +1433,21 @@
                 } else {
                     isGenerating = false;
                     hideProgress();
-                    const errorMsg = data.msg || data.error || 'Неизвестная ошибка';
-                    console.error('API Error:', errorMsg);
+                    const errorMsg = data.msg || data.error || data.message || 'Неизвестная ошибка';
+                    console.error('❌ API Error:', errorMsg);
                     console.log(`❌ Ошибка: ${errorMsg}`);
+                    showAlert(`❌ Ошибка генерации: ${errorMsg}`);
                 }
             })
             .catch(error => {
-                console.error('Submit error:', error);
-                // Убираем tg.showAlert, так как он не поддерживается
+                console.error('=== SUBMIT ERROR DEBUG ===');
+                console.error('Error details:', error);
+                console.error('Error message:', error.message);
+                console.error('Error stack:', error.stack);
+                
+                isGenerating = false;
+                hideProgress();
+                showAlert(`❌ Ошибка сети: ${error.message}`);
                 console.log('❌ Ошибка отправки запроса');
             });
         }
@@ -1529,15 +1541,27 @@
         }
         
         function showProgress() {
+            console.log('=== SHOW PROGRESS DEBUG ===');
             const currentPage = document.querySelector('.page.active').id;
+            console.log('Current page:', currentPage);
+            
             let progressId = 'inlineProgress';
             
             if (currentPage === 'mj-img2img') {
                 progressId = 'inlineProgressImg2Img';
             }
             
-            document.getElementById(progressId).style.display = 'block';
-            updateInlineProgress('🎨 Генерация началась...', progressId);
+            console.log('Progress ID:', progressId);
+            const progressElement = document.getElementById(progressId);
+            console.log('Progress element:', progressElement);
+            
+            if (progressElement) {
+                progressElement.style.display = 'block';
+                updateInlineProgress('🎨 Генерация началась...', progressId);
+                console.log('✅ Progress shown');
+            } else {
+                console.error('❌ Progress element not found');
+            }
         }
         
         function updateProgress(text) {
@@ -1568,14 +1592,26 @@
         }
         
         function hideProgress() {
+            console.log('=== HIDE PROGRESS DEBUG ===');
             const currentPage = document.querySelector('.page.active').id;
+            console.log('Current page:', currentPage);
+            
             let progressId = 'inlineProgress';
             
             if (currentPage === 'mj-img2img') {
                 progressId = 'inlineProgressImg2Img';
             }
             
-            document.getElementById(progressId).style.display = 'none';
+            console.log('Progress ID:', progressId);
+            const progressElement = document.getElementById(progressId);
+            console.log('Progress element:', progressElement);
+            
+            if (progressElement) {
+                progressElement.style.display = 'none';
+                console.log('✅ Progress hidden');
+            } else {
+                console.error('❌ Progress element not found for hiding');
+            }
         }
         
         function showResults(urls, type, taskId, originalPrompt) {
