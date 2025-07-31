@@ -1017,19 +1017,19 @@
             <div class="quick-start-content">
                 <div class="step-indicator">Пройди 6 простых шагов и запусти автопубликации:</div>
                 
-                <div class="step-card completed" onclick="showStep(1)">
+                <div class="step-card pending" onclick="showStep(1)">
                     <div class="step-header">
-                        <div class="step-icon completed">
+                        <div class="step-icon pending">
                             <span>🔗</span>
                         </div>
                         <div class="step-content">
                             <div class="step-title">ШАГ 1: Подключи Threads аккаунт</div>
-                            <div class="step-description">Успешно подключен к вашему аккаунту.</div>
+                            <div class="step-description">Введите токен в настройках для подключения.</div>
                         </div>
                     </div>
                     <div class="step-status">
-                        <span class="status-indicator status-completed"></span>
-                        <span class="status-text">Готово</span>
+                        <span class="status-indicator status-pending"></span>
+                        <span class="status-text">Ожидает</span>
                     </div>
                 </div>
 
@@ -1271,7 +1271,7 @@
         function showStep(stepNumber) {
             // Показываем информацию о шаге
             const stepMessages = {
-                1: 'Threads аккаунт уже подключен!',
+                1: 'Для подключения Threads аккаунта нужно ввести токен в настройках',
                 2: 'Настройте системный промпт для генерации контента',
                 3: 'Определите тему и ключевые слова для контента',
                 4: 'Настройте время и частоту публикаций',
