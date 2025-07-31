@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.53">
-    <title>Threads Factory Pro v22.53</title>
+    <meta name="version" content="22.54">
+    <title>Threads Factory Pro v22.54</title>
     <style>
         * {
             margin: 0;
@@ -689,6 +689,33 @@
             margin-top: 8px;
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .enhance-prompt-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .enhance-prompt-btn:disabled::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: loading-shimmer 1.5s infinite;
+        }
+        
+        @keyframes loading-shimmer {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
         }
         
         .enhance-prompt-btn:hover {
@@ -708,6 +735,18 @@
             border-radius: 12px;
             border: 1px solid #dee2e6;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            animation: slideInUp 0.4s ease-out;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .enhanced-prompt-header {
@@ -793,7 +832,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.53</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.54</div>
             </div>
         </div>
         
@@ -1313,8 +1352,8 @@
 - "красивая девушка" → "beautiful young woman, photorealistic, high quality, detailed, professional, 4k, sharp focus, stunning portrait"
 - "кот в саду" → "cat in garden, high quality, detailed, professional, 4k, sharp focus, beautiful nature, photorealistic"`;
                 
-                // Вызываем OpenAI API через прокси
-                const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent('https://api.openai.com/v1/chat/completions')}`, {
+                // Вызываем OpenAI API напрямую
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1331,6 +1370,11 @@
                     })
                 });
                 
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(`HTTP ${response.status}: ${errorData.error?.message || 'Ошибка API'}`);
+                }
+                
                 const data = await response.json();
                 
                 if (data.choices && data.choices[0] && data.choices[0].message) {
@@ -1342,12 +1386,25 @@
                     
                     console.log('✅ Промпт улучшен:', enhancedPrompt);
                 } else {
-                    throw new Error('Неверный ответ от OpenAI');
+                    throw new Error('Неверный формат ответа от OpenAI');
                 }
                 
             } catch (error) {
                 console.error('Ошибка улучшения промпта:', error);
-                showAlert('❌ Ошибка улучшения промпта. Попробуйте еще раз.');
+                
+                // Более детальное сообщение об ошибке
+                let errorMessage = 'Ошибка улучшения промпта';
+                if (error.message.includes('401')) {
+                    errorMessage = 'Ошибка авторизации API. Проверьте ключ.';
+                } else if (error.message.includes('429')) {
+                    errorMessage = 'Превышен лимит запросов. Попробуйте позже.';
+                } else if (error.message.includes('500')) {
+                    errorMessage = 'Ошибка сервера OpenAI. Попробуйте позже.';
+                } else if (error.message.includes('network')) {
+                    errorMessage = 'Ошибка сети. Проверьте подключение.';
+                }
+                
+                showAlert(`❌ ${errorMessage}`);
             } finally {
                 // Восстанавливаем кнопку
                 enhanceBtn.textContent = originalText;
