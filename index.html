@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.38">
-    <title>Threads Factory Pro v22.38</title>
+    <meta name="version" content="22.39">
+    <title>Threads Factory Pro v22.39</title>
     <style>
         * {
             margin: 0;
@@ -637,7 +637,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.38</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.39</div>
             </div>
         </div>
         
@@ -1627,7 +1627,10 @@
         
         function upscaleImage(imageUrl, index) {
             const BASE_URL = 'https://api.kie.ai/api/v1/mj';
-            const API_KEY = '008016dd933ebb3715a956218253a571';
+            
+            console.log('=== UPSCALE DEBUG ===');
+            console.log('Image URL:', imageUrl);
+            console.log('Index:', index);
             
             const requestData = {
                 taskType: 'mj_upscale',
@@ -1635,7 +1638,9 @@
                 index: index
             };
             
-            fetch(`${BASE_URL}/upscale`, {
+            console.log('Upscale request data:', requestData);
+            
+            fetch(`${BASE_URL}/generate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1643,24 +1648,34 @@
                 },
                 body: JSON.stringify(requestData)
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Upscale response status:', response.status);
+                return response.json();
+            })
             .then(data => {
-                if (data.code === 200 && data.data && data.data.taskId) {
+                console.log('Upscale response data:', data);
+                if (data.code === 200) {
                     console.log('🔍 Upscale запущен');
-                    // Можно добавить отслеживание upscale
+                    showAlert('🔍 Upscale запущен! Ожидайте результат...');
+                    // Начинаем отслеживание
+                    trackTask(data.taskId || data.id);
                 } else {
-                    console.log('❌ Ошибка upscale');
+                    console.log('❌ Ошибка upscale:', data);
+                    showAlert('❌ Ошибка upscale: ' + (data.message || 'Неизвестная ошибка'));
                 }
             })
             .catch(error => {
                 console.error('Upscale error:', error);
-                console.log('❌ Ошибка upscale');
+                showAlert('❌ Ошибка сети при upscale');
             });
         }
         
         function varyImage(imageUrl, index) {
             const BASE_URL = 'https://api.kie.ai/api/v1/mj';
-            const API_KEY = '008016dd933ebb3715a956218253a571';
+            
+            console.log('=== VARY DEBUG ===');
+            console.log('Image URL:', imageUrl);
+            console.log('Index:', index);
             
             const requestData = {
                 taskType: 'mj_vary',
@@ -1668,7 +1683,9 @@
                 index: index
             };
             
-            fetch(`${BASE_URL}/vary`, {
+            console.log('Vary request data:', requestData);
+            
+            fetch(`${BASE_URL}/generate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1676,23 +1693,50 @@
                 },
                 body: JSON.stringify(requestData)
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Vary response status:', response.status);
+                return response.json();
+            })
             .then(data => {
-                if (data.code === 200 && data.data && data.data.taskId) {
+                console.log('Vary response data:', data);
+                if (data.code === 200) {
                     console.log('🔄 Vary запущен');
-                    // Можно добавить отслеживание vary
+                    showAlert('🔄 Vary запущен! Ожидайте результат...');
+                    // Начинаем отслеживание
+                    trackTask(data.taskId || data.id);
                 } else {
-                    console.log('❌ Ошибка vary');
+                    console.log('❌ Ошибка vary:', data);
+                    showAlert('❌ Ошибка vary: ' + (data.message || 'Неизвестная ошибка'));
                 }
             })
             .catch(error => {
                 console.error('Vary error:', error);
-                console.log('❌ Ошибка vary');
+                showAlert('❌ Ошибка сети при vary');
             });
         }
         
         function downloadImage(url) {
-            console.log('⬇️ Функция скачивания будет доступна в следующем обновлении');
+            console.log('=== DOWNLOAD DEBUG ===');
+            console.log('Image URL:', url);
+            
+            try {
+                // Создаем временную ссылку для скачивания
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `generated-image-${Date.now()}.jpg`;
+                link.target = '_blank';
+                
+                // Добавляем в DOM, кликаем и удаляем
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                console.log('✅ Скачивание запущено');
+                showAlert('⬇️ Скачивание запущено!');
+            } catch (error) {
+                console.error('Download error:', error);
+                showAlert('❌ Ошибка при скачивании');
+            }
         }
         
         function updateSliderValue(slider, valueId) {
@@ -1775,6 +1819,66 @@
             //     mjImg2ImgPrompt.addEventListener('input', () => showTranslation('mjImg2ImgPrompt'));
             // }
         });
+        
+        // Функция для показа уведомлений
+        function showAlert(message) {
+            console.log('ALERT:', message);
+            // В Telegram Mini App используем tg.showAlert
+            if (window.Telegram && window.Telegram.WebApp) {
+                try {
+                    window.Telegram.WebApp.showAlert(message);
+                } catch (e) {
+                    console.log('Telegram alert failed:', e);
+                }
+            }
+        }
+        
+        // Функция отслеживания задачи
+        function trackTask(taskId) {
+            console.log('=== TRACKING TASK ===');
+            console.log('Task ID:', taskId);
+            
+            if (!taskId) {
+                console.log('❌ Нет taskId для отслеживания');
+                return;
+            }
+            
+            // Проверяем статус каждые 5 секунд
+            const checkStatus = () => {
+                fetch(`https://api.kie.ai/api/v1/mj/query?taskId=${taskId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Task status:', data);
+                    
+                    if (data.code === 200 && data.data && data.data.status === 'SUCCESS') {
+                        console.log('✅ Задача завершена!');
+                        showAlert('✅ Готово! Результат получен');
+                        
+                        // Показываем результат
+                        if (data.data.imageUrl) {
+                            showResults([data.data.imageUrl], 'upscale', 'Результат upscale');
+                        }
+                    } else if (data.code === 200 && data.data && data.data.status === 'FAILED') {
+                        console.log('❌ Задача провалилась');
+                        showAlert('❌ Задача провалилась: ' + (data.data.message || 'Неизвестная ошибка'));
+                    } else {
+                        // Продолжаем отслеживание
+                        setTimeout(checkStatus, 5000);
+                    }
+                })
+                .catch(error => {
+                    console.error('Task tracking error:', error);
+                    setTimeout(checkStatus, 5000);
+                });
+            };
+            
+            checkStatus();
+        }
         
         // Простой тест API
         async function testAPI() {
