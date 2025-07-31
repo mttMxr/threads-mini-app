@@ -7,8 +7,8 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta http-equiv="max-age" content="0">
-    <meta name="version" content="22.9">
-    <title>Threads Factory Pro v22.9</title>
+    <meta name="version" content="22.10">
+    <title>Threads Factory Pro v22.10</title>
     <style>
         * {
             margin: 0;
@@ -500,7 +500,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.9</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.10</div>
             </div>
         </div>
         
@@ -1459,48 +1459,25 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadArchive();
             
-            // Force cache update
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                    for(let registration of registrations) {
-                        registration.unregister();
-                    }
-                });
-            }
-            
-            // Clear cache
-            if ('caches' in window) {
-                caches.keys().then(function(names) {
-                    for (let name of names) {
-                        caches.delete(name);
-                    }
-                });
-            }
-            
-            // Force reload if version is old
-            const currentVersion = '22.8';
-            const metaVersion = document.querySelector('meta[name="version"]').getAttribute('content');
-            if (metaVersion !== currentVersion) {
-                window.location.reload(true);
-            }
-        });
-        
-        // Force update on every load
-        window.addEventListener('load', function() {
-            // Add timestamp to URL to bypass cache
-            if (!window.location.search.includes('t=')) {
-                const timestamp = Date.now();
-                const separator = window.location.search ? '&' : '?';
-                const newUrl = window.location.href + separator + 't=' + timestamp;
-                window.history.replaceState({}, '', newUrl);
-            }
-            
-            // Force reload with cache busting
-            const url = new URL(window.location.href);
-            url.searchParams.set('v', '22.8');
-            url.searchParams.set('cb', Date.now());
-            if (window.location.href !== url.toString()) {
-                window.location.replace(url.toString());
+            // Очистка кэша только при первой загрузке
+            if (!localStorage.getItem('cacheCleared')) {
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                        for(let registration of registrations) {
+                            registration.unregister();
+                        }
+                    });
+                }
+                
+                if ('caches' in window) {
+                    caches.keys().then(function(names) {
+                        for (let name of names) {
+                            caches.delete(name);
+                        }
+                    });
+                }
+                
+                localStorage.setItem('cacheCleared', 'true');
             }
         });
     </script>
