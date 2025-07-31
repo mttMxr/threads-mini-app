@@ -11,19 +11,26 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--tg-theme-bg-color, #ffffff);
             color: var(--tg-theme-text-color, #000000);
             line-height: 1.4;
-            overflow-x: hidden;
+            position: relative;
         }
 
         .container {
-            max-width: 100%;
+            width: 100%;
             min-height: 100vh;
             padding: 0;
             margin: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         /* Header */
@@ -32,6 +39,9 @@
             padding: 16px 20px;
             background: var(--tg-theme-bg-color, #ffffff);
             border-bottom: 1px solid var(--tg-theme-hint-color, rgba(0,0,0,0.1));
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .avatar {
@@ -72,6 +82,9 @@
         .search-container {
             padding: 12px 20px;
             background: var(--tg-theme-bg-color, #ffffff);
+            position: sticky;
+            top: 120px;
+            z-index: 99;
         }
 
         .search-bar {
@@ -95,7 +108,8 @@
 
         /* Main Content */
         .main-content {
-            padding: 0 20px;
+            padding: 0 20px 20px;
+            overflow-y: auto;
         }
 
         .section-title {
@@ -114,6 +128,7 @@
             cursor: pointer;
             transition: background-color 0.2s ease;
             -webkit-tap-highlight-color: transparent;
+            min-height: 60px;
         }
 
         .menu-item:last-child {
@@ -184,6 +199,7 @@
             transition: all 0.2s ease;
             border: 1px solid transparent;
             -webkit-tap-highlight-color: transparent;
+            min-height: 100px;
         }
 
         .step-card:active {
@@ -274,6 +290,8 @@
         .form-section {
             display: none;
             padding: 16px;
+            min-height: calc(100vh - 200px);
+            overflow-y: auto;
         }
 
         .form-section.active {
@@ -325,6 +343,11 @@
             display: flex;
             gap: 10px;
             margin-top: 20px;
+            position: sticky;
+            bottom: 0;
+            background: var(--tg-theme-bg-color, #ffffff);
+            padding: 16px 0;
+            border-top: 1px solid var(--tg-theme-hint-color, rgba(0,0,0,0.1));
         }
 
         .btn-group .btn {
@@ -400,6 +423,55 @@
                 padding-right: max(20px, env(safe-area-inset-right));
                 padding-bottom: max(20px, env(safe-area-inset-bottom));
             }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--tg-theme-hint-color, rgba(0,0,0,0.2));
+            border-radius: 2px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--tg-theme-hint-color, rgba(0,0,0,0.3));
+        }
+
+        /* Checkbox styling */
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--tg-theme-button-color, #0088cc);
+        }
+
+        /* Better spacing for form elements */
+        .checkbox-group {
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px 0;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            font-weight: normal;
+            font-size: 14px;
+            color: var(--tg-theme-text-color, #000000);
         }
     </style>
 </head>
@@ -526,7 +598,10 @@
                     </div>
                 </div>
 
-                <button class="btn" onclick="startSetup()">🎯 Начать настройку</button>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="goBack()">Назад</button>
+                    <button class="btn" onclick="startSetup()">🎯 Начать настройку</button>
+                </div>
             </div>
 
             <!-- API Keys Section -->
@@ -577,19 +652,19 @@
 
                 <div class="input-group">
                     <label>Типы контента</label>
-                    <div style="margin-top: 10px;">
-                        <label style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <input type="checkbox" id="contentTips" checked style="margin-right: 10px;">
-                            💡 Полезные советы
-                        </label>
-                        <label style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <input type="checkbox" id="contentStories" checked style="margin-right: 10px;">
-                            📖 Истории из опыта
-                        </label>
-                        <label style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <input type="checkbox" id="contentQuestions" checked style="margin-right: 10px;">
-                            ❓ Вопросы аудитории
-                        </label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="contentTips" checked>
+                            <label for="contentTips">💡 Полезные советы</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="contentStories" checked>
+                            <label for="contentStories">📖 Истории из опыта</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="contentQuestions" checked>
+                            <label for="contentQuestions">❓ Вопросы аудитории</label>
+                        </div>
                     </div>
                 </div>
 
@@ -613,53 +688,53 @@
                 
                 <div class="input-group">
                     <label>Время публикаций</label>
-                    <div style="margin-top: 10px;">
-                        <label style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <input type="checkbox" id="timeMorning" checked style="margin-right: 10px;">
-                            🌅 Утро (9:00-11:00)
-                        </label>
-                        <label style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <input type="checkbox" id="timeAfternoon" checked style="margin-right: 10px;">
-                            ☀️ День (14:00-16:00)
-                        </label>
-                        <label style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <input type="checkbox" id="timeEvening" checked style="margin-right: 10px;">
-                            🌆 Вечер (19:00-21:00)
-                        </label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="timeMorning" checked>
+                            <label for="timeMorning">🌅 Утро (9:00-11:00)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="timeAfternoon" checked>
+                            <label for="timeAfternoon">☀️ День (14:00-16:00)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="timeEvening" checked>
+                            <label for="timeEvening">🌆 Вечер (19:00-21:00)</label>
+                        </div>
                     </div>
                 </div>
 
                 <div class="input-group">
                     <label>Дни недели</label>
-                    <div style="margin-top: 10px;">
-                        <label style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <input type="checkbox" id="dayMonday" checked style="margin-right: 10px;">
-                            Понедельник
-                        </label>
-                        <label style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <input type="checkbox" id="dayTuesday" checked style="margin-right: 10px;">
-                            Вторник
-                        </label>
-                        <label style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <input type="checkbox" id="dayWednesday" checked style="margin-right: 10px;">
-                            Среда
-                        </label>
-                        <label style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <input type="checkbox" id="dayThursday" checked style="margin-right: 10px;">
-                            Четверг
-                        </label>
-                        <label style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <input type="checkbox" id="dayFriday" checked style="margin-right: 10px;">
-                            Пятница
-                        </label>
-                        <label style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <input type="checkbox" id="daySaturday" checked style="margin-right: 10px;">
-                            Суббота
-                        </label>
-                        <label style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <input type="checkbox" id="daySunday" checked style="margin-right: 10px;">
-                            Воскресенье
-                        </label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="dayMonday" checked>
+                            <label for="dayMonday">Понедельник</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="dayTuesday" checked>
+                            <label for="dayTuesday">Вторник</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="dayWednesday" checked>
+                            <label for="dayWednesday">Среда</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="dayThursday" checked>
+                            <label for="dayThursday">Четверг</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="dayFriday" checked>
+                            <label for="dayFriday">Пятница</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="daySaturday" checked>
+                            <label for="daySaturday">Суббота</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="daySunday" checked>
+                            <label for="daySunday">Воскресенье</label>
+                        </div>
                     </div>
                 </div>
 
@@ -732,8 +807,10 @@
             const section = document.getElementById(sectionId);
             if (section) {
                 section.classList.add('active');
+                // Прокручиваем к началу секции
+                section.scrollTop = 0;
                 // Прокручиваем к секции
-                section.scrollIntoView({ behavior: 'smooth' });
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
 
@@ -829,6 +906,9 @@
             // Устанавливаем правильную высоту для Telegram Web App
             document.body.style.height = '100vh';
             document.body.style.overflow = 'hidden';
+            
+            // Включаем скроллинг для контейнера
+            document.querySelector('.container').style.overflowY = 'auto';
         });
     </script>
 </body>
