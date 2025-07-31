@@ -7,8 +7,8 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta http-equiv="max-age" content="0">
-    <meta name="version" content="22.8">
-    <title>Threads Factory Pro v22.8</title>
+    <meta name="version" content="22.9">
+    <title>Threads Factory Pro v22.9</title>
     <style>
         * {
             margin: 0;
@@ -500,7 +500,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.8</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.9</div>
             </div>
         </div>
         
@@ -696,7 +696,7 @@
                 
                 <div class="setting-group">
                     <div class="setting-title">🖼️ URL изображения</div>
-                    <input type="url" class="setting-input" id="mjImageUrl" placeholder="https://example.com/image.jpg">
+                    <input type="url" class="setting-input" id="mjImg2ImgUrl" placeholder="https://example.com/image.jpg">
                 </div>
                 
                 <div class="setting-group">
@@ -942,39 +942,42 @@
             tg.showAlert('🔗 Функция подключения аккаунта будет доступна в следующем обновлении');
         }
         
+        let currentTaskId = null;
+        let currentAttempts = 0;
+        let maxAttempts = 20;
+        let isGenerating = false;
+        
         function generateImage() {
-            const prompt = document.getElementById('mjPrompt').value;
-            const aspectRatio = document.getElementById('mjAspectRatio').value;
-            const speed = document.getElementById('mjSpeed').value;
-            const version = document.getElementById('mjVersion').value;
-            const stylization = document.getElementById('mjStylization').value;
-            const weirdness = document.getElementById('mjWeirdness').value;
-            
-            if (!prompt.trim()) {
-                tg.showAlert('❌ Введите описание изображения');
+            if (isGenerating) {
+                tg.showAlert('⏳ Генерация уже запущена. Дождитесь завершения.');
                 return;
             }
             
+            const prompt = document.getElementById('mjPrompt').value;
+            if (!prompt.trim()) {
+                tg.showAlert('❌ Введите промпт для генерации');
+                return;
+            }
+            
+            isGenerating = true;
+            currentAttempts = 0;
             showProgress();
-            callMidjourneyAPI('text2img', {
-                prompt: prompt,
-                aspectRatio: aspectRatio,
-                speed: speed,
-                version: version,
-                stylization: stylization,
-                weirdness: weirdness
-            });
+            
+            const params = getGenerationParams();
+            callMidjourneyAPI('txt2img', prompt, params);
         }
         
         function generateImg2Img() {
+            if (isGenerating) {
+                tg.showAlert('⏳ Генерация уже запущена. Дождитесь завершения.');
+                return;
+            }
+            
             const prompt = document.getElementById('mjImg2ImgPrompt').value;
-            const imageUrl = document.getElementById('mjImageUrl').value;
-            const aspectRatio = document.getElementById('mjImg2ImgAspectRatio').value;
-            const speed = document.getElementById('mjImg2ImgSpeed').value;
-            const version = document.getElementById('mjImg2ImgVersion').value;
+            const imageUrl = document.getElementById('mjImg2ImgUrl').value;
             
             if (!prompt.trim()) {
-                tg.showAlert('❌ Введите описание изменений');
+                tg.showAlert('❌ Введите промпт для генерации');
                 return;
             }
             
@@ -983,14 +986,12 @@
                 return;
             }
             
+            isGenerating = true;
+            currentAttempts = 0;
             showProgress();
-            callMidjourneyAPI('img2img', {
-                prompt: prompt,
-                imageUrl: imageUrl,
-                aspectRatio: aspectRatio,
-                speed: speed,
-                version: version
-            });
+            
+            const params = getGenerationParams();
+            callMidjourneyAPI('img2img', prompt, params, imageUrl);
         }
         
         function generateVideo() {
@@ -1074,12 +1075,14 @@
             hideProgress();
         }
         
-        function callMidjourneyAPI(type, params) {
+        function callMidjourneyAPI(type, prompt, params, imageUrl = null) {
+            const BASE_URL = 'https://api.kie.ai';
             const API_KEY = '008016dd933ebb3715a956218253a571';
-            const BASE_URL = 'https://api.kie.ai/api/v1/mj';
             
-            let requestData = {
-                prompt: params.prompt,
+            const requestData = {
+                prompt: prompt,
+                width: params.width || 1024,
+                height: params.height || 1024,
                 speed: params.speed || 'relaxed',
                 version: params.version || '7',
                 stylization: parseInt(params.stylization) || 100,
@@ -1088,17 +1091,9 @@
                 callBackUrl: ''
             };
             
-            // Добавляем специфичные параметры для разных типов
-            if (type === 'text2img' || type === 'img2img') {
-                requestData.aspectRatio = params.aspectRatio || '1:1';
-            }
-            
-            if (type === 'img2img' || type === 'video') {
-                requestData.fileUrl = params.imageUrl;
-            }
-            
             if (type === 'img2img') {
                 requestData.taskType = 'mj_img2img';
+                requestData.imageUrl = imageUrl;
             } else if (type === 'video') {
                 requestData.taskType = 'mj_video';
             } else {
@@ -1124,8 +1119,10 @@
                 
                 if (data.code === 200 && data.data && data.data.taskId) {
                     currentTaskId = data.data.taskId;
+                    currentAttempts = 0;
                     waitForCompletion(data.data.taskId, type);
                 } else {
+                    isGenerating = false;
                     hideProgress();
                     const errorMsg = data.msg || data.error || 'Неизвестная ошибка';
                     tg.showAlert(`❌ Ошибка: ${errorMsg}`);
@@ -1133,67 +1130,79 @@
             })
             .catch(error => {
                 console.error('Submit error:', error);
+                isGenerating = false;
                 hideProgress();
                 tg.showAlert(`❌ Ошибка сети: ${error.message}`);
             });
         }
         
         async function waitForCompletion(taskId, type) {
+            const BASE_URL = 'https://api.kie.ai';
             const API_KEY = '008016dd933ebb3715a956218253a571';
-            const BASE_URL = 'https://api.kie.ai/api/v1/mj';
             
-            let attempts = 0;
-            const maxAttempts = 20; // 2 минуты (6 секунд * 20)
+            currentAttempts++;
+            const progressText = `Генерация... (${currentAttempts}/${maxAttempts})`;
+            updateProgress(progressText);
             
-            while (attempts < maxAttempts) {
-                try {
-                    const response = await fetch(`${BASE_URL}/task-status?taskId=${taskId}`, {
-                        headers: {
-                            'Authorization': `Bearer ${API_KEY}`
-                        }
-                    });
+            try {
+                const response = await fetch(`${BASE_URL}/task-status?taskId=${taskId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`
+                    }
+                });
+                
+                const data = await response.json();
+                console.log('Status response:', data);
+                
+                if (data.code === 200 && data.data) {
+                    const status = data.data.status;
                     
-                    const result = await response.json();
-                    console.log('Status check:', result);
-                    
-                    if (result.code === 200 && result.data) {
-                        const successFlag = result.data.successFlag;
-                        
-                        if (successFlag === 1) {
-                            // Успешно завершено
-                            hideProgress();
-                            const resultUrls = result.data.resultInfoJson.resultUrls || [];
-                            const urls = resultUrls.map(item => item.resultUrl || item.url || item);
-                            showResults(urls, type, taskId);
-                            return;
-                        } else if (successFlag === 2 || successFlag === 3) {
-                            // Ошибка
-                            hideProgress();
-                            tg.showAlert(`❌ Генерация не удалась: ${result.data.errorMessage || 'Неизвестная ошибка'}`);
-                            return;
+                    if (status === 'SUCCESS' && data.data.images) {
+                        isGenerating = false;
+                        hideProgress();
+                        showResults(data.data.images, type, taskId);
+                        return;
+                    } else if (status === 'FAILED') {
+                        isGenerating = false;
+                        hideProgress();
+                        tg.showAlert('❌ Генерация не удалась');
+                        return;
+                    } else if (status === 'PENDING' || status === 'PROCESSING') {
+                        if (currentAttempts < maxAttempts) {
+                            setTimeout(() => waitForCompletion(taskId, type), 6000);
                         } else {
-                            // Все еще генерируется
-                            updateProgress(`Генерация... (${attempts + 1}/${maxAttempts})`);
+                            isGenerating = false;
+                            hideProgress();
+                            tg.showAlert('⏰ Превышено время ожидания. Попробуйте еще раз.');
                         }
                     } else {
-                        throw new Error(result.msg || 'Ошибка проверки статуса');
+                        if (currentAttempts < maxAttempts) {
+                            setTimeout(() => waitForCompletion(taskId, type), 6000);
+                        } else {
+                            isGenerating = false;
+                            hideProgress();
+                            tg.showAlert('⏰ Превышено время ожидания. Попробуйте еще раз.');
+                        }
                     }
-                    
-                } catch (error) {
-                    console.error('Status check error:', error);
-                    if (attempts >= maxAttempts - 1) {
+                } else {
+                    if (currentAttempts < maxAttempts) {
+                        setTimeout(() => waitForCompletion(taskId, type), 6000);
+                    } else {
+                        isGenerating = false;
                         hideProgress();
-                        tg.showAlert(`❌ Ошибка: ${error.message}`);
-                        return;
+                        tg.showAlert('❌ Ошибка проверки статуса');
                     }
                 }
-                
-                attempts++;
-                await new Promise(resolve => setTimeout(resolve, 6000)); // Ждем 6 секунд
+            } catch (error) {
+                console.error('Status check error:', error);
+                if (currentAttempts < maxAttempts) {
+                    setTimeout(() => waitForCompletion(taskId, type), 6000);
+                } else {
+                    isGenerating = false;
+                    hideProgress();
+                    tg.showAlert('❌ Ошибка проверки статуса');
+                }
             }
-            
-            hideProgress();
-            tg.showAlert('⏰ Время ожидания истекло');
         }
         
         function showProgress() {
@@ -1241,11 +1250,35 @@
             document.getElementById(progressId).style.display = 'none';
         }
         
+        function getGenerationParams() {
+            const currentPage = document.querySelector('.page.active').id;
+            
+            if (currentPage === 'mj-img2img') {
+                return {
+                    width: 1024,
+                    height: 1024,
+                    speed: document.getElementById('mjImg2ImgSpeed')?.value || 'relaxed',
+                    version: document.getElementById('mjImg2ImgVersion')?.value || '7',
+                    stylization: document.getElementById('mjImg2ImgStylization')?.value || 100,
+                    weirdness: document.getElementById('mjImg2ImgWeirdness')?.value || 100
+                };
+            } else {
+                return {
+                    width: 1024,
+                    height: 1024,
+                    speed: document.getElementById('mjSpeed')?.value || 'relaxed',
+                    version: document.getElementById('mjVersion')?.value || '7',
+                    stylization: document.getElementById('mjStylization')?.value || 100,
+                    weirdness: document.getElementById('mjWeirdness')?.value || 100
+                };
+            }
+        }
+        
         function showResults(urls, type, taskId) {
             const resultsGrid = document.getElementById('resultsGrid');
             resultsGrid.innerHTML = '';
             
-            // Добавляем в архив
+            // Add to archive
             const prompt = document.getElementById('mjPrompt')?.value || 
                           document.getElementById('mjImg2ImgPrompt')?.value || 
                           document.getElementById('mjVideoPrompt')?.value || 
@@ -1257,7 +1290,7 @@
                 resultItem.className = 'result-item';
                 
                 resultItem.innerHTML = `
-                    <img src="${url}" alt="Generated image ${index + 1}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7Qn9C+0LrQsNC30YvQstCw0YLRjCDQv9C+0LrQsNC30YvQstCw0YLRjDwvdGV4dD4KPC9zdmc+'">
+                    <img src="${url}" alt="Generated image ${index + 1}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7Qn9C+0LrQsNC30YvQstCw0YLRjCDQv9C+0LrQsNC30YvQstCw0YLRjDwvdGV4dD4KPC9zdmc+'" style="height: 150px;">
                     <div class="result-actions">
                         <button class="action-btn" onclick="upscaleImage('${url}', ${index + 1})">🔍 Upscale</button>
                         <button class="action-btn" onclick="varyImage('${url}', ${index + 1})">🔄 Vary</button>
