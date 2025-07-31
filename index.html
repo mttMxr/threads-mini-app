@@ -21,8 +21,8 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            color: #ffffff;
+            background: #ffffff;
+            color: #1a1a1a;
             line-height: 1.6;
             position: relative;
             overflow: hidden;
@@ -41,12 +41,11 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
-        /* Premium Header */
+        /* Modern Header */
         .header {
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(25px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px 20px;
+            background: #ffffff;
+            border-bottom: 1px solid #f0f0f0;
             display: flex;
             align-items: center;
             gap: 16px;
@@ -56,33 +55,14 @@
         .avatar {
             width: 48px;
             height: 48px;
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            border-radius: 14px;
+            background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            box-shadow: 0 6px 24px rgba(255, 215, 0, 0.3);
-            border: 2px solid rgba(255, 215, 0, 0.4);
+            box-shadow: 0 4px 16px rgba(0, 122, 255, 0.2);
             flex-shrink: 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .avatar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            opacity: 0.9;
-        }
-
-        .avatar span {
-            position: relative;
-            z-index: 2;
         }
 
         .header-text {
@@ -92,19 +72,18 @@
 
         .bot-name {
             font-size: 18px;
-            font-weight: 800;
-            color: #ffffff;
+            font-weight: 700;
+            color: #1a1a1a;
             margin-bottom: 4px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.3px;
         }
 
         .bot-description {
             font-size: 13px;
-            color: rgba(255,255,255,0.7);
+            color: #8e8e93;
             font-weight: 500;
             white-space: nowrap;
             overflow: hidden;
@@ -120,87 +99,67 @@
         .main-content {
             padding: 0 20px 20px;
             overflow: visible;
+            background: #f8f9fa;
         }
 
         .section-title {
             font-size: 20px;
-            font-weight: 800;
+            font-weight: 700;
             margin: 24px 0 20px;
-            color: #ffffff;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-            letter-spacing: -0.5px;
+            color: #1a1a1a;
+            letter-spacing: -0.3px;
         }
 
-        /* Premium Menu Items */
+        /* Modern Menu Items */
         .menu-item {
             display: flex;
             align-items: center;
             padding: 20px;
-            margin-bottom: 16px;
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(25px);
-            border-radius: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 12px;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #f0f0f0;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             -webkit-tap-highlight-color: transparent;
             min-height: 72px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             position: relative;
-            overflow: hidden;
-        }
-
-        .menu-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #ffd700, #ffed4e);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .menu-item:active::before {
-            opacity: 1;
         }
 
         .menu-item:active {
             transform: scale(0.98);
-            background: rgba(255, 255, 255, 0.1);
+            background: #f8f9fa;
         }
 
         .menu-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 16px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 16px;
-            font-size: 22px;
+            font-size: 20px;
             color: white;
             flex-shrink: 0;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        .menu-icon::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            opacity: 0.9;
+        .menu-icon.primary {
+            background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
         }
 
-        .menu-icon span {
-            position: relative;
-            z-index: 2;
+        .menu-icon.success {
+            background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
+        }
+
+        .menu-icon.warning {
+            background: linear-gradient(135deg, #FF9500 0%, #FF9F0A 100%);
+        }
+
+        .menu-icon.info {
+            background: linear-gradient(135deg, #5856D6 0%, #AF52DE 100%);
         }
 
         .menu-text {
@@ -210,18 +169,18 @@
 
         .menu-title {
             font-size: 16px;
-            font-weight: 700;
-            color: #ffffff;
+            font-weight: 600;
+            color: #1a1a1a;
             margin-bottom: 4px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            letter-spacing: -0.3px;
+            letter-spacing: -0.2px;
         }
 
         .menu-subtitle {
             font-size: 13px;
-            color: rgba(255,255,255,0.6);
+            color: #8e8e93;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -229,71 +188,55 @@
         }
 
         .menu-arrow {
-            width: 18px;
-            height: 18px;
-            opacity: 0.6;
+            width: 16px;
+            height: 16px;
+            opacity: 0.4;
             flex-shrink: 0;
         }
 
-        /* Premium Buttons */
+        /* Modern Buttons */
         .btn {
             border: 0;
-            border-radius: 14px;
+            border-radius: 12px;
             padding: 16px 24px;
             font-size: 15px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
-            color: #1a1a2e;
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #ffffff;
+            background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
             width: 100%;
             margin-top: 16px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             text-decoration: none;
             display: inline-block;
             text-align: center;
             -webkit-tap-highlight-color: transparent;
-            box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
             position: relative;
             overflow: hidden;
-            letter-spacing: -0.3px;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn:active::before {
-            left: 100%;
+            letter-spacing: -0.2px;
         }
 
         .btn:active {
             transform: scale(0.98);
-            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
         }
 
         .btn-secondary {
-            background: rgba(255,255,255,0.1);
-            color: #ffffff;
-            border: 1px solid rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            background: #f8f9fa;
+            color: #1a1a1a;
+            border: 1px solid #e5e5ea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .btn-disabled {
-            background: rgba(255,255,255,0.05);
-            color: rgba(255,255,255,0.4);
+            background: #f2f2f7;
+            color: #8e8e93;
             cursor: not-allowed;
             box-shadow: none;
         }
 
-        /* Premium Progress Bar */
+        /* Modern Progress Bar */
         .progress-container {
             padding: 20px;
             background: rgba(255, 255, 255, 0.1);
@@ -459,89 +402,67 @@
             color: #ffffff;
         }
 
-        /* Premium Step Cards */
+        /* Modern Step Cards */
         .step-card {
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(25px);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            border: 1px solid #f0f0f0;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
-        .step-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #ffd700, #ffed4e);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        .step-card.completed {
+            border-left: 4px solid #34C759;
         }
 
-        .step-card.completed::before {
-            opacity: 1;
+        .step-card.current {
+            border-left: 4px solid #007AFF;
+            background: #f8f9fa;
+        }
+
+        .step-card.pending {
+            border-left: 4px solid #e5e5ea;
         }
 
         .step-card:active {
             transform: scale(0.98);
-            background: rgba(255, 255, 255, 0.08);
+            background: #f8f9fa;
         }
 
         .step-header {
             display: flex;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .step-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 16px;
-            font-size: 24px;
+            font-size: 18px;
             color: white;
             flex-shrink: 0;
-            position: relative;
-            overflow: hidden;
         }
 
-        .step-icon::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            opacity: 0.9;
+        .step-icon.completed {
+            background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
         }
 
-        .step-icon.completed::before {
-            background: linear-gradient(135deg, #00d4aa 0%, #00b894 100%);
+        .step-icon.current {
+            background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
         }
 
-        .step-icon.current::before {
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-        }
-
-        .step-icon.pending::before {
-            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
-        }
-
-        .step-icon span {
-            position: relative;
-            z-index: 2;
+        .step-icon.pending {
+            background: linear-gradient(135deg, #8e8e93 0%, #a1a1a6 100%);
         }
 
         .step-content {
@@ -550,17 +471,16 @@
         }
 
         .step-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
             margin-bottom: 4px;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
-            letter-spacing: -0.3px;
+            letter-spacing: -0.2px;
         }
 
         .step-description {
-            font-size: 14px;
-            color: rgba(255,255,255,0.7);
+            font-size: 13px;
+            color: #8e8e93;
             line-height: 1.4;
             font-weight: 500;
         }
@@ -568,39 +488,37 @@
         .step-status {
             display: flex;
             align-items: center;
-            margin-top: 12px;
+            margin-top: 8px;
         }
 
         .status-indicator {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             margin-right: 8px;
             flex-shrink: 0;
         }
 
         .status-completed {
-            background: #00d4aa;
-            box-shadow: 0 0 8px rgba(0, 212, 170, 0.5);
+            background: #34C759;
         }
 
         .status-current {
-            background: #ffd700;
-            box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+            background: #007AFF;
             animation: pulse 2s infinite;
         }
 
         .status-pending {
-            background: #6c5ce7;
+            background: #8e8e93;
         }
 
         .status-text {
             font-size: 12px;
-            color: rgba(255,255,255,0.6);
-            font-weight: 600;
+            color: #8e8e93;
+            font-weight: 500;
         }
 
-        /* Premium animations */
+        /* Modern animations */
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.7; }
@@ -618,7 +536,7 @@
         }
 
         .step-card {
-            animation: slideInUp 0.6s ease forwards;
+            animation: slideInUp 0.4s ease forwards;
         }
 
         .step-card:nth-child(1) { animation-delay: 0.1s; }
@@ -628,30 +546,29 @@
         .step-card:nth-child(5) { animation-delay: 0.5s; }
         .step-card:nth-child(6) { animation-delay: 0.6s; }
 
-        /* Premium Scrollbar */
+        /* Modern Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
 
         ::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.05);
+            background: #f8f9fa;
             border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
+            background: #e5e5ea;
             border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,0.3);
+            background: #d1d1d6;
         }
 
-        /* Premium glass effect */
+        /* Modern glass effect */
         .glass-effect {
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #ffffff;
+            border: 1px solid #f0f0f0;
             border-radius: 16px;
         }
 
@@ -669,7 +586,7 @@
             }
         }
 
-        /* Premium Scrollbar styling */
+        /* Modern Scrollbar styling */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -688,7 +605,7 @@
             background: rgba(255,255,255,0.5);
         }
 
-        /* Premium animations */
+        /* Modern animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -715,7 +632,7 @@
         <!-- Professional Header -->
         <div class="header">
             <div class="avatar">
-                <span>💎</span>
+                <span>⚡</span>
             </div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
@@ -726,10 +643,10 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="section-title">Главное меню</div>
-
-            <!-- Premium Menu Items -->
+            
+            <!-- Modern Menu Items -->
             <div class="menu-item" onclick="showSection('quick-start')">
-                <div class="menu-icon">
+                <div class="menu-icon primary">
                     <span>🎯</span>
                 </div>
                 <div class="menu-text">
@@ -742,7 +659,7 @@
             </div>
 
             <div class="menu-item" onclick="showSection('projects')">
-                <div class="menu-icon">
+                <div class="menu-icon success">
                     <span>📊</span>
                 </div>
                 <div class="menu-text">
@@ -755,7 +672,7 @@
             </div>
 
             <div class="menu-item" onclick="showSection('settings')">
-                <div class="menu-icon">
+                <div class="menu-icon warning">
                     <span>⚙️</span>
                 </div>
                 <div class="menu-text">
@@ -768,7 +685,7 @@
             </div>
 
             <div class="menu-item" onclick="showSection('profile')">
-                <div class="menu-icon">
+                <div class="menu-icon info">
                     <span>👤</span>
                 </div>
                 <div class="menu-text">
