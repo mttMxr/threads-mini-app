@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.45">
-    <title>Threads Factory Pro v22.45</title>
+    <meta name="version" content="22.46">
+    <title>Threads Factory Pro v22.46</title>
     <style>
         * {
             margin: 0;
@@ -637,7 +637,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.45</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.46</div>
             </div>
         </div>
         
@@ -1513,7 +1513,7 @@
             console.log('Type:', type);
             
             try {
-                const response = await fetch(`${BASE_URL}/query?taskId=${taskId}`, {
+                const response = await fetch(`${BASE_URL}/record-info?taskId=${taskId}`, {
                     headers: {
                         'Authorization': `Bearer ${API_KEY}`
                     }
@@ -1685,16 +1685,18 @@
             console.log('Image URL:', imageUrl);
             console.log('Index:', index);
             
+            // Нужен taskId исходной генерации, а не URL изображения
+            // Пока используем заглушку
             const requestData = {
-                taskType: 'mj_upscale',
-                fileUrl: imageUrl,
-                index: index,
-                version: '6'
+                taskId: 'demo_task_id',  // Должен быть taskId исходной генерации
+                imageIndex: index - 1,   // API использует 0-3, а мы передаем 1-4
+                waterMark: '',
+                callBackUrl: ''
             };
             
             console.log('Upscale request data:', requestData);
             
-            fetch(`${BASE_URL}/submit-task`, {
+            fetch(`${BASE_URL}/generateUpscale`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1731,16 +1733,18 @@
             console.log('Image URL:', imageUrl);
             console.log('Index:', index);
             
+            // Нужен taskId исходной генерации, а не URL изображения
+            // Пока используем заглушку
             const requestData = {
-                taskType: 'mj_vary',
-                fileUrl: imageUrl,
-                index: index,
-                version: '6'
+                taskId: 'demo_task_id',  // Должен быть taskId исходной генерации
+                imageIndex: index,       // API использует 1-4
+                waterMark: '',
+                callBackUrl: ''
             };
             
             console.log('Vary request data:', requestData);
             
-            fetch(`${BASE_URL}/submit-task`, {
+            fetch(`${BASE_URL}/generateVary`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
