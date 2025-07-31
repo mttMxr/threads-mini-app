@@ -2,1433 +2,472 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="version" content="20.2">
-    <title>Threads Factory Pro v20.2</title>
+    <meta name="version" content="21.0">
+    <title>Threads Factory Pro v21.0</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        html, body {
-            height: 100%;
-            overflow-x: hidden;
-        }
-
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #ffffff;
-            line-height: 1.6;
-            position: relative;
-            overflow: hidden;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 100%;
-            height: 100vh;
-            padding: 0;
-            margin: 0;
-            overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
         }
-
-        /* Premium Header */
+        
+        .container {
+            max-width: 100%;
+            min-height: 100vh;
+            padding: 0;
+            position: relative;
+        }
+        
         .header {
-            padding: 24px 20px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(25px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 12px 16px;
             display: flex;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 0;
+            gap: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
-        .avatar {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 16px;
+        
+        .header-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            flex-shrink: 0;
+            font-size: 18px;
         }
-
+        
         .header-text {
             flex: 1;
-            min-width: 0;
         }
-
+        
         .bot-name {
-            font-size: 20px;
-            font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 4px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            letter-spacing: -0.5px;
-        }
-
-        .bot-description {
-            font-size: 14px;
-            color: rgba(255,255,255,0.7);
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Убираем кнопку "Узнать больше" */
-        .learn-more {
-            display: none;
-        }
-
-        /* Main Content */
-        .main-content {
-            padding: 0 20px 20px;
-            overflow: visible;
-        }
-
-        .section-title {
-            font-size: 22px;
-            font-weight: 800;
-            margin: 24px 0 20px;
-            color: #ffffff;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            letter-spacing: -0.5px;
-        }
-
-        /* Premium Menu Items */
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 24px;
-            margin-bottom: 16px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(25px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            -webkit-tap-highlight-color: transparent;
-            min-height: 80px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .menu-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .menu-item:active::before {
-            opacity: 1;
-        }
-
-        .menu-item:active {
-            transform: scale(0.98);
-            background: rgba(255, 255, 255, 0.12);
-        }
-
-        .menu-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 20px;
-            font-size: 24px;
-            color: white;
-            flex-shrink: 0;
-            box-shadow: 0 6px 24px rgba(0,0,0,0.2);
-        }
-
-        .menu-icon.primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .menu-icon.success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        }
-
-        .menu-icon.warning {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .menu-icon.info {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-
-        .menu-text {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .menu-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 6px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            letter-spacing: -0.3px;
-        }
-
-        .menu-subtitle {
-            font-size: 14px;
-            color: rgba(255,255,255,0.7);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-weight: 500;
-        }
-
-        .menu-arrow {
-            width: 20px;
-            height: 20px;
-            opacity: 0.6;
-            flex-shrink: 0;
-        }
-
-        /* Premium Buttons */
-        .btn {
-            border: 0;
-            border-radius: 16px;
-            padding: 18px 28px;
             font-size: 16px;
             font-weight: 700;
-            cursor: pointer;
-            color: #ffffff;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            width: 100%;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            -webkit-tap-highlight-color: transparent;
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
-            position: relative;
-            overflow: hidden;
-            letter-spacing: -0.3px;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn:active::before {
-            left: 100%;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-secondary {
-            background: rgba(255,255,255,0.1);
-            color: #ffffff;
-            border: 1px solid rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        }
-
-        .btn-disabled {
-            background: rgba(255,255,255,0.05);
-            color: rgba(255,255,255,0.4);
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        /* Modern Progress Bar */
-        .progress-container {
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 16px;
-            margin: 16px 0;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #ff6b6b, #ee5a24);
-            border-radius: 3px;
-            transition: width 0.3s ease;
-            width: 0%;
-            box-shadow: 0 0 10px rgba(255,107,107,0.5);
-        }
-
-        /* Form Sections */
-        .form-section {
-            display: none;
-            padding: 20px;
-            min-height: calc(100vh - 200px);
-            overflow: visible;
-        }
-
-        .form-section.active {
-            display: block;
-        }
-
-        .form-title {
-            font-size: 20px;
-            font-weight: 800;
-            margin-bottom: 16px;
-            color: #ffffff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .step-indicator {
-            font-size: 14px;
-            color: rgba(255,255,255,0.8);
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #ffffff;
-            font-size: 14px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-        }
-
-        .input-group input,
-        .input-group textarea,
-        .input-group select {
-            width: 100%;
-            padding: 16px 20px;
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 12px;
-            background: rgba(255,255,255,0.1);
-            color: #ffffff;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            font-family: inherit;
-            backdrop-filter: blur(10px);
-        }
-
-        .input-group input::placeholder,
-        .input-group textarea::placeholder {
-            color: rgba(255,255,255,0.6);
-        }
-
-        .input-group input:focus,
-        .input-group textarea:focus,
-        .input-group select:focus {
-            outline: none;
-            border-color: #ff6b6b;
-            box-shadow: 0 0 0 3px rgba(255,107,107,0.2);
-            background: rgba(255,255,255,0.15);
-        }
-
-        /* Убираем закрепление кнопок */
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-            padding: 0;
-        }
-
-        .btn-group .btn {
-            flex: 1;
-            margin-top: 0;
-        }
-
-        /* Status Indicators */
-        .status-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 8px;
-            animation: pulse 2s infinite;
-        }
-
-        .status-success {
-            background: #4CAF50;
-            box-shadow: 0 0 10px rgba(76,175,80,0.5);
-        }
-
-        .status-error {
-            background: #F44336;
-            box-shadow: 0 0 10px rgba(244,67,54,0.5);
-        }
-
-        .status-pending {
-            background: #FF9800;
-            box-shadow: 0 0 10px rgba(255,152,0,0.5);
-        }
-
-        /* Checkbox styling */
-        input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: #ff6b6b;
-            border-radius: 4px;
-        }
-
-        /* Better spacing for form elements */
-        .checkbox-group {
-            margin-top: 12px;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-            padding: 8px 0;
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            margin-right: 12px;
-            flex-shrink: 0;
-        }
-
-        .checkbox-item label {
-            margin: 0;
-            font-weight: 500;
-            font-size: 14px;
-            color: #ffffff;
-        }
-
-        /* Premium Step Cards */
-        .step-card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(25px);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-        }
-
-        .step-card.completed {
-            border-left: 4px solid #11998e;
-            background: rgba(17, 153, 142, 0.1);
-        }
-
-        .step-card.current {
-            border-left: 4px solid #667eea;
-            background: rgba(102, 126, 234, 0.1);
-            transform: scale(1.02);
-        }
-
-        .step-card.pending {
-            border-left: 4px solid rgba(255,255,255,0.2);
-        }
-
-        .step-card:active {
-            transform: scale(0.98);
-            background: rgba(255, 255, 255, 0.12);
-        }
-
-        .step-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .step-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 16px;
-            font-size: 24px;
             color: white;
-            flex-shrink: 0;
-            box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+            margin-bottom: 2px;
         }
-
-        .step-icon.completed {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        }
-
-        .step-icon.current {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .step-icon.pending {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            opacity: 0.5;
-        }
-
-        .step-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .step-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 6px;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.3);
-            letter-spacing: -0.3px;
-        }
-
-        .step-description {
-            font-size: 14px;
-            color: rgba(255,255,255,0.7);
-            line-height: 1.4;
-            font-weight: 500;
-        }
-
-        .step-status {
-            display: flex;
-            align-items: center;
-            margin-top: 12px;
-        }
-
-        .status-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 8px;
-            flex-shrink: 0;
-        }
-
-        .status-completed {
-            background: #11998e;
-            box-shadow: 0 0 8px rgba(17, 153, 142, 0.5);
-        }
-
-        .status-current {
-            background: #667eea;
-            box-shadow: 0 0 8px rgba(102, 126, 234, 0.5);
-            animation: pulse 2s infinite;
-        }
-
-        .status-pending {
-            background: rgba(255,255,255,0.3);
-        }
-
-        .status-text {
+        
+        .bot-description {
             font-size: 12px;
-            color: rgba(255,255,255,0.7);
-            font-weight: 600;
+            color: rgba(255,255,255,0.8);
         }
-
-        /* Premium animations */
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+        
+        .content {
+            padding: 16px;
+            padding-bottom: 100px;
         }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .step-card {
-            animation: slideInUp 0.6s ease forwards;
-        }
-
-        .step-card:nth-child(1) { animation-delay: 0.1s; }
-        .step-card:nth-child(2) { animation-delay: 0.2s; }
-        .step-card:nth-child(3) { animation-delay: 0.3s; }
-        .step-card:nth-child(4) { animation-delay: 0.4s; }
-        .step-card:nth-child(5) { animation-delay: 0.5s; }
-        .step-card:nth-child(6) { animation-delay: 0.6s; }
-
-        /* Premium Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.05);
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        /* Premium glass effect */
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-        }
-
-        /* Telegram Web App specific styles */
-        .tg-web-app {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        /* Fix for Telegram Web App viewport */
-        @supports (padding: max(0px)) {
-            .container {
-                padding-left: max(20px, env(safe-area-inset-left));
-                padding-right: max(20px, env(safe-area-inset-right));
-                padding-bottom: max(20px, env(safe-area-inset-bottom));
-            }
-        }
-
-        /* Modern Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.3);
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,0.5);
-        }
-
-        /* Modern animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .menu-item {
-            animation: fadeInUp 0.6s ease forwards;
-        }
-
-        .menu-item:nth-child(1) { animation-delay: 0.1s; }
-        .menu-item:nth-child(2) { animation-delay: 0.2s; }
-        .menu-item:nth-child(3) { animation-delay: 0.3s; }
-        .menu-item:nth-child(4) { animation-delay: 0.4s; }
-
-        /* Navigation System */
+        
         .page {
             display: none;
-            min-height: 100vh;
+            animation: fadeIn 0.3s ease;
         }
-
+        
         .page.active {
             display: block;
         }
-
-        .page-header {
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(25px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 16px;
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        .back-button {
-            width: 40px;
-            height: 40px;
+        
+        .menu-item {
+            background: white;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             cursor: pointer;
             transition: all 0.3s ease;
-            flex-shrink: 0;
+            border: 2px solid transparent;
         }
-
-        .back-button:active {
-            transform: scale(0.95);
-            background: rgba(255, 255, 255, 0.15);
+        
+        .menu-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            border-color: #667eea;
         }
-
-        .page-title {
+        
+        .menu-item h3 {
             font-size: 18px;
-            font-weight: 700;
-            color: #ffffff;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            letter-spacing: -0.3px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
         }
-
-        .page-content {
-            padding: 20px;
+        
+        .menu-item p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
         }
-
-        /* Quick Start Page */
-        .quick-start-content {
-            padding: 20px;
-        }
-
-        .step-indicator {
-            font-size: 16px;
-            color: rgba(255,255,255,0.8);
-            margin-bottom: 24px;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        /* Projects Page */
-        .projects-content {
-            padding: 20px;
-        }
-
-        .project-card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(25px);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-        }
-
-        .project-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .project-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
+        
+        .back-btn {
+            background: #667eea;
             color: white;
-            margin-right: 16px;
-            box-shadow: 0 4px 16px rgba(17, 153, 142, 0.3);
-        }
-
-        .project-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 4px;
-        }
-
-        .project-status {
-            font-size: 12px;
-            color: rgba(255,255,255,0.7);
-            font-weight: 500;
-        }
-
-        .project-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-        }
-
-        .stat-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: rgba(255,255,255,0.6);
-            font-weight: 500;
-        }
-
-        /* Settings Page */
-        .settings-content {
-            padding: 20px;
-        }
-
-        .setting-group {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(25px);
-            border-radius: 20px;
-            padding: 20px;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
             margin-bottom: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
         }
-
+        
+        .back-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-1px);
+        }
+        
+        .setting-group {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
         .setting-title {
             font-size: 16px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
         }
-
+        
         .setting-input {
             width: 100%;
-            padding: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            color: #ffffff;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
             font-size: 14px;
-            transition: all 0.3s ease;
-            font-family: inherit;
+            background: white;
+            transition: border-color 0.3s ease;
         }
-
+        
         .setting-input:focus {
             outline: none;
             border-color: #667eea;
-            background: rgba(255, 255, 255, 0.08);
         }
-
-        .setting-input::placeholder {
-            color: rgba(255,255,255,0.5);
+        
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
         }
-
-        .setting-status {
+        
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            margin-top: 8px;
+            justify-content: center;
+            gap: 8px;
         }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 8px;
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
-
-        .status-dot.success {
-            background: #11998e;
-            box-shadow: 0 0 8px rgba(17, 153, 142, 0.5);
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
         }
-
-        .status-dot.warning {
-            background: #f093fb;
-            box-shadow: 0 0 8px rgba(240, 147, 251, 0.5);
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e1e5e9;
         }
-
-        .status-text {
-            font-size: 12px;
-            color: rgba(255,255,255,0.7);
-            font-weight: 500;
+        
+        .btn-secondary:hover {
+            background: #e9ecef;
+            border-color: #667eea;
         }
-
-        /* Profile Page */
-        .profile-content {
-            padding: 20px;
+        
+        .progress-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
-
-        .profile-stats {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(25px);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .stat-card {
-            text-align: center;
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.05);
+        
+        .progress-content {
+            background: white;
             border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            max-width: 300px;
+            width: 90%;
         }
-
-        .stat-number {
-            font-size: 24px;
-            font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 4px;
+        
+        .progress-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #333;
         }
-
-        .stat-description {
-            font-size: 12px;
-            color: rgba(255,255,255,0.6);
-            font-weight: 500;
+        
+        .progress-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
         }
-
-        .stat-number.projects { color: #667eea; }
-        .stat-number.posts { color: #11998e; }
-        .stat-number.views { color: #f093fb; }
-        .stat-number.engagement { color: #4facfe; }
-
-        /* Results Area */
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e1e5e9;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
         .results-area {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(25px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: white;
+            border-radius: 16px 16px 0 0;
             padding: 20px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
             max-height: 60vh;
             overflow-y: auto;
-            z-index: 1000;
-            animation: slideUp 0.3s ease;
+            display: none;
+            z-index: 100;
         }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(100%);
-            }
-            to {
-                transform: translateY(0);
-            }
+        
+        .results-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #333;
         }
-
-        .results-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
             margin-bottom: 16px;
         }
-
-        .results-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-        }
-
+        
         .result-item {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
-        .result-image {
+        
+        .result-item img {
             width: 100%;
             height: 120px;
             object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 8px;
         }
-
-        .result-title {
-            font-size: 12px;
-            color: rgba(255,255,255,0.8);
-            font-weight: 500;
+        
+        .result-actions {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            right: 8px;
+            display: flex;
+            gap: 4px;
         }
-
-        .result-url {
+        
+        .action-btn {
+            flex: 1;
+            padding: 6px 8px;
+            border: none;
+            border-radius: 4px;
             font-size: 10px;
-            color: rgba(255,255,255,0.6);
-            word-break: break-all;
-            margin-top: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            transition: all 0.3s ease;
         }
-
-        /* MJ Content */
-        .mj-content {
+        
+        .action-btn:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+        
+        .close-results {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .step-guide {
+            background: white;
+            border-radius: 12px;
             padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        
+        .step-content {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
         }
     </style>
 </head>
-<body class="tg-web-app">
+<body>
     <div class="container">
-        <!-- Main Menu Page -->
-        <div id="main-page" class="page active">
-            <!-- Premium Header -->
-            <div class="header">
-                <div class="avatar">
-                    <span>⚡</span>
-                </div>
-                <div class="header-text">
-                    <div class="bot-name">THREADS FACTORY PRO</div>
-                    <div class="bot-description">Премиум автоматизация публикаций v20.2</div>
-                </div>
+        <div class="header">
+            <div class="header-icon">🏭</div>
+            <div class="header-text">
+                <div class="bot-name">THREADS FACTORY PRO</div>
+                <div class="bot-description">Премиум автоматизация публикаций v21.0</div>
             </div>
-
-            <div class="main-content">
-                <div class="section-title">Главное меню</div>
-                
-                <!-- Premium Menu Items -->
+        </div>
+        
+        <div class="content">
+            <!-- Главное меню -->
+            <div class="page active" id="main-menu">
                 <div class="menu-item" onclick="showPage('quick-start')">
-                    <div class="menu-icon primary">
-                        <span>🎯</span>
-                    </div>
-                    <div class="menu-text">
-                        <div class="menu-title">БЫСТРЫЙ СТАРТ</div>
-                        <div class="menu-subtitle">Запуск комбайна за 6 шагов</div>
-                    </div>
-                    <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                    </svg>
+                    <h3>🎯 БЫСТРЫЙ СТАРТ</h3>
+                    <p>6-шаговый комбайн для автоматических публикаций</p>
                 </div>
-
-                <div class="menu-item" onclick="showPage('projects')">
-                    <div class="menu-icon success">
-                        <span>📊</span>
-                    </div>
-                    <div class="menu-text">
-                        <div class="menu-title">Мои проекты</div>
-                        <div class="menu-subtitle">Управление активными проектами</div>
-                    </div>
-                    <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                    </svg>
-                </div>
-
+                
                 <div class="menu-item" onclick="showPage('midjourney')">
-                    <div class="menu-icon info">
-                        <span>🎨</span>
-                    </div>
-                    <div class="menu-text">
-                        <div class="menu-title">Midjourney AI</div>
-                        <div class="menu-subtitle">Генерация изображений и видео</div>
-                    </div>
-                    <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                    </svg>
+                    <h3>🎨 MidJourney AI</h3>
+                    <p>Генерация изображений с полным функционалом</p>
                 </div>
-
+                
+                <div class="menu-item" onclick="showPage('projects')">
+                    <h3>📊 Мои проекты</h3>
+                    <p>Управление и статистика проектов</p>
+                </div>
+                
                 <div class="menu-item" onclick="showPage('settings')">
-                    <div class="menu-icon warning">
-                        <span>⚙️</span>
-                    </div>
-                    <div class="menu-text">
-                        <div class="menu-title">Настройки</div>
-                        <div class="menu-subtitle">API ключи и конфигурация</div>
-                    </div>
-                    <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                    </svg>
+                    <h3>⚙️ Настройки</h3>
+                    <p>Конфигурация аккаунтов и API</p>
                 </div>
-
+                
                 <div class="menu-item" onclick="showPage('profile')">
-                    <div class="menu-icon info">
-                        <span>👤</span>
-                    </div>
-                    <div class="menu-text">
-                        <div class="menu-title">Профиль</div>
-                        <div class="menu-subtitle">Статистика и настройки аккаунта</div>
-                    </div>
-                    <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                    </svg>
+                    <h3>👤 Профиль</h3>
+                    <p>Личные данные и статистика</p>
                 </div>
             </div>
-        </div>
-
-        <!-- Quick Start Page -->
-        <div id="quick-start-page" class="page">
-            <div class="page-header">
-                <div class="back-button" onclick="showPage('main')">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-                    </svg>
-                </div>
-                <div class="page-title">Быстрый старт</div>
-            </div>
-            <div class="quick-start-content">
-                <div class="step-indicator">Пройди 6 простых шагов и запусти автопубликации:</div>
+            
+            <!-- Быстрый старт -->
+            <div class="page" id="quick-start">
+                <button class="back-btn" onclick="showPage('main-menu')">← Назад</button>
                 
-                <div class="step-card pending" onclick="showStep(1)">
-                    <div class="step-header">
-                        <div class="step-icon pending">
-                            <span>🔗</span>
-                        </div>
-                        <div class="step-content">
-                            <div class="step-title">ШАГ 1: Подключи Threads аккаунт</div>
-                            <div class="step-description">Введите токен в настройках для подключения.</div>
-                        </div>
-                    </div>
-                    <div class="step-status">
-                        <span class="status-indicator status-pending"></span>
-                        <span class="status-text">Ожидает</span>
+                <div class="step-guide">
+                    <div class="step-title">🎯 БЫСТРЫЙ СТАРТ - 6 ШАГОВ</div>
+                    <div class="step-content">
+                        <div><span class="step-number">1</span>Подключите Threads аккаунт</div>
+                        <div><span class="step-number">2</span>Настройте контент-план</div>
+                        <div><span class="step-number">3</span>Создайте промпты для постов</div>
+                        <div><span class="step-number">4</span>Сгенерируйте изображения</div>
+                        <div><span class="step-number">5</span>Настройте расписание</div>
+                        <div><span class="step-number">6</span>Запустите автоматизацию</div>
                     </div>
                 </div>
-
-                <div class="step-card current" onclick="showStep(2)">
-                    <div class="step-header">
-                        <div class="step-icon current">
-                            <span>⚙️</span>
-                        </div>
-                        <div class="step-content">
-                            <div class="step-title">ШАГ 2: Создай системный промпт</div>
-                            <div class="step-description">Настройте системный промпт для генерации контента.</div>
-                        </div>
-                    </div>
-                    <div class="step-status">
-                        <span class="status-indicator status-current"></span>
-                        <span class="status-text">Текущий</span>
-                    </div>
-                </div>
-
-                <div class="step-card pending" onclick="showStep(3)">
-                    <div class="step-header">
-                        <div class="step-icon pending">
-                            <span>📋</span>
-                        </div>
-                        <div class="step-content">
-                            <div class="step-title">ШАГ 3: Настрой контент-план</div>
-                            <div class="step-description">Определите тему и ключевые слова для контента.</div>
-                        </div>
-                    </div>
-                    <div class="step-status">
-                        <span class="status-indicator status-pending"></span>
-                        <span class="status-text">Ожидает</span>
-                    </div>
-                </div>
-
-                <div class="step-card pending" onclick="showStep(4)">
-                    <div class="step-header">
-                        <div class="step-icon pending">
-                            <span>⏰</span>
-                        </div>
-                        <div class="step-content">
-                            <div class="step-title">ШАГ 4: Установи расписание</div>
-                            <div class="step-description">Настройте время и частоту публикаций.</div>
-                        </div>
-                    </div>
-                    <div class="step-status">
-                        <span class="status-indicator status-pending"></span>
-                        <span class="status-text">Ожидает</span>
-                    </div>
-                </div>
-
-                <div class="step-card pending" onclick="showStep(5)">
-                    <div class="step-header">
-                        <div class="step-icon pending">
-                            <span>🧪</span>
-                        </div>
-                        <div class="step-content">
-                            <div class="step-title">ШАГ 5: Протестируй публикацию</div>
-                            <div class="step-description">Проверьте, как работает ваш комбайн на тестовом посте.</div>
-                        </div>
-                    </div>
-                    <div class="step-status">
-                        <span class="status-indicator status-pending"></span>
-                        <span class="status-text">Ожидает</span>
-                    </div>
-                </div>
-
-                <div class="step-card pending" onclick="showStep(6)">
-                    <div class="step-header">
-                        <div class="step-icon pending">
-                            <span>🚀</span>
-                        </div>
-                        <div class="step-content">
-                            <div class="step-title">ШАГ 6: ЗАПУСТИТЬ КОМБАЙН! 🔥</div>
-                            <div class="step-description">Нажмите кнопку "Запустить комбайн" для активации.</div>
-                        </div>
-                    </div>
-                    <div class="step-status">
-                        <span class="status-indicator status-pending"></span>
-                        <span class="status-text">Ожидает</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Projects Page -->
-        <div id="projects-page" class="page">
-            <div class="page-header">
-                <div class="back-button" onclick="showPage('main')">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-                    </svg>
-                </div>
-                <div class="page-title">Мои проекты</div>
-            </div>
-            <div class="projects-content">
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-icon">
-                            <span>🏃</span>
-                        </div>
-                        <div>
-                            <div class="project-title">Фитнес-блог</div>
-                            <div class="project-status">🟢 Активен</div>
-                        </div>
-                    </div>
-                    <div class="project-stats">
-                        <div class="stat-item">
-                            <div class="stat-value">12</div>
-                            <div class="stat-label">Постов</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">1,247</div>
-                            <div class="stat-label">Просмотров</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">89</div>
-                            <div class="stat-label">Лайков</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">23</div>
-                            <div class="stat-label">Комментариев</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Settings Page -->
-        <div id="settings-page" class="page">
-            <div class="page-header">
-                <div class="back-button" onclick="showPage('main')">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-                    </svg>
-                </div>
-                <div class="page-title">Настройки</div>
-            </div>
-            <div class="settings-content">
+                
                 <div class="setting-group">
-                    <div class="setting-title">Threads Token</div>
-                    <input type="password" class="setting-input" placeholder="threads_token_..." id="threadsToken">
-                    <div class="setting-status">
-                        <span class="status-dot warning"></span>
-                        <span class="status-text">Не настроен</span>
-                    </div>
+                    <div class="setting-title">📝 Шаг 1: Подключение аккаунта</div>
+                    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+                        Для начала работы необходимо подключить ваш Threads аккаунт к системе.
+                    </p>
+                    <button class="btn btn-primary" onclick="connectAccount()">
+                        🔗 Подключить Threads
+                    </button>
                 </div>
+            </div>
+            
+            <!-- MidJourney -->
+            <div class="page" id="midjourney">
+                <button class="back-btn" onclick="showPage('main-menu')">← Назад</button>
                 
-                <div class="glass-effect" style="padding: 16px; margin: 16px 0;">
-                    <h3 style="margin-bottom: 12px; color: #ffffff; font-size: 14px; font-weight: 700;">API ключи настроены автоматически</h3>
-                    <div style="font-size: 12px; color: rgba(255,255,255,0.8);">
-                        ✅ OpenAI API - настроен<br>
-                        ✅ Image API - настроен<br>
-                        ⚠️ Threads Token - требуется настройка
-                    </div>
-                </div>
-                
-                <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="showPage('main')">Назад</button>
-                    <button class="btn">Сохранить</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Profile Page -->
-        <div id="profile-page" class="page">
-            <div class="page-header">
-                <div class="back-button" onclick="showPage('main')">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-                    </svg>
-                </div>
-                <div class="page-title">Профиль</div>
-            </div>
-            <div class="profile-content">
-                <div class="profile-stats">
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-number projects">3</div>
-                            <div class="stat-description">Проекта</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number posts">156</div>
-                            <div class="stat-description">Постов</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number views">2,847</div>
-                            <div class="stat-description">Просмотров</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number engagement">89</div>
-                            <div class="stat-description">Вовлеченность</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="showPage('main')">Назад</button>
-                    <button class="btn">Обновить статистику</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Midjourney Page -->
-        <div id="midjourney-page" class="page">
-            <div class="page-header">
-                <div class="back-button" onclick="showPage('main')">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-                    </svg>
-                </div>
-                <div class="page-title">Midjourney AI</div>
-            </div>
-            <div class="midjourney-content">
-                <div class="section-title">🎨 AI Генератор изображений</div>
-                
-                <div class="menu-item" onclick="showPage('mj-text2img')">
-                    <div class="menu-icon primary">
-                        <span>🎨</span>
-                    </div>
-                    <div class="menu-text">
-                        <div class="menu-title">Text-to-Image</div>
-                        <div class="menu-subtitle">Создание изображений из текста</div>
-                    </div>
-                    <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                    </svg>
-                </div>
-
-                <div class="menu-item" onclick="showPage('mj-img2img')">
-                    <div class="menu-icon success">
-                        <span>🖼️</span>
-                    </div>
-                    <div class="menu-text">
-                        <div class="menu-title">Image-to-Image</div>
-                        <div class="menu-subtitle">Изменение существующих изображений</div>
-                    </div>
-                    <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                    </svg>
-                </div>
-
-                <div class="menu-item" onclick="showPage('mj-img2video')">
-                    <div class="menu-icon warning">
-                        <span>🎬</span>
-                    </div>
-                    <div class="menu-text">
-                        <div class="menu-title">Image-to-Video</div>
-                        <div class="menu-subtitle">Создание видео из изображений</div>
-                    </div>
-                    <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                    </svg>
-                </div>
-
-                <div class="glass-effect" style="padding: 20px; margin: 20px 0;">
-                    <h3 style="margin-bottom: 16px; color: #ffffff; font-size: 16px; font-weight: 700;">💡 Особенности Midjourney</h3>
-                    <div style="font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.5;">
-                        ✅ Поддержка любых языков<br>
-                        ✅ 4 изображения за раз<br>
-                        ✅ 3 скорости генерации<br>
-                        ✅ Автоматический апскейл<br>
-                        ✅ Быстрая генерация<br>
-                        ✅ Высокое качество
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Text-to-Image Page -->
-        <div id="mj-text2img-page" class="page">
-            <div class="page-header">
-                <div class="back-button" onclick="showPage('midjourney')">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-                    </svg>
-                </div>
-                <div class="page-title">Text-to-Image</div>
-            </div>
-            <div class="mj-content">
                 <div class="setting-group">
-                    <div class="setting-title">📝 Промпт</div>
-                    <textarea class="setting-input" placeholder="Опишите изображение на любом языке..." id="mjPrompt" rows="4"></textarea>
+                    <div class="setting-title">🎨 Генерация изображений</div>
+                    <textarea class="setting-input" id="mjPrompt" placeholder="Опишите что хотите создать..." rows="3"></textarea>
                 </div>
-
+                
                 <div class="setting-group">
-                    <div class="setting-title">📐 Соотношение сторон</div>
+                    <div class="setting-title">🖼 Соотношение сторон</div>
                     <select class="setting-input" id="mjAspectRatio">
                         <option value="1:1">1:1 Квадрат</option>
-                        <option value="16:9">16:9 Широкий</option>
-                        <option value="9:16">9:16 Портрет</option>
-                        <option value="4:3">4:3 Стандарт</option>
+                        <option value="16:9">16:9 Горизонтальный</option>
+                        <option value="9:16">9:16 Вертикальный</option>
+                        <option value="4:3">4:3 Классический</option>
+                        <option value="3:4">3:4 Портрет</option>
                     </select>
                 </div>
-
+                
                 <div class="setting-group">
                     <div class="setting-title">⚡ Скорость</div>
                     <select class="setting-input" id="mjSpeed">
-                        <option value="relaxed">🐌 Relaxed (Бесплатно)</option>
-                        <option value="fast">⚡ Fast (Стандарт)</option>
-                        <option value="turbo">🚀 Turbo (Премиум)</option>
+                        <option value="relaxed">Relaxed (Бесплатно)</option>
+                        <option value="fast">Fast (Быстро)</option>
+                        <option value="turbo">Turbo (Максимум)</option>
                     </select>
                 </div>
-
-                <div class="setting-group">
-                    <div class="setting-title">🎨 Версия модели</div>
-                    <select class="setting-input" id="mjVersion">
-                        <option value="7">🎨 Midjourney v7</option>
-                        <option value="6.1">🖼️ Midjourney v6.1</option>
-                        <option value="niji6">🌸 Niji v6 (Аниме)</option>
-                    </select>
-                </div>
-
+                
                 <div class="setting-group">
                     <div class="setting-title">🎨 Стилизация</div>
                     <select class="setting-input" id="mjStylization">
@@ -1448,139 +487,94 @@
                         <option value="3000">3000 - Максимально креативно</option>
                     </select>
                 </div>
-
+                
+                <div class="setting-group">
+                    <div class="setting-title">🖼 Версия модели</div>
+                    <select class="setting-input" id="mjVersion">
+                        <option value="7" selected>Midjourney v7</option>
+                        <option value="6">Midjourney v6</option>
+                        <option value="5.2">Midjourney v5.2</option>
+                        <option value="niji6">Niji v6 (Аниме)</option>
+                    </select>
+                </div>
+                
                 <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="showPage('midjourney')">Отмена</button>
-                    <button class="btn" onclick="generateMJImage()">🎨 Генерировать</button>
+                    <button class="btn btn-secondary" onclick="showPage('main-menu')">Отмена</button>
+                    <button class="btn btn-primary" onclick="generateImage()">
+                        🎨 Генерировать
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Проекты -->
+            <div class="page" id="projects">
+                <button class="back-btn" onclick="showPage('main-menu')">← Назад</button>
+                
+                <div class="setting-group">
+                    <div class="setting-title">📊 Статистика проектов</div>
+                    <p style="font-size: 14px; color: #666;">
+                        Здесь будет отображаться статистика ваших проектов и публикаций.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Настройки -->
+            <div class="page" id="settings">
+                <button class="back-btn" onclick="showPage('main-menu')">← Назад</button>
+                
+                <div class="setting-group">
+                    <div class="setting-title">🔗 Подключенные аккаунты</div>
+                    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+                        Threads аккаунт: <span style="color: #667eea; font-weight: 600;">Подключен</span>
+                    </p>
+                    <button class="btn btn-secondary">Изменить</button>
+                </div>
+            </div>
+            
+            <!-- Профиль -->
+            <div class="page" id="profile">
+                <button class="back-btn" onclick="showPage('main-menu')">← Назад</button>
+                
+                <div class="setting-group">
+                    <div class="setting-title">👤 Личные данные</div>
+                    <p style="font-size: 14px; color: #666;">
+                        Здесь будет отображаться ваш профиль и статистика использования.
+                    </p>
                 </div>
             </div>
         </div>
-
-            <!-- Image-to-Image Page -->
-            <div id="mj-img2img-page" class="page">
-                <div class="page-header">
-                    <div class="back-button" onclick="showPage('midjourney')">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-                        </svg>
-                    </div>
-                    <div class="page-title">Image-to-Image</div>
-                </div>
-                <div class="mj-content">
-                    <div class="setting-group">
-                        <div class="setting-title">📝 Промпт</div>
-                        <textarea class="setting-input" placeholder="Опишите как изменить изображение..." id="mjImg2ImgPrompt" rows="4"></textarea>
-                    </div>
-
-                    <div class="setting-group">
-                        <div class="setting-title">🖼️ URL изображения</div>
-                        <input type="url" class="setting-input" placeholder="https://example.com/image.jpg" id="mjImageUrl">
-                    </div>
-
-                    <div class="setting-group">
-                        <div class="setting-title">📐 Соотношение сторон</div>
-                        <select class="setting-input" id="mjImg2ImgAspectRatio">
-                            <option value="1:1">1:1 Квадрат</option>
-                            <option value="16:9">16:9 Широкий</option>
-                            <option value="9:16">9:16 Портрет</option>
-                            <option value="4:3">4:3 Стандарт</option>
-                        </select>
-                    </div>
-
-                    <div class="setting-group">
-                        <div class="setting-title">⚡ Скорость</div>
-                        <select class="setting-input" id="mjImg2ImgSpeed">
-                            <option value="relaxed">🐌 Relaxed (Бесплатно)</option>
-                            <option value="fast">⚡ Fast (Стандарт)</option>
-                            <option value="turbo">🚀 Turbo (Премиум)</option>
-                        </select>
-                    </div>
-
-                    <div class="setting-group">
-                        <div class="setting-title">🎨 Версия модели</div>
-                        <select class="setting-input" id="mjImg2ImgVersion">
-                            <option value="7">🎨 Midjourney v7</option>
-                            <option value="6.1">🖼️ Midjourney v6.1</option>
-                            <option value="niji6">🌸 Niji v6 (Аниме)</option>
-                        </select>
-                    </div>
-
-                    <div class="btn-group">
-                        <button class="btn btn-secondary" onclick="showPage('midjourney')">Отмена</button>
-                        <button class="btn" onclick="generateMJImg2Img()">🖼️ Генерировать</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Image-to-Video Page -->
-            <div id="mj-img2video-page" class="page">
-                <div class="page-header">
-                    <div class="back-button" onclick="showPage('midjourney')">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-                        </svg>
-                    </div>
-                    <div class="page-title">Image-to-Video</div>
-                </div>
-                <div class="mj-content">
-                    <div class="setting-group">
-                        <div class="setting-title">📝 Промпт</div>
-                        <textarea class="setting-input" placeholder="Опишите движение и эффекты для видео..." id="mjVideoPrompt" rows="4"></textarea>
-                    </div>
-
-                    <div class="setting-group">
-                        <div class="setting-title">🖼️ URL изображения</div>
-                        <input type="url" class="setting-input" placeholder="https://example.com/image.jpg" id="mjVideoImageUrl">
-                    </div>
-
-                    <div class="setting-group">
-                        <div class="setting-title">⚡ Скорость</div>
-                        <select class="setting-input" id="mjVideoSpeed">
-                            <option value="relaxed">🐌 Relaxed (Бесплатно)</option>
-                            <option value="fast">⚡ Fast (Стандарт)</option>
-                            <option value="turbo">🚀 Turbo (Премиум)</option>
-                        </select>
-                    </div>
-
-                    <div class="setting-group">
-                        <div class="setting-title">🎨 Версия модели</div>
-                        <select class="setting-input" id="mjVideoVersion">
-                            <option value="7">🎨 Midjourney v7</option>
-                            <option value="6.1">🖼️ Midjourney v6.1</option>
-                            <option value="niji6">🌸 Niji v6 (Аниме)</option>
-                        </select>
-                    </div>
-
-                    <div class="btn-group">
-                        <button class="btn btn-secondary" onclick="showPage('midjourney')">Отмена</button>
-                        <button class="btn" onclick="generateMJVideo()">🎬 Генерировать</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Results Area -->
-            <div id="mj-results" class="results-area" style="display: none;">
-                <div class="results-header">
-                    <h3 style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 700;">🎨 Результаты генерации</h3>
-                    <button class="btn btn-secondary" onclick="hideResults()" style="padding: 8px 16px; font-size: 12px;">Закрыть</button>
-                </div>
-                <div id="results-content" class="results-content">
-                    <!-- Результаты будут добавлены сюда -->
-                </div>
-            </div>
     </div>
-
+    
+    <!-- Прогресс -->
+    <div class="progress-overlay" id="progressOverlay">
+        <div class="progress-content">
+            <div class="progress-title">🎨 Генерация изображения...</div>
+            <div class="progress-text" id="progressText">Генерация... (1/20)</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Результаты -->
+    <div class="results-area" id="resultsArea">
+        <button class="close-results" onclick="hideResults()">×</button>
+        <div class="results-title">🎨 Результаты генерации</div>
+        <div class="results-grid" id="resultsGrid"></div>
+    </div>
+    
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        // Инициализация Telegram Web App
         let tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-
-        // Глобальные переменные для результатов
-        let currentResults = [];
-        let currentGenerationType = '';
-
+        tg.enableClosingConfirmation();
+        
+        // Настройка темы
+        if (tg.themeParams.bg_color) {
+            document.body.style.background = tg.themeParams.bg_color;
+        }
+        
         function showPage(pageId) {
             // Скрываем все страницы
             document.querySelectorAll('.page').forEach(page => {
@@ -1588,29 +582,14 @@
             });
             
             // Показываем нужную страницу
-            const page = document.getElementById(pageId + '-page');
-            if (page) {
-                page.classList.add('active');
-                // Прокручиваем к началу страницы
-                page.scrollTop = 0;
-            }
+            document.getElementById(pageId).classList.add('active');
         }
-
-        function showStep(stepNumber) {
-            // Показываем информацию о шаге
-            const stepMessages = {
-                1: 'Для подключения Threads аккаунта нужно ввести токен в настройках',
-                2: 'Настройте системный промпт для генерации контента',
-                3: 'Определите тему и ключевые слова для контента',
-                4: 'Настройте время и частоту публикаций',
-                5: 'Проверьте работу комбайна на тестовом посте',
-                6: 'Запустите автопубликации!'
-            };
-            
-            tg.showAlert(stepMessages[stepNumber] || 'Шаг ' + stepNumber);
+        
+        function connectAccount() {
+            tg.showAlert('🔗 Функция подключения аккаунта будет доступна в следующем обновлении');
         }
-
-        function generateMJImage() {
+        
+        function generateImage() {
             const prompt = document.getElementById('mjPrompt').value;
             const aspectRatio = document.getElementById('mjAspectRatio').value;
             const speed = document.getElementById('mjSpeed').value;
@@ -1619,15 +598,12 @@
             const weirdness = document.getElementById('mjWeirdness').value;
             
             if (!prompt.trim()) {
-                tg.showAlert('Введите описание изображения!');
+                tg.showAlert('❌ Введите описание изображения');
                 return;
             }
             
-            // Показываем прогресс
-            showProgress('🎨 Генерация изображения...', 'Это может занять 1-2 минуты.');
-            
-            // Вызываем API напрямую
-            callMidjourneyAPI('text2img', {
+            showProgress();
+            callMidjourneyAPI({
                 prompt: prompt,
                 aspectRatio: aspectRatio,
                 speed: speed,
@@ -1636,199 +612,48 @@
                 weirdness: weirdness
             });
         }
-
-        function generateMJImg2Img() {
-            const prompt = document.getElementById('mjImg2ImgPrompt').value;
-            const imageUrl = document.getElementById('mjImageUrl').value;
-            const aspectRatio = document.getElementById('mjImg2ImgAspectRatio').value;
-            const speed = document.getElementById('mjImg2ImgSpeed').value;
-            const version = document.getElementById('mjImg2ImgVersion').value;
-            
-            if (!prompt.trim()) {
-                tg.showAlert('Введите описание изменений!');
-                return;
-            }
-            
-            if (!imageUrl.trim()) {
-                tg.showAlert('Введите URL изображения!');
-                return;
-            }
-            
-            // Показываем прогресс
-            showProgress('🖼️ Генерация Image-to-Image...', 'Это может занять 1-2 минуты.');
-            
-            // Вызываем API напрямую
-            callMidjourneyAPI('img2img', {
-                prompt: prompt,
-                imageUrl: imageUrl,
-                aspectRatio: aspectRatio,
-                speed: speed,
-                version: version
-            });
-        }
-
-        function generateMJVideo() {
-            const prompt = document.getElementById('mjVideoPrompt').value;
-            const imageUrl = document.getElementById('mjVideoImageUrl').value;
-            const speed = document.getElementById('mjVideoSpeed').value;
-            const version = document.getElementById('mjVideoVersion').value;
-            
-            if (!prompt.trim()) {
-                tg.showAlert('Введите описание движения!');
-                return;
-            }
-            
-            if (!imageUrl.trim()) {
-                tg.showAlert('Введите URL изображения!');
-                return;
-            }
-            
-            // Показываем прогресс
-            showProgress('🎬 Генерация Image-to-Video...', 'Это может занять 2-3 минуты.');
-            
-            // Вызываем API напрямую
-            callMidjourneyAPI('video', {
-                prompt: prompt,
-                imageUrl: imageUrl,
-                speed: speed,
-                version: version
-            });
-        }
-
-        async function callMidjourneyAPI(type, params) {
+        
+        function callMidjourneyAPI(params) {
             const API_KEY = '008016dd933ebb3715a956218253a571';
             const BASE_URL = 'https://api.kie.ai/api/v1/mj';
             
-            try {
-                // Используем полную документацию API
-                let payload = {
-                    taskType: type === 'text2img' ? 'mj_txt2img' : 
-                              type === 'img2img' ? 'mj_img2img' : 'mj_video',
-                    prompt: params.prompt,
-                    speed: params.speed || 'relaxed',
-                    version: params.version || '7',
-                    stylization: params.stylization || 100, // 0-1000
-                    weirdness: params.weirdness || 100,   // 0-3000
-                    waterMark: '',
-                    callBackUrl: ''
-                };
+            const requestData = {
+                prompt: params.prompt,
+                aspectRatio: params.aspectRatio || '1:1',
+                speed: params.speed || 'relaxed',
+                version: params.version || '7',
+                stylization: params.stylization || 100,
+                weirdness: params.weirdness || 100,
+                waterMark: '',
+                callBackUrl: ''
+            };
+            
+            fetch(`${BASE_URL}/submit-task`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${API_KEY}`
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Submit response:', data);
                 
-                // Добавляем специфичные параметры
-                if (type === 'text2img' || type === 'img2img') {
-                    payload.aspectRatio = params.aspectRatio || '1:1';
-                }
-                
-                if (type === 'img2img' || type === 'video') {
-                    payload.fileUrl = params.imageUrl;
-                }
-                
-                console.log('Sending payload:', payload);
-                
-                // Отправляем запрос на генерацию
-                const response = await fetch(`${BASE_URL}/generate`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${API_KEY}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-                
-                const result = await response.json();
-                console.log('API Response:', result);
-                
-                if (result.code === 200 && result.data && result.data.taskId) {
-                    // Ждем завершения генерации
-                    await waitForCompletion(result.data.taskId, type);
+                if (data.code === 200 && data.data && data.data.taskId) {
+                    waitForCompletion(data.data.taskId, 'image');
                 } else {
-                    throw new Error(result.msg || 'Ошибка генерации');
+                    hideProgress();
+                    tg.showAlert(`❌ Ошибка: ${data.msg || 'Неизвестная ошибка'}`);
                 }
-                
-            } catch (error) {
-                console.error('API Error:', error);
+            })
+            .catch(error => {
+                console.error('Submit error:', error);
                 hideProgress();
                 tg.showAlert(`❌ Ошибка: ${error.message}`);
-            }
+            });
         }
         
-        async function upscaleImage(taskId, imageIndex) {
-            const API_KEY = '008016dd933ebb3715a956218253a571';
-            const BASE_URL = 'https://api.kie.ai/api/v1/mj';
-            
-            try {
-                const payload = {
-                    taskId: taskId,
-                    imageIndex: imageIndex, // 0-3
-                    waterMark: '',
-                    callBackUrl: ''
-                };
-                
-                console.log('Upscaling payload:', payload);
-                
-                const response = await fetch(`${BASE_URL}/generateUpscale`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${API_KEY}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-                
-                const result = await response.json();
-                console.log('Upscale Response:', result);
-                
-                if (result.code === 200 && result.data && result.data.taskId) {
-                    await waitForCompletion(result.data.taskId, 'upscale');
-                } else {
-                    throw new Error(result.msg || 'Ошибка апскейла');
-                }
-                
-            } catch (error) {
-                console.error('Upscale Error:', error);
-                hideProgress();
-                tg.showAlert(`❌ Ошибка апскейла: ${error.message}`);
-            }
-        }
-        
-        async function varyImage(taskId, imageIndex) {
-            const API_KEY = '008016dd933ebb3715a956218253a571';
-            const BASE_URL = 'https://api.kie.ai/api/v1/mj';
-            
-            try {
-                const payload = {
-                    taskId: taskId,
-                    imageIndex: imageIndex, // 1-4
-                    waterMark: '',
-                    callBackUrl: ''
-                };
-                
-                console.log('Vary payload:', payload);
-                
-                const response = await fetch(`${BASE_URL}/generateVary`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${API_KEY}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-                
-                const result = await response.json();
-                console.log('Vary Response:', result);
-                
-                if (result.code === 200 && result.data && result.data.taskId) {
-                    await waitForCompletion(result.data.taskId, 'vary');
-                } else {
-                    throw new Error(result.msg || 'Ошибка вариации');
-                }
-                
-            } catch (error) {
-                console.error('Vary Error:', error);
-                hideProgress();
-                tg.showAlert(`❌ Ошибка вариации: ${error.message}`);
-            }
-        }
-
         async function waitForCompletion(taskId, type) {
             const API_KEY = '008016dd933ebb3715a956218253a571';
             const BASE_URL = 'https://api.kie.ai/api/v1/mj';
@@ -1855,7 +680,7 @@
                             hideProgress();
                             const resultUrls = result.data.resultInfoJson.resultUrls || [];
                             const urls = resultUrls.map(item => item.resultUrl || item.url || item);
-                            showResults(urls, type, taskId); // Передаем taskId
+                            showResults(urls, type, taskId);
                             return;
                         } else if (successFlag === 2 || successFlag === 3) {
                             // Ошибка
@@ -1886,126 +711,62 @@
             hideProgress();
             tg.showAlert('⏰ Время ожидания истекло');
         }
-
-        function showProgress(title, message) {
-            // Создаем или обновляем прогресс-бар
-            let progressBar = document.getElementById('progress-bar');
-            if (!progressBar) {
-                progressBar = document.createElement('div');
-                progressBar.id = 'progress-bar';
-                progressBar.style.cssText = `
-                    position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    background: rgba(0, 0, 0, 0.9);
-                    color: white;
-                    padding: 20px;
-                    border-radius: 12px;
-                    z-index: 10000;
-                    text-align: center;
-                    min-width: 250px;
-                `;
-                document.body.appendChild(progressBar);
-            }
-            
-            progressBar.innerHTML = `
-                <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">${title}</div>
-                <div style="font-size: 14px; margin-bottom: 15px;">${message}</div>
-                <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px;">
-                    <div id="progress-fill" style="width: 0%; height: 100%; background: #667eea; border-radius: 2px; transition: width 0.3s;"></div>
-                </div>
-            `;
+        
+        function showProgress() {
+            document.getElementById('progressOverlay').style.display = 'flex';
+            updateProgress('Генерация... (1/20)');
         }
-
-        function updateProgress(message) {
-            const progressBar = document.getElementById('progress-bar');
-            if (progressBar) {
-                const messageDiv = progressBar.querySelector('div:nth-child(2)');
-                if (messageDiv) {
-                    messageDiv.textContent = message;
-                }
-            }
+        
+        function updateProgress(text) {
+            document.getElementById('progressText').textContent = text;
+            const progress = parseInt(text.match(/\d+/)[0]);
+            const maxProgress = parseInt(text.match(/\/(\d+)/)[1]);
+            const percentage = (progress / maxProgress) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
         }
-
+        
         function hideProgress() {
-            const progressBar = document.getElementById('progress-bar');
-            if (progressBar) {
-                progressBar.remove();
-            }
+            document.getElementById('progressOverlay').style.display = 'none';
         }
-
-        function showResults(results, type, originalTaskId) {
-            const resultsArea = document.getElementById('mj-results');
-            const resultsContent = document.getElementById('results-content');
-            resultsContent.innerHTML = '';
+        
+        function showResults(urls, type, taskId) {
+            const resultsGrid = document.getElementById('resultsGrid');
+            resultsGrid.innerHTML = '';
             
-            results.forEach((result, index) => {
+            urls.forEach((url, index) => {
                 const resultItem = document.createElement('div');
                 resultItem.className = 'result-item';
-                const isVideo = type === 'video';
-                const mediaElement = isVideo ? 'video' : 'img';
-                const mediaUrl = result.resultUrl || result.url || result;
                 
                 resultItem.innerHTML = `
-                    <${mediaElement} src="${mediaUrl}" class="result-image" ${isVideo ? 'controls' : ''} ${isVideo ? 'autoplay' : ''} ${isVideo ? 'muted' : ''}>
-                        ${isVideo ? 'Ваш браузер не поддерживает видео.' : ''}
-                    </${mediaElement}>
-                    <div class="result-title">${isVideo ? 'Видео' : 'Изображение'} ${index + 1}</div>
-                    <div class="result-url">${mediaUrl}</div>
-                    ${!isVideo && originalTaskId ? `
-                        <div class="result-actions">
-                            <button class="btn btn-secondary" onclick="upscaleImage('${originalTaskId}', ${index})" style="margin: 2px; padding: 4px 8px; font-size: 10px;">
-                                🔍 Upscale
-                            </button>
-                            <button class="btn btn-secondary" onclick="varyImage('${originalTaskId}', ${index + 1})" style="margin: 2px; padding: 4px 8px; font-size: 10px;">
-                                🎨 Vary
-                            </button>
-                        </div>
-                    ` : ''}
+                    <img src="${url}" alt="Generated image ${index + 1}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7Qn9C+0LrQsNC30YvQstCw0YLRjCDQv9C+0LrQsNC30YvQstCw0YLRjDwvdGV4dD4KPC9zdmc+'">
+                    <div class="result-actions">
+                        <button class="action-btn" onclick="upscaleImage('${url}', ${index + 1})">🔍 Upscale</button>
+                        <button class="action-btn" onclick="varyImage('${url}', ${index + 1})">🔄 Vary</button>
+                        <button class="action-btn" onclick="downloadImage('${url}')">⬇️ Скачать</button>
+                    </div>
                 `;
-                resultsContent.appendChild(resultItem);
+                
+                resultsGrid.appendChild(resultItem);
             });
             
-            resultsArea.style.display = 'block';
-            tg.showAlert(`✅ Готово! Сгенерировано ${results.length} ${type === 'video' ? 'видео' : 'изображений'}`);
+            document.getElementById('resultsArea').style.display = 'block';
         }
-
+        
         function hideResults() {
-            document.getElementById('mj-results').style.display = 'none';
+            document.getElementById('resultsArea').style.display = 'none';
         }
-
-        // Обработка нажатий на кнопки
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('menu-item') || e.target.closest('.menu-item')) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-        });
-
-        // Инициализация при загрузке
-        document.addEventListener('DOMContentLoaded', function() {
-            // Устанавливаем правильную высоту для Telegram Web App
-            document.body.style.height = '100vh';
-            document.body.style.overflow = 'hidden';
-            
-            // Основной скроллинг только на контейнере
-            const container = document.querySelector('.container');
-            container.style.overflowY = 'auto';
-            container.style.height = '100vh';
-            
-            // Убираем скроллинг с других элементов
-            document.querySelector('.main-content').style.overflow = 'visible';
-            document.querySelectorAll('.form-section').forEach(section => {
-                section.style.overflow = 'visible';
-            });
-            
-            // Добавляем обработчик колесика мыши для контейнера
-            container.addEventListener('wheel', function(e) {
-                // Разрешаем стандартный скроллинг
-                e.stopPropagation();
-            }, { passive: true });
-        });
+        
+        function upscaleImage(url, index) {
+            tg.showAlert(`🔍 Увеличение изображения ${index}...`);
+        }
+        
+        function varyImage(url, index) {
+            tg.showAlert(`🔄 Вариация изображения ${index}...`);
+        }
+        
+        function downloadImage(url) {
+            tg.showAlert('⬇️ Функция скачивания будет доступна в следующем обновлении');
+        }
     </script>
 </body>
 </html> 
