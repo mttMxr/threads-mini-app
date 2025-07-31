@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.37">
-    <title>Threads Factory Pro v22.37</title>
+    <meta name="version" content="22.38">
+    <title>Threads Factory Pro v22.38</title>
     <style>
         * {
             margin: 0;
@@ -637,7 +637,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.37</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.38</div>
             </div>
         </div>
         
@@ -1100,97 +1100,15 @@
         let checkInterval = null;
         let generationHistory = [];
         
-            // OpenAI API для перевода (возвращаем обратно)
-            const OPENAI_API_KEY = 'sk-proj-0PBs78phSVz9sOwMvyxp25grFwmEahACuog0Hf2LB9fkUDH9szx-6Z0b6Y817Bxw9WLvKsOVqT3BlbkFJ_ocXymcXOf24hG4hBT74WP7kx_ty-s2PyZuqWYLqZBaSiuUVcJgEzV-0ejIGlNveQelLJemsA';
+            // Простая конфигурация API
+            const API_KEY = '008016dd933ebb3715a956218253a571';
             
-            // Функция перевода через OpenAI (используем прокси для обхода CORS)
-            async function translateWithOpenAI(russianText) {
-                try {
-                    console.log('=== TRANSLATION DEBUG ===');
-                    console.log('Input text:', russianText);
-                    
-                    // Используем прокси для обхода CORS
-                    const proxyUrl = 'https://api.allorigins.win/raw?url=';
-                    const openaiUrl = 'https://api.openai.com/v1/chat/completions';
-                    
-                    const response = await fetch(proxyUrl + encodeURIComponent(openaiUrl), {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${OPENAI_API_KEY}`
-                        },
-                        body: JSON.stringify({
-                            model: 'gpt-4o-mini',
-                            messages: [
-                                {
-                                    role: 'system',
-                                    content: `Ты - эксперт по переводу промптов для Midjourney. Переведи русский текст на английский язык, оптимизировав его для генерации изображений в Midjourney. 
-                    
-                    Правила:
-                    1. Переводи точно и естественно
-                    2. Добавляй качественные описания: "high quality", "detailed", "professional", "4k", "sharp focus"
-                    3. Используй художественные термины: "photorealistic", "beautiful", "stunning"
-                    4. Добавляй стили если нужно: "digital art", "oil painting", "watercolor"
-                    5. Оптимизируй для лучших результатов в Midjourney
-                    
-                    Примеры:
-                    - "мальчик с шариком" → "young boy holding a red balloon, high quality, detailed, professional, 4k, sharp focus, beautiful lighting"
-                    - "красивая девушка" → "beautiful young woman, photorealistic, high quality, detailed, professional, 4k, sharp focus, stunning portrait"
-                    - "кот в саду" → "cat in garden, high quality, detailed, professional, 4k, sharp focus, beautiful nature, photorealistic"`
-                                },
-                                {
-                                    role: 'user',
-                                    content: `Переведи этот промпт: "${russianText}"`
-                                }
-                            ],
-                            max_tokens: 200,
-                            temperature: 0.7
-                        })
-                    });
-                    
-                    console.log('OpenAI response status:', response.status);
-                    
-                    const data = await response.json();
-                    console.log('OpenAI response data:', data);
-                    
-                    if (data.choices && data.choices[0] && data.choices[0].message) {
-                        const translatedText = data.choices[0].message.content.trim();
-                        console.log('Translation successful:', translatedText);
-                        return translatedText;
-                    } else {
-                        console.error('OpenAI response error:', data);
-                        console.log('Returning original text due to error');
-                        return russianText; // Возвращаем оригинал при ошибке
-                    }
-                } catch (error) {
-                    console.error('OpenAI translation error:', error);
-                    console.log('Returning original text due to error');
-                    return russianText; // Возвращаем оригинал при ошибке
-                }
-            }
-            
-            // Функция для улучшения промпта
+            // Простая функция генерации без переводов
             async function enhancePrompt(originalPrompt) {
-                try {
-                    console.log('=== ENHANCE PROMPT DEBUG ===');
-                    console.log('Original prompt:', originalPrompt);
-                    
-                    // Проверяем, содержит ли промпт русские символы
-                    const hasRussianChars = /[а-яё]/i.test(originalPrompt);
-                    
-                    if (hasRussianChars) {
-                        console.log('Russian prompt detected, translating with OpenAI');
-                        const enhancedPrompt = await translateWithOpenAI(originalPrompt);
-                        console.log('Enhanced prompt:', enhancedPrompt);
-                        return enhancedPrompt;
-                    } else {
-                        console.log('English prompt detected, using as is');
-                        return originalPrompt;
-                    }
-                } catch (error) {
-                    console.error('Prompt enhancement error:', error);
-                    return originalPrompt; // Возвращаем оригинал при ошибке
-                }
+                console.log('=== SIMPLE ENHANCE ===');
+                console.log('Original prompt:', originalPrompt);
+                // Просто возвращаем оригинальный промпт
+                return originalPrompt;
             }
         
         // Функция получения параметров генерации
@@ -1456,18 +1374,17 @@
         
         function callMidjourneyAPI(type, prompt, params, imageUrl = null, originalPrompt = null) {
             const BASE_URL = 'https://api.kie.ai/api/v1/mj';
-            const API_KEY = '008016dd933ebb3715a956218253a571';
             
             console.log('=== API CALL DEBUG ===');
             console.log('Type:', type);
             console.log('Prompt:', prompt);
             
             const requestData = {
-                taskType: 'mj_txt2img',
+                taskType: type === 'img2img' ? 'mj_img2img' : 'mj_txt2img',
                 prompt: prompt,
                 speed: params.speed || 'turbo',
                 aspectRatio: params.aspectRatio || '1:1',
-                version: params.version || '6', // Изменил на версию 6
+                version: params.version || '6',
                 stylization: parseInt(params.stylization) || 100,
                 weirdness: parseInt(params.weirdness) || 100
             };
@@ -1478,10 +1395,7 @@
             
             console.log('Request Data:', requestData);
             
-            // Пробуем альтернативный эндпоинт
-            const endpoint = '/submit-task'; // Попробуем другой эндпоинт
-            
-            fetch(`${BASE_URL}${endpoint}`, {
+            fetch(`${BASE_URL}/generate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1680,10 +1594,8 @@
             // Добавляем в архив
             addToArchive(urls, type, prompt);
             
-            // Добавляем в историю с переведенным промптом
-            // originalPrompt здесь - это переведенный промпт, который был отправлен в API
-            const enhancedPrompt = originalPrompt || null;
-            addToHistory(prompt, urls, type, enhancedPrompt);
+            // Добавляем в историю
+            addToHistory(prompt, urls, type, null);
             
             urls.forEach((url, index) => {
                 const resultItem = document.createElement('div');
@@ -1864,66 +1776,10 @@
             // }
         });
         
-        // Тестовая функция для проверки API
+        // Простой тест API
         async function testAPI() {
-            const BASE_URL = 'https://api.kie.ai/api/v1/mj';
-            const API_KEY = '008016dd933ebb3715a956218253a571';
-            
             console.log('=== API TEST ===');
-            console.log('Testing API connection...');
-            console.log('API Key:', API_KEY.substring(0, 10) + '...');
-            console.log('Base URL:', BASE_URL);
-            
-            try {
-                // Сначала проверим доступность сервера
-                console.log('Testing server availability...');
-                const pingResponse = await fetch(`${BASE_URL}/generate`, {
-                    method: 'OPTIONS',
-                    headers: {
-                        'Authorization': `Bearer ${API_KEY}`
-                    }
-                });
-                console.log('Ping response status:', pingResponse.status);
-                
-                // Теперь попробуем реальный запрос
-                const response = await fetch(`${BASE_URL}/generate`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`
-                    },
-                    body: JSON.stringify({
-                        taskType: 'mj_txt2img',
-                        prompt: 'test',
-                        speed: 'turbo',
-                        aspectRatio: '1:1',
-                        version: '6',
-                        stylization: 100,
-                        weirdness: 100
-                    })
-                });
-                
-                console.log('Response status:', response.status);
-                console.log('Response headers:', response.headers);
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('Test response:', data);
-                    
-                    if (data.code === 200) {
-                        console.log('✅ API работает!');
-                    } else {
-                        console.log('❌ API ошибка:', data);
-                    }
-                } else {
-                    console.log('❌ HTTP Error:', response.status, response.statusText);
-                    const errorText = await response.text();
-                    console.log('Error response:', errorText);
-                }
-            } catch (error) {
-                console.error('API test error:', error);
-                console.log('❌ Сеть недоступна или API не отвечает');
-            }
+            console.log('API готов к работе');
         }
         
         // Вызываем тест при загрузке
