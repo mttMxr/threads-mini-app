@@ -1676,32 +1676,26 @@
             const BASE_URL = 'https://api.kie.ai/api/v1/mj';
             
             try {
-                // Используем точные примеры из документации
-                let payload = {};
+                // Используем полную документацию API
+                let payload = {
+                    taskType: type === 'text2img' ? 'mj_txt2img' : 
+                              type === 'img2img' ? 'mj_img2img' : 'mj_video',
+                    prompt: params.prompt,
+                    speed: params.speed || 'relaxed',
+                    version: params.version || '7',
+                    stylization: 100, // 0-1000
+                    weirdness: 100,   // 0-3000
+                    waterMark: '',
+                    callBackUrl: ''
+                };
                 
-                if (type === 'text2img') {
-                    payload = {
-                        taskType: 'mj_txt2img',
-                        prompt: params.prompt,
-                        speed: params.speed || 'relaxed',
-                        aspectRatio: params.aspectRatio || '1:1',
-                        version: params.version || '7'
-                    };
-                } else if (type === 'img2img') {
-                    payload = {
-                        taskType: 'mj_img2img',
-                        prompt: params.prompt,
-                        fileUrl: params.imageUrl,
-                        aspectRatio: params.aspectRatio || '1:1',
-                        version: params.version || '7'
-                    };
-                } else if (type === 'video') {
-                    payload = {
-                        taskType: 'mj_video',
-                        prompt: params.prompt,
-                        fileUrl: params.imageUrl,
-                        version: params.version || '7'
-                    };
+                // Добавляем специфичные параметры
+                if (type === 'text2img' || type === 'img2img') {
+                    payload.aspectRatio = params.aspectRatio || '1:1';
+                }
+                
+                if (type === 'img2img' || type === 'video') {
+                    payload.fileUrl = params.imageUrl;
                 }
                 
                 console.log('Sending payload:', payload);
@@ -1732,6 +1726,84 @@
                 tg.showAlert(`❌ Ошибка: ${error.message}`);
             }
         }
+        
+        async function upscaleImage(taskId, imageIndex) {
+            const API_KEY = '008016dd933ebb3715a956218253a571';
+            const BASE_URL = 'https://api.kie.ai/api/v1/mj';
+            
+            try {
+                const payload = {
+                    taskId: taskId,
+                    imageIndex: imageIndex, // 0-3
+                    waterMark: '',
+                    callBackUrl: ''
+                };
+                
+                console.log('Upscaling payload:', payload);
+                
+                const response = await fetch(`${BASE_URL}/generateUpscale`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                console.log('Upscale Response:', result);
+                
+                if (result.code === 200 && result.data && result.data.taskId) {
+                    await waitForCompletion(result.data.taskId, 'upscale');
+                } else {
+                    throw new Error(result.msg || 'Ошибка апскейла');
+                }
+                
+            } catch (error) {
+                console.error('Upscale Error:', error);
+                hideProgress();
+                tg.showAlert(`❌ Ошибка апскейла: ${error.message}`);
+            }
+        }
+        
+        async function varyImage(taskId, imageIndex) {
+            const API_KEY = '008016dd933ebb3715a956218253a571';
+            const BASE_URL = 'https://api.kie.ai/api/v1/mj';
+            
+            try {
+                const payload = {
+                    taskId: taskId,
+                    imageIndex: imageIndex, // 1-4
+                    waterMark: '',
+                    callBackUrl: ''
+                };
+                
+                console.log('Vary payload:', payload);
+                
+                const response = await fetch(`${BASE_URL}/generateVary`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                console.log('Vary Response:', result);
+                
+                if (result.code === 200 && result.data && result.data.taskId) {
+                    await waitForCompletion(result.data.taskId, 'vary');
+                } else {
+                    throw new Error(result.msg || 'Ошибка вариации');
+                }
+                
+            } catch (error) {
+                console.error('Vary Error:', error);
+                hideProgress();
+                tg.showAlert(`❌ Ошибка вариации: ${error.message}`);
+            }
+        }
 
         async function waitForCompletion(taskId, type) {
             const API_KEY = '008016dd933ebb3715a956218253a571';
@@ -1749,38 +1821,46 @@
                     });
                     
                     const result = await response.json();
+                    console.log('Status check:', result);
                     
-                    if (result.data && result.data.successFlag === 1) {
-                        // Генерация завершена успешно
-                        const resultUrls = result.data.resultInfoJson?.resultUrls || [];
-                        if (resultUrls.length > 0) {
-                            currentResults = resultUrls;
-                            currentGenerationType = type;
+                    if (result.code === 200 && result.data) {
+                        const successFlag = result.data.successFlag;
+                        
+                        if (successFlag === 1) {
+                            // Успешно завершено
                             hideProgress();
-                            showResults(resultUrls, type === 'video' ? 'video' : 'image');
+                            const resultUrls = result.data.resultInfoJson.resultUrls || [];
+                            const urls = resultUrls.map(item => item.resultUrl || item.url || item);
+                            showResults(urls, type, taskId); // Передаем taskId
+                            return;
+                        } else if (successFlag === 2 || successFlag === 3) {
+                            // Ошибка
+                            hideProgress();
+                            tg.showAlert(`❌ Генерация не удалась: ${result.data.errorMessage || 'Неизвестная ошибка'}`);
                             return;
                         } else {
-                            throw new Error('Не получены результаты');
+                            // Все еще генерируется
+                            updateProgress(`Генерация... (${attempts + 1}/${maxAttempts})`);
                         }
-                    } else if (result.data && result.data.successFlag === 0) {
-                        // Генерация еще в процессе
-                        updateProgress(`Генерация в процессе... (${attempts + 1}/${maxAttempts})`);
-                        await new Promise(resolve => setTimeout(resolve, 5000)); // Ждем 5 секунд
-                        attempts++;
                     } else {
-                        throw new Error('Генерация не удалась');
+                        throw new Error(result.msg || 'Ошибка проверки статуса');
                     }
                     
                 } catch (error) {
-                    console.error('Completion check error:', error);
-                    hideProgress();
-                    tg.showAlert(`❌ Ошибка проверки статуса: ${error.message}`);
-                    return;
+                    console.error('Status check error:', error);
+                    if (attempts >= maxAttempts - 1) {
+                        hideProgress();
+                        tg.showAlert(`❌ Ошибка: ${error.message}`);
+                        return;
+                    }
                 }
+                
+                attempts++;
+                await new Promise(resolve => setTimeout(resolve, 5000)); // Ждем 5 секунд
             }
             
             hideProgress();
-            tg.showAlert('⏰ Превышено время ожидания генерации');
+            tg.showAlert('⏰ Время ожидания истекло');
         }
 
         function showProgress(title, message) {
@@ -1831,16 +1911,14 @@
             }
         }
 
-        function showResults(results, type) {
+        function showResults(results, type, originalTaskId) {
             const resultsArea = document.getElementById('mj-results');
             const resultsContent = document.getElementById('results-content');
-            
             resultsContent.innerHTML = '';
             
             results.forEach((result, index) => {
                 const resultItem = document.createElement('div');
                 resultItem.className = 'result-item';
-                
                 const isVideo = type === 'video';
                 const mediaElement = isVideo ? 'video' : 'img';
                 const mediaUrl = result.resultUrl || result.url || result;
@@ -1851,14 +1929,21 @@
                     </${mediaElement}>
                     <div class="result-title">${isVideo ? 'Видео' : 'Изображение'} ${index + 1}</div>
                     <div class="result-url">${mediaUrl}</div>
+                    ${!isVideo && originalTaskId ? `
+                        <div class="result-actions">
+                            <button class="btn btn-secondary" onclick="upscaleImage('${originalTaskId}', ${index})" style="margin: 2px; padding: 4px 8px; font-size: 10px;">
+                                🔍 Upscale
+                            </button>
+                            <button class="btn btn-secondary" onclick="varyImage('${originalTaskId}', ${index + 1})" style="margin: 2px; padding: 4px 8px; font-size: 10px;">
+                                🎨 Vary
+                            </button>
+                        </div>
+                    ` : ''}
                 `;
-                
                 resultsContent.appendChild(resultItem);
             });
             
             resultsArea.style.display = 'block';
-            
-            // Показываем уведомление об успехе
             tg.showAlert(`✅ Готово! Сгенерировано ${results.length} ${type === 'video' ? 'видео' : 'изображений'}`);
         }
 
