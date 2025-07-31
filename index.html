@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.51">
-    <title>Threads Factory Pro v22.51</title>
+    <meta name="version" content="22.52">
+    <title>Threads Factory Pro v22.52</title>
     <style>
         * {
             margin: 0;
@@ -713,7 +713,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.51</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.52</div>
             </div>
         </div>
         
@@ -1835,7 +1835,7 @@
                 id: taskId,
                 type: type, // 'generate', 'upscale', 'vary'
                 description: description,
-                startTime: new Date().toISOString(), // Сохраняем как строку для localStorage
+                startTime: new Date(), // Сохраняем как объект Date
                 status: 'processing'
             };
             
@@ -1847,18 +1847,24 @@
         
         // Функция сохранения активных задач
         function saveActiveTasks() {
-            localStorage.setItem('activeTasks', JSON.stringify(activeTasks));
+            // Конвертируем объекты Date в строки для localStorage
+            const tasksToSave = activeTasks.map(task => ({
+                ...task,
+                startTime: task.startTime.toISOString()
+            }));
+            localStorage.setItem('activeTasks', JSON.stringify(tasksToSave));
         }
         
         // Функция загрузки активных задач
         function loadActiveTasks() {
             const saved = localStorage.getItem('activeTasks');
             if (saved) {
-                activeTasks = JSON.parse(saved);
+                const savedTasks = JSON.parse(saved);
                 // Конвертируем строки времени обратно в объекты Date
-                activeTasks.forEach(task => {
-                    task.startTime = new Date(task.startTime);
-                });
+                activeTasks = savedTasks.map(task => ({
+                    ...task,
+                    startTime: new Date(task.startTime)
+                }));
                 updateActiveTasksDisplay();
                 console.log('✅ Загружены активные задачи:', activeTasks);
             }
@@ -1928,9 +1934,21 @@
         
         // Функция форматирования времени
         function formatTime(startTime) {
-            const now = new Date();
-            const diff = Math.floor((now - startTime) / 1000);
-            return `${diff}с`;
+            try {
+                const now = new Date();
+                const start = new Date(startTime);
+                
+                // Проверяем, что startTime валидная дата
+                if (isNaN(start.getTime())) {
+                    return '0с';
+                }
+                
+                const diff = Math.floor((now - start) / 1000);
+                return `${diff}с`;
+            } catch (error) {
+                console.error('Error formatting time:', error);
+                return '0с';
+            }
         }
         
         // Функция отслеживания задачи
