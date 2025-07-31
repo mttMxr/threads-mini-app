@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.31">
-    <title>Threads Factory Pro v22.31</title>
+    <meta name="version" content="22.32">
+    <title>Threads Factory Pro v22.32</title>
     <style>
         * {
             margin: 0;
@@ -637,7 +637,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.31</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.32</div>
             </div>
         </div>
         
@@ -1092,7 +1092,7 @@
         }
         
         function connectAccount() {
-            tg.showAlert('🔗 Функция подключения аккаунта будет доступна в следующем обновлении');
+            console.log('🔗 Функция подключения аккаунта будет доступна в следующем обновлении');
         }
         
         let currentTaskId = null;
@@ -1100,7 +1100,7 @@
         let checkInterval = null;
         let generationHistory = [];
         
-                    // Функция отправки промпта боту для перевода
+            // Функция отправки промпта боту для перевода
             async function translatePromptWithBot(russianText) {
                 try {
                     console.log('=== BOT TRANSLATION DEBUG ===');
@@ -1112,9 +1112,6 @@
                         prompt: russianText
                     }));
                     
-                    // Показываем уведомление пользователю
-                    tg.showAlert('Перевод промпта отправлен боту. Проверьте чат с ботом для результата.');
-                    
                     // Возвращаем оригинальный текст, так как перевод будет в чате
                     return russianText;
                 } catch (error) {
@@ -1122,30 +1119,31 @@
                     return russianText; // Возвращаем оригинал при ошибке
                 }
             }
-        
-        // Функция для улучшения промпта через бота
-        async function enhancePrompt(originalPrompt) {
-            try {
-                console.log('=== ENHANCE PROMPT DEBUG ===');
-                console.log('Original prompt:', originalPrompt);
-                
-                // Проверяем, содержит ли промпт русские символы
-                const hasRussianChars = /[а-яё]/i.test(originalPrompt);
-                
-                if (hasRussianChars) {
-                    console.log('Russian prompt detected, sending to bot for translation');
-                    const enhancedPrompt = await translatePromptWithBot(originalPrompt);
-                    console.log('Enhanced prompt from bot:', enhancedPrompt);
-                    return enhancedPrompt;
-                } else {
-                    console.log('English prompt detected, using as is');
-                    return originalPrompt;
+            
+            // Функция для улучшения промпта через бота
+            async function enhancePrompt(originalPrompt) {
+                try {
+                    console.log('=== ENHANCE PROMPT DEBUG ===');
+                    console.log('Original prompt:', originalPrompt);
+                    
+                    // Проверяем, содержит ли промпт русские символы
+                    const hasRussianChars = /[а-яё]/i.test(originalPrompt);
+                    
+                    if (hasRussianChars) {
+                        console.log('Russian prompt detected, sending to bot for translation');
+                        // Отправляем в бот для перевода, но пока используем оригинал
+                        await translatePromptWithBot(originalPrompt);
+                        console.log('Translation sent to bot, using original for now');
+                        return originalPrompt; // Пока используем оригинал
+                    } else {
+                        console.log('English prompt detected, using as is');
+                        return originalPrompt;
+                    }
+                } catch (error) {
+                    console.error('Prompt enhancement error:', error);
+                    return originalPrompt; // Возвращаем оригинал при ошибке
                 }
-            } catch (error) {
-                console.error('Prompt enhancement error:', error);
-                return originalPrompt; // Возвращаем оригинал при ошибке
             }
-        }
         
         // Функция получения параметров генерации
         function getGenerationParams() {
@@ -1268,13 +1266,13 @@
         
         function generateImage() {
             if (isGenerating) {
-                tg.showAlert('⏳ Генерация уже запущена. Дождитесь завершения.');
+                console.log('⏳ Генерация уже запущена. Дождитесь завершения.');
                 return;
             }
             
             const originalPrompt = document.getElementById('mjPrompt').value;
             if (!originalPrompt.trim()) {
-                tg.showAlert('❌ Введите промпт для генерации');
+                console.log('❌ Введите промпт для генерации');
                 return;
             }
             
@@ -1289,13 +1287,13 @@
                 console.error('Prompt enhancement failed:', error);
                 isGenerating = false;
                 hideProgress();
-                tg.showAlert('❌ Ошибка перевода промпта');
+                console.log('❌ Ошибка перевода промпта');
             });
         }
         
         function generateImg2Img() {
             if (isGenerating) {
-                tg.showAlert('⏳ Генерация уже запущена. Дождитесь завершения.');
+                console.log('⏳ Генерация уже запущена. Дождитесь завершения.');
                 return;
             }
             
@@ -1303,12 +1301,12 @@
             const imageUrl = document.getElementById('mjImg2ImgUrl').value;
             
             if (!originalPrompt.trim()) {
-                tg.showAlert('❌ Введите промпт для генерации');
+                console.log('❌ Введите промпт для генерации');
                 return;
             }
             
             if (!imageUrl.trim()) {
-                tg.showAlert('❌ Введите URL изображения');
+                console.log('❌ Введите URL изображения');
                 return;
             }
             
@@ -1323,7 +1321,7 @@
                 console.error('Prompt enhancement failed:', error);
                 isGenerating = false;
                 hideProgress();
-                tg.showAlert('❌ Ошибка перевода промпта');
+                console.log('❌ Ошибка перевода промпта');
             });
         }
         
@@ -1334,12 +1332,12 @@
             const version = document.getElementById('mjVideoVersion').value;
             
             if (!prompt.trim()) {
-                tg.showAlert('❌ Введите описание движения');
+                console.log('❌ Введите описание движения');
                 return;
             }
             
             if (!imageUrl.trim()) {
-                tg.showAlert('❌ Введите URL изображения');
+                console.log('❌ Введите URL изображения');
                 return;
             }
             
@@ -1357,13 +1355,13 @@
             const file = fileInput.files[0];
             
             if (!file) {
-                tg.showAlert('❌ Выберите изображение');
+                console.log('❌ Выберите изображение');
                 return;
             }
             
             showProgress();
             // Здесь будет логика для Describe
-            tg.showAlert('🔍 Функция Describe будет доступна в следующем обновлении');
+            console.log('🔍 Функция Describe будет доступна в следующем обновлении');
             hideProgress();
         }
         
@@ -1372,18 +1370,18 @@
             const files = fileInput.files;
             
             if (files.length < 2) {
-                tg.showAlert('❌ Выберите минимум 2 изображения');
+                console.log('❌ Выберите минимум 2 изображения');
                 return;
             }
             
             if (files.length > 5) {
-                tg.showAlert('❌ Максимум 5 изображений');
+                console.log('❌ Максимум 5 изображений');
                 return;
             }
             
             showProgress();
             // Здесь будет логика для Blend
-            tg.showAlert('🌄 + 🌆 Функция Blend будет доступна в следующем обновлении');
+            console.log('🌄 + 🌆 Функция Blend будет доступна в следующем обновлении');
             hideProgress();
         }
         
@@ -1393,18 +1391,18 @@
             const file = fileInput.files[0];
             
             if (!file) {
-                tg.showAlert('❌ Выберите изображение');
+                console.log('❌ Выберите изображение');
                 return;
             }
             
             if (!prompt.trim()) {
-                tg.showAlert('❌ Введите промпт для редактирования');
+                console.log('❌ Введите промпт для редактирования');
                 return;
             }
             
             showProgress();
             // Здесь будет логика для Editor
-            tg.showAlert('✂️ Функция Editor будет доступна в следующем обновлении');
+            console.log('✂️ Функция Editor будет доступна в следующем обновлении');
             hideProgress();
         }
         
@@ -1461,14 +1459,13 @@
                     hideProgress();
                     const errorMsg = data.msg || data.error || 'Неизвестная ошибка';
                     console.error('API Error:', errorMsg);
-                    tg.showAlert(`❌ Ошибка: ${errorMsg}`);
+                    console.log(`❌ Ошибка: ${errorMsg}`);
                 }
             })
             .catch(error => {
                 console.error('Submit error:', error);
-                isGenerating = false;
-                hideProgress();
-                tg.showAlert(`❌ Ошибка сети: ${error.message}`);
+                // Убираем tg.showAlert, так как он не поддерживается
+                console.log('❌ Ошибка отправки запроса');
             });
         }
         
@@ -1494,19 +1491,19 @@
                         isGenerating = false;
                         hideProgress();
                         showResults(result.urls, type, taskId, originalPrompt);
-                        tg.showAlert('✅ Генерация завершена!');
+                        console.log('✅ Генерация завершена!');
                     } else if (result.failed) {
                         // Ошибка
                         clearInterval(checkInterval);
                         isGenerating = false;
                         hideProgress();
-                        tg.showAlert('❌ Генерация не удалась');
+                        console.log('❌ Генерация не удалась');
                     } else if (attempts >= maxAttempts) {
                         // Превышено время
                         clearInterval(checkInterval);
                         isGenerating = false;
                         hideProgress();
-                        tg.showAlert('⏰ Время ожидания истекло. Проверьте результат позже.');
+                        console.log('⏰ Время ожидания истекло. Проверьте результат позже.');
                     } else {
                         // Все еще генерируется
                         updateProgress(`�� Генерация в процессе... (${attempts}s)`);
@@ -1517,7 +1514,7 @@
                         clearInterval(checkInterval);
                         isGenerating = false;
                         hideProgress();
-                        tg.showAlert('❌ Ошибка проверки статуса');
+                        console.log('❌ Ошибка проверки статуса');
                     }
                 });
             }, 5000); // Проверяем каждые 5 секунд
@@ -1657,7 +1654,7 @@
             });
             
             document.getElementById('resultsArea').style.display = 'block';
-            tg.showAlert(`✅ Готово! Сгенерировано ${urls.length} изображений`);
+            console.log(`✅ Готово! Сгенерировано ${urls.length} изображений`);
         }
         
         function hideResults() {
@@ -1685,15 +1682,15 @@
             .then(response => response.json())
             .then(data => {
                 if (data.code === 200 && data.data && data.data.taskId) {
-                    tg.showAlert('🔍 Upscale запущен');
+                    console.log('🔍 Upscale запущен');
                     // Можно добавить отслеживание upscale
                 } else {
-                    tg.showAlert('❌ Ошибка upscale');
+                    console.log('❌ Ошибка upscale');
                 }
             })
             .catch(error => {
                 console.error('Upscale error:', error);
-                tg.showAlert('❌ Ошибка upscale');
+                console.log('❌ Ошибка upscale');
             });
         }
         
@@ -1718,20 +1715,20 @@
             .then(response => response.json())
             .then(data => {
                 if (data.code === 200 && data.data && data.data.taskId) {
-                    tg.showAlert('🔄 Vary запущен');
+                    console.log('🔄 Vary запущен');
                     // Можно добавить отслеживание vary
                 } else {
-                    tg.showAlert('❌ Ошибка vary');
+                    console.log('❌ Ошибка vary');
                 }
             })
             .catch(error => {
                 console.error('Vary error:', error);
-                tg.showAlert('❌ Ошибка vary');
+                console.log('❌ Ошибка vary');
             });
         }
         
         function downloadImage(url) {
-            tg.showAlert('⬇️ Функция скачивания будет доступна в следующем обновлении');
+            console.log('⬇️ Функция скачивания будет доступна в следующем обновлении');
         }
         
         function updateSliderValue(slider, valueId) {
@@ -1787,7 +1784,7 @@
             imageArchive = imageArchive.filter(item => item.id !== id);
             localStorage.setItem('mjArchive', JSON.stringify(imageArchive));
             updateArchiveDisplay();
-            tg.showAlert('🗑️ Удалено из архива');
+            console.log('🗑️ Удалено из архива');
         }
         
         // Загружаем архив при старте
