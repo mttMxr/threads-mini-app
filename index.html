@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.26">
-    <title>Threads Factory Pro v22.26</title>
+    <meta name="version" content="22.27">
+    <title>Threads Factory Pro v22.27</title>
     <style>
         * {
             margin: 0;
@@ -629,7 +629,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.26</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.27</div>
             </div>
         </div>
         
@@ -1093,10 +1093,14 @@
         let generationHistory = [];
         
         // OpenAI API для перевода
-        const OPENAI_API_KEY = 'YOUR_OPENAI_API_KEY'; // Замените на ваш ключ
+        const OPENAI_API_KEY = 'sk-proj-0PBs78phSVz9sOwMvyxp25grFwmEahACuog0HfzLB9fkUDH9szx-6Z0b6Y817Bxw9WLvKsOVqT3BlbkFJ_ocXymcXOf24hG4hBT74WP7kx_ty-s2PyZuqWYLqZBaSiuUVcJgEzV-0ejIGlNveQelLJemsA';
         
         // Функция перевода через OpenAI
         async function translateWithOpenAI(russianText) {
+            console.log('=== TRANSLATION DEBUG ===');
+            console.log('Input text:', russianText);
+            console.log('API Key:', OPENAI_API_KEY.substring(0, 20) + '...');
+            
             try {
                 const response = await fetch('https://api.openai.com/v1/chat/completions', {
                     method: 'POST',
@@ -1134,16 +1138,23 @@
                     })
                 });
                 
+                console.log('OpenAI response status:', response.status);
+                
                 const data = await response.json();
+                console.log('OpenAI response data:', data);
                 
                 if (data.choices && data.choices[0] && data.choices[0].message) {
-                    return data.choices[0].message.content.trim();
+                    const translatedText = data.choices[0].message.content.trim();
+                    console.log('Translation successful:', translatedText);
+                    return translatedText;
                 } else {
                     console.error('OpenAI response error:', data);
+                    console.log('Returning original text due to error');
                     return russianText; // Возвращаем оригинал при ошибке
                 }
             } catch (error) {
                 console.error('OpenAI translation error:', error);
+                console.log('Returning original text due to error');
                 return russianText; // Возвращаем оригинал при ошибке
             }
         }
