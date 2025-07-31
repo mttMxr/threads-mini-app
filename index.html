@@ -39,54 +39,57 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
-        /* Premium Header */
+        /* Premium Header Section - компактный дизайн */
         .header {
-            text-align: center;
-            padding: 24px 20px;
+            padding: 16px 20px;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             position: sticky;
             top: 0;
             z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
+            width: 40px;
+            height: 40px;
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 16px;
-            font-size: 32px;
-            color: white;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            border: 3px solid rgba(255,255,255,0.3);
-            animation: pulse 2s infinite;
+            font-size: 18px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            border: 2px solid rgba(255,255,255,0.3);
+            flex-shrink: 0;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        .header-text {
+            flex: 1;
+            min-width: 0;
         }
 
         .bot-name {
-            font-size: 24px;
+            font-size: 16px;
             font-weight: 800;
-            margin-bottom: 6px;
             color: #ffffff;
+            margin-bottom: 2px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            letter-spacing: -0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .bot-description {
-            font-size: 14px;
+            font-size: 12px;
             color: rgba(255,255,255,0.8);
-            margin-bottom: 12px;
             font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* Убираем кнопку "Узнать больше" */
@@ -634,8 +637,10 @@
         <!-- Premium Header Section -->
         <div class="header">
             <div class="avatar">🏭</div>
-            <div class="bot-name">THREADS FACTORY PRO</div>
-            <div class="bot-description">Премиум автоматизация публикаций</div>
+            <div class="header-text">
+                <div class="bot-name">THREADS FACTORY PRO</div>
+                <div class="bot-description">Премиум автоматизация публикаций</div>
+            </div>
         </div>
 
         <!-- Main Content -->
