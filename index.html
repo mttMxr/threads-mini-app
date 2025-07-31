@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.47">
-    <title>Threads Factory Pro v22.47</title>
+    <meta name="version" content="22.48">
+    <title>Threads Factory Pro v22.48</title>
     <style>
         * {
             margin: 0;
@@ -533,6 +533,74 @@
             cursor: pointer;
         }
         
+        /* Активные процессы */
+        .active-processes {
+            margin-top: 20px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .active-tasks {
+            margin-top: 10px;
+        }
+        
+        .active-task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e1e5e9;
+        }
+        
+        .task-info {
+            flex: 1;
+        }
+        
+        .task-type {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .task-description {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 2px;
+        }
+        
+        .task-time {
+            font-size: 11px;
+            color: #999;
+        }
+        
+        .task-status {
+            text-align: right;
+        }
+        
+        .status-indicator {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .status-indicator.processing {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+        
+        .no-tasks {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+        }
+        
         /* История генераций */
         .generation-history {
             margin-top: 20px;
@@ -637,7 +705,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.47</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.48</div>
             </div>
         </div>
         
@@ -820,6 +888,17 @@
                     </div>
                     <div class="inline-progress-bar">
                         <div class="inline-progress-fill" id="inlineProgressFill"></div>
+                    </div>
+                </div>
+                
+                <!-- Текущие процессы -->
+                <div class="active-processes" id="activeProcesses">
+                    <div class="section-title">
+                        <span class="icon">⚙️</span>
+                        Текущие процессы
+                    </div>
+                    <div id="activeTasks" class="active-tasks">
+                        <div class="no-tasks">Нет активных задач</div>
                     </div>
                 </div>
                 
@@ -1100,6 +1179,7 @@
         let checkInterval = null;
         let generationHistory = [];
         let lastGeneratedTaskId = null; // Сохраняем taskId последней генерации
+        let activeTasks = []; // Массив активных задач (генерация, upscale, vary)
         
             // Простая конфигурация API
             const API_KEY = '008016dd933ebb3715a956218253a571';
@@ -1424,8 +1504,8 @@
                     lastGeneratedTaskId = data.data.taskId; // Сохраняем для Upscale/Vary
                     console.log('✅ Task ID received:', data.data.taskId);
                     
-                    // Запускаем адаптивную проверку
-                    startAdaptiveCheck(data.data.taskId, type, originalPrompt);
+                    // Запускаем отслеживание
+                    trackTask(data.data.taskId, 'generate', originalPrompt || 'Генерация изображения');
                 } else if (data.code === 200 && data.data && data.data.imageUrl) {
                     // Прямой результат без отслеживания
                     const urls = Array.isArray(data.data.imageUrl) ? data.data.imageUrl : [data.data.imageUrl];
@@ -1720,7 +1800,7 @@
                         console.log('🔍 Upscale запущен');
                         showAlert('🔍 Upscale запущен! Ожидайте результат...');
                         // Начинаем отслеживание
-                        trackTask(data.data.taskId);
+                        trackTask(data.data.taskId, 'upscale', `Upscale изображения ${index}`);
                     } else {
                         console.log('❌ Ошибка upscale:', data);
                         showAlert('❌ Ошибка upscale: ' + (data.message || 'Неизвестная ошибка'));
@@ -1772,7 +1852,7 @@
                         console.log('🔄 Vary запущен');
                         showAlert('🔄 Vary запущен! Ожидайте результат...');
                         // Начинаем отслеживание
-                        trackTask(data.data.taskId);
+                        trackTask(data.data.taskId, 'vary', `Vary изображения ${index}`);
                     } else {
                         console.log('❌ Ошибка vary:', data);
                         showAlert('❌ Ошибка vary: ' + (data.message || 'Неизвестная ошибка'));
@@ -1907,19 +1987,86 @@
             }
         }
         
+        // Функция добавления активной задачи
+        function addActiveTask(taskId, type, description) {
+            const task = {
+                id: taskId,
+                type: type, // 'generate', 'upscale', 'vary'
+                description: description,
+                startTime: new Date(),
+                status: 'processing'
+            };
+            
+            activeTasks.push(task);
+            updateActiveTasksDisplay();
+            console.log('✅ Добавлена активная задача:', task);
+        }
+        
+        // Функция удаления активной задачи
+        function removeActiveTask(taskId) {
+            activeTasks = activeTasks.filter(task => task.id !== taskId);
+            updateActiveTasksDisplay();
+            console.log('✅ Удалена активная задача:', taskId);
+        }
+        
+        // Функция обновления отображения активных задач
+        function updateActiveTasksDisplay() {
+            const activeTasksContainer = document.getElementById('activeTasks');
+            if (!activeTasksContainer) return;
+            
+            if (activeTasks.length === 0) {
+                activeTasksContainer.innerHTML = '<div class="no-tasks">Нет активных задач</div>';
+                return;
+            }
+            
+            activeTasksContainer.innerHTML = activeTasks.map(task => `
+                <div class="active-task">
+                    <div class="task-info">
+                        <div class="task-type">${getTaskTypeIcon(task.type)} ${task.type.toUpperCase()}</div>
+                        <div class="task-description">${task.description}</div>
+                        <div class="task-time">${formatTime(task.startTime)}</div>
+                    </div>
+                    <div class="task-status">
+                        <div class="status-indicator processing">⏳ Обрабатывается...</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Функция получения иконки типа задачи
+        function getTaskTypeIcon(type) {
+            switch(type) {
+                case 'generate': return '🎨';
+                case 'upscale': return '🔍';
+                case 'vary': return '🔄';
+                default: return '⚙️';
+            }
+        }
+        
+        // Функция форматирования времени
+        function formatTime(startTime) {
+            const now = new Date();
+            const diff = Math.floor((now - startTime) / 1000);
+            return `${diff}с`;
+        }
+        
         // Функция отслеживания задачи
-        function trackTask(taskId) {
+        function trackTask(taskId, type = 'generate', description = 'Генерация изображения') {
             console.log('=== TRACKING TASK ===');
             console.log('Task ID:', taskId);
+            console.log('Type:', type);
             
             if (!taskId) {
                 console.log('❌ Нет taskId для отслеживания');
                 return;
             }
             
+            // Добавляем в активные задачи
+            addActiveTask(taskId, type, description);
+            
             // Проверяем статус каждые 5 секунд
             const checkStatus = () => {
-                fetch(`https://api.kie.ai/api/v1/mj/query?taskId=${taskId}`, {
+                fetch(`https://api.kie.ai/api/v1/mj/record-info?taskId=${taskId}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${API_KEY}`
@@ -1929,17 +2076,20 @@
                 .then(data => {
                     console.log('Task status:', data);
                     
-                    if (data.code === 200 && data.data && data.data.status === 'SUCCESS') {
+                    if (data.code === 200 && data.data && data.data.successFlag === 1) {
                         console.log('✅ Задача завершена!');
+                        removeActiveTask(taskId);
                         showAlert('✅ Готово! Результат получен');
                         
                         // Показываем результат
-                        if (data.data.imageUrl) {
-                            showResults([data.data.imageUrl], 'upscale', 'Результат upscale');
+                        if (data.data.resultInfoJson && data.data.resultInfoJson.resultUrls) {
+                            const urls = data.data.resultInfoJson.resultUrls.map(item => item.resultUrl);
+                            showResults(urls, type, taskId, description);
                         }
-                    } else if (data.code === 200 && data.data && data.data.status === 'FAILED') {
+                    } else if (data.code === 200 && data.data && (data.data.successFlag === 2 || data.data.successFlag === 3)) {
                         console.log('❌ Задача провалилась');
-                        showAlert('❌ Задача провалилась: ' + (data.data.message || 'Неизвестная ошибка'));
+                        removeActiveTask(taskId);
+                        showAlert('❌ Задача провалилась: ' + (data.data.errorMessage || 'Неизвестная ошибка'));
                     } else {
                         // Продолжаем отслеживание
                         setTimeout(checkStatus, 5000);
@@ -1964,12 +2114,6 @@
         window.addEventListener('load', () => {
             setTimeout(testAPI, 1000);
         });
-
-        // Убираем автоматический перевод при вводе
-        function showTranslation() {
-            // Убираем автоматический перевод - он будет только при генерации
-            console.log('Translation function called but disabled for now');
-        }
 
     </script>
 </body>
