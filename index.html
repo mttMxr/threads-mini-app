@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.21">
-    <title>Threads Factory Pro v22.21</title>
+    <meta name="version" content="22.22">
+    <title>Threads Factory Pro v22.22</title>
     <style>
         * {
             margin: 0;
@@ -636,6 +636,7 @@
             font-size: 10px;
             cursor: pointer;
             transition: all 0.2s ease;
+            position: relative;
         }
         
         .help-icon:hover {
@@ -656,9 +657,10 @@
             visibility: hidden;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            pointer-events: none;
         }
         
-        .tooltip.show {
+        .help-icon:hover .tooltip {
             opacity: 1;
             visibility: visible;
         }
@@ -682,7 +684,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.21</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.22</div>
             </div>
         </div>
         
@@ -816,7 +818,12 @@
                 <div class="setting-group">
                     <div class="setting-title-with-help">
                         <span>🎨 Стилизация</span>
-                        <div class="help-icon" onclick="showTooltip(event, 'stylization-tooltip')">?</div>
+                        <div class="help-icon">
+                            ?
+                            <div class="tooltip">
+                                Контролирует художественный стиль изображения. Низкие значения = более реалистично, высокие = более стилизованно
+                            </div>
+                        </div>
                     </div>
                     <div class="slider-container">
                         <input type="range" min="0" max="1000" value="100" class="slider" id="mjStylization" oninput="updateSliderValue(this, 'stylizationValue')">
@@ -826,15 +833,17 @@
                             <span class="slider-label">Стилизованно</span>
                         </div>
                     </div>
-                    <div class="tooltip" id="stylization-tooltip">
-                        Контролирует художественный стиль изображения. Низкие значения = более реалистично, высокие = более стилизованно
-                    </div>
                 </div>
                 
                 <div class="setting-group">
                     <div class="setting-title-with-help">
                         <span>🎭 Креативность</span>
-                        <div class="help-icon" onclick="showTooltip(event, 'weirdness-tooltip')">?</div>
+                        <div class="help-icon">
+                            ?
+                            <div class="tooltip">
+                                Управляет необычностью и креативностью изображения. Высокие значения создают более странные и уникальные результаты
+                            </div>
+                        </div>
                     </div>
                     <div class="slider-container">
                         <input type="range" min="0" max="3000" value="100" class="slider" id="mjWeirdness" oninput="updateSliderValue(this, 'weirdnessValue')">
@@ -843,9 +852,6 @@
                             <span class="slider-number" id="weirdnessValue">100</span>
                             <span class="slider-label">Креативно</span>
                         </div>
-                    </div>
-                    <div class="tooltip" id="weirdness-tooltip">
-                        Управляет необычностью и креативностью изображения. Высокие значения создают более странные и уникальные результаты
                     </div>
                 </div>
                 
@@ -912,7 +918,7 @@
                 </div>
                 
                 <div class="setting-group">
-                    <div class="setting-title">🖼 Соотношение сторон</div>
+                    <div class="setting-title">�� Соотношение сторон</div>
                     <select class="setting-input" id="mjImg2ImgAspectRatio">
                         <option value="1:1">1:1 Квадрат</option>
                         <option value="16:9">16:9 Горизонтальный</option>
@@ -1876,40 +1882,7 @@
             }
         });
         
-        // Функции для всплывающих подсказок
-        function showTooltip(event, tooltipId) {
-            event.stopPropagation();
-            
-            // Скрываем все существующие подсказки
-            hideAllTooltips();
-            
-            const tooltip = document.getElementById(tooltipId);
-            if (tooltip) {
-                const rect = event.target.getBoundingClientRect();
-                tooltip.style.left = rect.left + 'px';
-                tooltip.style.top = (rect.bottom + 5) + 'px';
-                tooltip.classList.add('show');
-                
-                // Автоматически скрываем через 3 секунды
-                setTimeout(() => {
-                    tooltip.classList.remove('show');
-                }, 3000);
-            }
-        }
-        
-        function hideAllTooltips() {
-            const tooltips = document.querySelectorAll('.tooltip');
-            tooltips.forEach(tooltip => {
-                tooltip.classList.remove('show');
-            });
-        }
-        
-        // Скрываем подсказки при клике вне их
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.help-icon') && !event.target.closest('.tooltip')) {
-                hideAllTooltips();
-            }
-        });
+
     </script>
 </body>
 </html>
