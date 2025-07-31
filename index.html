@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Threads Factory Pro</title>
+    <title>Threads Factory Pro v2.0</title>
     <style>
         * {
             margin: 0;
@@ -89,21 +89,9 @@
             font-weight: 500;
         }
 
+        /* Убираем кнопку "Узнать больше" */
         .learn-more {
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: 600;
-            background: rgba(255,255,255,0.2);
-            padding: 6px 12px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .learn-more:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-1px);
+            display: none;
         }
 
         /* Main Content */
@@ -187,24 +175,24 @@
             flex-shrink: 0;
         }
 
-        /* Premium Buttons */
+        /* Premium Buttons - уменьшаем размер */
         .btn {
             border: 0;
             border-radius: 12px;
-            padding: 16px 24px;
-            font-size: 16px;
-            font-weight: 700;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
             color: #ffffff;
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
             width: 100%;
-            margin-top: 16px;
+            margin-top: 12px;
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
             text-align: center;
             -webkit-tap-highlight-color: transparent;
-            box-shadow: 0 8px 24px rgba(255,107,107,0.3);
+            box-shadow: 0 4px 16px rgba(255,107,107,0.3);
             position: relative;
             overflow: hidden;
         }
@@ -226,7 +214,7 @@
 
         .btn:active {
             transform: scale(0.98);
-            box-shadow: 0 4px 16px rgba(255,107,107,0.4);
+            box-shadow: 0 2px 8px rgba(255,107,107,0.4);
         }
 
         .btn-secondary {
@@ -234,7 +222,7 @@
             color: #ffffff;
             border: 1px solid rgba(255,255,255,0.3);
             backdrop-filter: blur(10px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .btn-disabled {
@@ -340,15 +328,12 @@
             background: rgba(255,255,255,0.15);
         }
 
+        /* Убираем закрепление кнопок */
         .btn-group {
             display: flex;
             gap: 12px;
             margin-top: 24px;
-            position: sticky;
-            bottom: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px 0;
-            border-top: 1px solid rgba(255,255,255,0.2);
+            padding: 0;
         }
 
         .btn-group .btn {
@@ -547,7 +532,6 @@
             <div class="avatar">🏭</div>
             <div class="bot-name">THREADS FACTORY PRO</div>
             <div class="bot-description">Премиум автоматизация публикаций</div>
-            <a href="#" class="learn-more">Узнать больше ></a>
         </div>
 
         <!-- Main Content -->
