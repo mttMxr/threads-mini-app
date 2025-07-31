@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.32">
-    <title>Threads Factory Pro v22.32</title>
+    <meta name="version" content="22.33">
+    <title>Threads Factory Pro v22.33</title>
     <style>
         * {
             margin: 0;
@@ -637,7 +637,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.32</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.33</div>
             </div>
         </div>
         
@@ -1812,6 +1812,51 @@
             }
         });
         
+        // Тестовая функция для проверки API
+        async function testAPI() {
+            const BASE_URL = 'https://api.kie.ai/api/v1/mj';
+            const API_KEY = '008016dd933ebb3715a956218253a571';
+            
+            console.log('=== API TEST ===');
+            console.log('Testing API connection...');
+            
+            try {
+                const response = await fetch(`${BASE_URL}/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        taskType: 'mj_txt2img',
+                        prompt: 'test',
+                        speed: 'turbo',
+                        aspectRatio: '1:1',
+                        version: '6',
+                        stylization: 100,
+                        weirdness: 100
+                    }),
+                    timeout: 30000 // 30 секунд таймаут
+                });
+                
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Test response:', data);
+                
+                if (data.code === 200) {
+                    console.log('✅ API работает!');
+                } else {
+                    console.log('❌ API ошибка:', data);
+                }
+            } catch (error) {
+                console.error('API test error:', error);
+            }
+        }
+        
+        // Вызываем тест при загрузке
+        window.addEventListener('load', () => {
+            setTimeout(testAPI, 1000);
+        });
 
     </script>
 </body>
