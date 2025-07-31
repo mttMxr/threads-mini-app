@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.43">
-    <title>Threads Factory Pro v22.43</title>
+    <meta name="version" content="22.44">
+    <title>Threads Factory Pro v22.44</title>
     <style>
         * {
             margin: 0;
@@ -637,7 +637,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.43</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.44</div>
             </div>
         </div>
         
@@ -1384,6 +1384,7 @@
                 prompt: prompt,
                 speed: params.speed || 'turbo',
                 aspectRatio: params.aspectRatio || '1:1',
+                version: params.version || '6',
                 stylization: parseInt(params.stylization) || 100,
                 weirdness: parseInt(params.weirdness) || 100
             };
@@ -1677,7 +1678,8 @@
             const requestData = {
                 taskType: 'mj_upscale',
                 fileUrl: imageUrl,
-                index: index
+                index: index,
+                version: '6'
             };
             
             console.log('Upscale request data:', requestData);
@@ -1722,7 +1724,8 @@
             const requestData = {
                 taskType: 'mj_vary',
                 fileUrl: imageUrl,
-                index: index
+                index: index,
+                version: '6'
             };
             
             console.log('Vary request data:', requestData);
