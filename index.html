@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>ThreadsZavod</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>ThreadsZavod v2.0</title>
     <style>
         * {
             margin: 0;
@@ -29,7 +32,7 @@
             min-height: 100vh;
             padding: 0;
             margin: 0;
-            overflow-y: auto;
+            overflow-y: auto !important;
             overflow-x: hidden;
         }
 
@@ -109,7 +112,7 @@
         /* Main Content */
         .main-content {
             padding: 0 20px 20px;
-            overflow-y: auto;
+            overflow-y: auto !important;
         }
 
         .section-title {
@@ -291,7 +294,7 @@
             display: none;
             padding: 16px;
             min-height: calc(100vh - 200px);
-            overflow-y: auto;
+            overflow-y: auto !important;
         }
 
         .form-section.active {
@@ -473,6 +476,12 @@
             font-size: 14px;
             color: var(--tg-theme-text-color, #000000);
         }
+
+        /* Force scroll for testing */
+        .test-scroll {
+            height: 200vh;
+            background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
+        }
     </style>
 </head>
 <body class="tg-web-app">
@@ -480,7 +489,7 @@
         <!-- Header Section -->
         <div class="header">
             <div class="avatar">🏭</div>
-            <div class="bot-name">ThreadsZavod</div>
+            <div class="bot-name">ThreadsZavod v2.0</div>
             <div class="bot-description">Автоматизация публикаций в Threads</div>
             <a href="#" class="learn-more">Узнать больше ></a>
         </div>
@@ -909,6 +918,12 @@
             
             // Включаем скроллинг для контейнера
             document.querySelector('.container').style.overflowY = 'auto';
+            
+            // Принудительно включаем скроллинг
+            document.querySelector('.main-content').style.overflowY = 'auto';
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.style.overflowY = 'auto';
+            });
         });
     </script>
 </body>
