@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>ThreadsZavod v5.0 - BOTFATHER SCROLL</title>
+    <title>ThreadsZavod - Автоматизация публикаций</title>
     <style>
         * {
             margin: 0;
@@ -25,7 +25,6 @@
             color: var(--tg-theme-text-color, #000000);
             line-height: 1.4;
             position: relative;
-            /* Убираем принудительный скроллинг с body */
             overflow: hidden;
         }
 
@@ -34,7 +33,6 @@
             height: 100vh;
             padding: 0;
             margin: 0;
-            /* Основной скроллинг только на контейнере */
             overflow-y: auto;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
@@ -116,7 +114,6 @@
         /* Main Content */
         .main-content {
             padding: 0 20px 20px;
-            /* Убираем скроллинг с main-content */
             overflow: visible;
         }
 
@@ -299,7 +296,6 @@
             display: none;
             padding: 16px;
             min-height: calc(100vh - 200px);
-            /* Убираем скроллинг с секций */
             overflow: visible;
         }
 
@@ -482,47 +478,6 @@
             font-size: 14px;
             color: var(--tg-theme-text-color, #000000);
         }
-
-        /* Test content for scrolling */
-        .test-content {
-            background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
-            padding: 20px;
-            margin: 10px 0;
-            border-radius: 8px;
-        }
-
-        .test-item {
-            background: white;
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
-            border-left: 3px solid var(--tg-theme-button-color, #0088cc);
-        }
-
-        /* Mouse wheel scroll test */
-        .mouse-scroll-test {
-            background: #e8f4fd;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: 2px dashed #0088cc;
-        }
-
-        /* Extra content to test scrolling */
-        .extra-content {
-            background: #f9f9f9;
-            padding: 20px;
-            margin: 10px 0;
-            border-radius: 8px;
-        }
-
-        .extra-item {
-            background: white;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border-left: 3px solid #4CAF50;
-        }
     </style>
 </head>
 <body class="tg-web-app">
@@ -530,8 +485,8 @@
         <!-- Header Section -->
         <div class="header">
             <div class="avatar">🏭</div>
-            <div class="bot-name">ThreadsZavod v5.0</div>
-            <div class="bot-description">Скроллинг как в BotFather!</div>
+            <div class="bot-name">ThreadsZavod</div>
+            <div class="bot-description">Автоматизация публикаций в Threads</div>
             <a href="#" class="learn-more">Узнать больше ></a>
         </div>
 
@@ -548,22 +503,6 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="section-title">Настройки</div>
-
-            <!-- Test content to verify scrolling -->
-            <div class="test-content">
-                <h3>🧪 ТЕСТ СКРОЛЛИНГА</h3>
-                <p>Если ты видишь этот текст, значит скроллинг работает!</p>
-                <div class="test-item">✅ Элемент 1</div>
-                <div class="test-item">✅ Элемент 2</div>
-                <div class="test-item">✅ Элемент 3</div>
-            </div>
-
-            <!-- Mouse wheel scroll test -->
-            <div class="mouse-scroll-test">
-                <h3>🖱️ ТЕСТ КОЛЕСИКА МЫШИ</h3>
-                <p>Попробуй прокрутить колесиком мыши вниз!</p>
-                <p>Если видишь этот текст, значит колесико работает!</p>
-            </div>
 
             <!-- Menu Items -->
             <div class="menu-item" onclick="showSection('quick-start')">
@@ -619,21 +558,6 @@
                 <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
                 </svg>
-            </div>
-
-            <!-- Extra content to test scrolling -->
-            <div class="extra-content">
-                <h3>📝 Дополнительный контент для тестирования скроллинга</h3>
-                <div class="extra-item">📋 Пункт 1: Настройка API ключей</div>
-                <div class="extra-item">📋 Пункт 2: Создание системного промпта</div>
-                <div class="extra-item">📋 Пункт 3: Настройка контент-плана</div>
-                <div class="extra-item">📋 Пункт 4: Установка расписания</div>
-                <div class="extra-item">📋 Пункт 5: Тестирование публикаций</div>
-                <div class="extra-item">📋 Пункт 6: Запуск автоматизации</div>
-                <div class="extra-item">📋 Пункт 7: Мониторинг результатов</div>
-                <div class="extra-item">📋 Пункт 8: Анализ статистики</div>
-                <div class="extra-item">📋 Пункт 9: Оптимизация настроек</div>
-                <div class="extra-item">📋 Пункт 10: Масштабирование</div>
             </div>
 
             <!-- Quick Start Section -->
