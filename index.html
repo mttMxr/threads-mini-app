@@ -1676,29 +1676,33 @@
             const BASE_URL = 'https://api.kie.ai/api/v1/mj';
             
             try {
-                // Определяем тип задачи
-                let taskType = '';
-                let payload = {
-                    speed: params.speed || 'relaxed',
-                    version: params.version || '7'
-                };
+                // Используем точные примеры из документации
+                let payload = {};
                 
                 if (type === 'text2img') {
-                    taskType = 'mj_txt2img';
-                    payload.prompt = params.prompt;
-                    payload.aspectRatio = params.aspectRatio || '1:1';
+                    payload = {
+                        taskType: 'mj_txt2img',
+                        prompt: params.prompt,
+                        speed: params.speed || 'relaxed',
+                        aspectRatio: params.aspectRatio || '1:1',
+                        version: params.version || '7'
+                    };
                 } else if (type === 'img2img') {
-                    taskType = 'mj_img2img';
-                    payload.prompt = params.prompt;
-                    payload.fileUrl = params.imageUrl;
-                    payload.aspectRatio = params.aspectRatio || '1:1';
+                    payload = {
+                        taskType: 'mj_img2img',
+                        prompt: params.prompt,
+                        fileUrl: params.imageUrl,
+                        aspectRatio: params.aspectRatio || '1:1',
+                        version: params.version || '7'
+                    };
                 } else if (type === 'video') {
-                    taskType = 'mj_video';
-                    payload.prompt = params.prompt;
-                    payload.fileUrl = params.imageUrl;
+                    payload = {
+                        taskType: 'mj_video',
+                        prompt: params.prompt,
+                        fileUrl: params.imageUrl,
+                        version: params.version || '7'
+                    };
                 }
-                
-                payload.taskType = taskType;
                 
                 console.log('Sending payload:', payload);
                 
