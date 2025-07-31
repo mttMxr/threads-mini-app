@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.44">
-    <title>Threads Factory Pro v22.44</title>
+    <meta name="version" content="22.45">
+    <title>Threads Factory Pro v22.45</title>
     <style>
         * {
             margin: 0;
@@ -637,7 +637,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.44</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.45</div>
             </div>
         </div>
         
@@ -1508,32 +1508,42 @@
             const BASE_URL = 'https://api.kie.ai/api/v1/mj';
             const API_KEY = '008016dd933ebb3715a956218253a571';
             
+            console.log('=== CHECK TASK STATUS DEBUG ===');
+            console.log('Task ID:', taskId);
+            console.log('Type:', type);
+            
             try {
-                const response = await fetch(`${BASE_URL}/record-info?taskId=${taskId}`, {
+                const response = await fetch(`${BASE_URL}/query?taskId=${taskId}`, {
                     headers: {
                         'Authorization': `Bearer ${API_KEY}`
                     }
                 });
                 
+                console.log('Status response status:', response.status);
                 const data = await response.json();
-                console.log('Status response:', data);
+                console.log('Status response data:', data);
                 
                 if (data.code === 200 && data.data) {
                     const successFlag = data.data.successFlag;
+                    console.log('Success flag:', successFlag);
                     
                     if (successFlag === 1 && data.data.resultInfoJson && data.data.resultInfoJson.resultUrls) {
                         // Успешно завершено
                         const urls = data.data.resultInfoJson.resultUrls.map(item => item.resultUrl);
+                        console.log('✅ Task completed, URLs:', urls);
                         return { success: true, urls: urls };
                     } else if (successFlag === 2 || successFlag === 3) {
                         // Ошибка
+                        console.log('❌ Task failed');
                         return { failed: true };
                     } else if (successFlag === 0) {
                         // Все еще генерируется
+                        console.log('⏳ Task still processing');
                         return { success: false, failed: false };
                     }
                 }
                 
+                console.log('❌ Unknown status response');
                 return { success: false, failed: false };
             } catch (error) {
                 console.error('Status check error:', error);
