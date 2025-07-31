@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>ThreadsZavod v4.0 - MOUSE SCROLL</title>
+    <title>ThreadsZavod v5.0 - BOTFATHER SCROLL</title>
     <style>
         * {
             margin: 0;
@@ -25,18 +25,17 @@
             color: var(--tg-theme-text-color, #000000);
             line-height: 1.4;
             position: relative;
-            /* Принудительно включаем скроллинг */
-            overflow-y: scroll !important;
-            -webkit-overflow-scrolling: touch;
+            /* Убираем принудительный скроллинг с body */
+            overflow: hidden;
         }
 
         .container {
             width: 100%;
-            min-height: 100vh;
+            height: 100vh;
             padding: 0;
             margin: 0;
-            /* Принудительно включаем скроллинг */
-            overflow-y: scroll !important;
+            /* Основной скроллинг только на контейнере */
+            overflow-y: auto;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
         }
@@ -117,9 +116,8 @@
         /* Main Content */
         .main-content {
             padding: 0 20px 20px;
-            /* Принудительно включаем скроллинг */
-            overflow-y: scroll !important;
-            -webkit-overflow-scrolling: touch;
+            /* Убираем скроллинг с main-content */
+            overflow: visible;
         }
 
         .section-title {
@@ -301,9 +299,8 @@
             display: none;
             padding: 16px;
             min-height: calc(100vh - 200px);
-            /* Принудительно включаем скроллинг */
-            overflow-y: scroll !important;
-            -webkit-overflow-scrolling: touch;
+            /* Убираем скроллинг с секций */
+            overflow: visible;
         }
 
         .form-section.active {
@@ -502,12 +499,6 @@
             border-left: 3px solid var(--tg-theme-button-color, #0088cc);
         }
 
-        /* Force scroll for mouse wheel */
-        .scrollable-content {
-            height: 200vh;
-            background: linear-gradient(to bottom, #ffffff, #f0f0f0);
-        }
-
         /* Mouse wheel scroll test */
         .mouse-scroll-test {
             background: #e8f4fd;
@@ -516,6 +507,22 @@
             border-radius: 8px;
             border: 2px dashed #0088cc;
         }
+
+        /* Extra content to test scrolling */
+        .extra-content {
+            background: #f9f9f9;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+
+        .extra-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 3px solid #4CAF50;
+        }
     </style>
 </head>
 <body class="tg-web-app">
@@ -523,8 +530,8 @@
         <!-- Header Section -->
         <div class="header">
             <div class="avatar">🏭</div>
-            <div class="bot-name">ThreadsZavod v4.0</div>
-            <div class="bot-description">Колесико мыши работает!</div>
+            <div class="bot-name">ThreadsZavod v5.0</div>
+            <div class="bot-description">Скроллинг как в BotFather!</div>
             <a href="#" class="learn-more">Узнать больше ></a>
         </div>
 
@@ -612,6 +619,21 @@
                 <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
                 </svg>
+            </div>
+
+            <!-- Extra content to test scrolling -->
+            <div class="extra-content">
+                <h3>📝 Дополнительный контент для тестирования скроллинга</h3>
+                <div class="extra-item">📋 Пункт 1: Настройка API ключей</div>
+                <div class="extra-item">📋 Пункт 2: Создание системного промпта</div>
+                <div class="extra-item">📋 Пункт 3: Настройка контент-плана</div>
+                <div class="extra-item">📋 Пункт 4: Установка расписания</div>
+                <div class="extra-item">📋 Пункт 5: Тестирование публикаций</div>
+                <div class="extra-item">📋 Пункт 6: Запуск автоматизации</div>
+                <div class="extra-item">📋 Пункт 7: Мониторинг результатов</div>
+                <div class="extra-item">📋 Пункт 8: Анализ статистики</div>
+                <div class="extra-item">📋 Пункт 9: Оптимизация настроек</div>
+                <div class="extra-item">📋 Пункт 10: Масштабирование</div>
             </div>
 
             <!-- Quick Start Section -->
@@ -964,27 +986,24 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Устанавливаем правильную высоту для Telegram Web App
             document.body.style.height = '100vh';
-            document.body.style.overflow = 'scroll';
+            document.body.style.overflow = 'hidden';
             
-            // Включаем скроллинг для контейнера
-            document.querySelector('.container').style.overflowY = 'scroll';
-            document.querySelector('.main-content').style.overflowY = 'scroll';
+            // Основной скроллинг только на контейнере
+            const container = document.querySelector('.container');
+            container.style.overflowY = 'auto';
+            container.style.height = '100vh';
+            
+            // Убираем скроллинг с других элементов
+            document.querySelector('.main-content').style.overflow = 'visible';
             document.querySelectorAll('.form-section').forEach(section => {
-                section.style.overflowY = 'scroll';
+                section.style.overflow = 'visible';
             });
             
-            // Принудительно включаем скроллинг
-            setTimeout(() => {
-                document.querySelector('.container').style.overflowY = 'scroll';
-                document.querySelector('.main-content').style.overflowY = 'scroll';
-                
-                // Добавляем обработчик колесика мыши
-                document.addEventListener('wheel', function(e) {
-                    e.preventDefault();
-                    const container = document.querySelector('.container');
-                    container.scrollTop += e.deltaY;
-                }, { passive: false });
-            }, 100);
+            // Добавляем обработчик колесика мыши для контейнера
+            container.addEventListener('wheel', function(e) {
+                // Разрешаем стандартный скроллинг
+                e.stopPropagation();
+            }, { passive: true });
         });
     </script>
 </body>
