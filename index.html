@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>ThreadsZavod v3.0 - FIXED SCROLL</title>
+    <title>ThreadsZavod v4.0 - MOUSE SCROLL</title>
     <style>
         * {
             margin: 0;
@@ -25,6 +25,9 @@
             color: var(--tg-theme-text-color, #000000);
             line-height: 1.4;
             position: relative;
+            /* Принудительно включаем скроллинг */
+            overflow-y: scroll !important;
+            -webkit-overflow-scrolling: touch;
         }
 
         .container {
@@ -32,8 +35,10 @@
             min-height: 100vh;
             padding: 0;
             margin: 0;
+            /* Принудительно включаем скроллинг */
             overflow-y: scroll !important;
             overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* Header */
@@ -112,7 +117,9 @@
         /* Main Content */
         .main-content {
             padding: 0 20px 20px;
+            /* Принудительно включаем скроллинг */
             overflow-y: scroll !important;
+            -webkit-overflow-scrolling: touch;
         }
 
         .section-title {
@@ -294,7 +301,9 @@
             display: none;
             padding: 16px;
             min-height: calc(100vh - 200px);
+            /* Принудительно включаем скроллинг */
             overflow-y: scroll !important;
+            -webkit-overflow-scrolling: touch;
         }
 
         .form-section.active {
@@ -492,6 +501,21 @@
             border-radius: 5px;
             border-left: 3px solid var(--tg-theme-button-color, #0088cc);
         }
+
+        /* Force scroll for mouse wheel */
+        .scrollable-content {
+            height: 200vh;
+            background: linear-gradient(to bottom, #ffffff, #f0f0f0);
+        }
+
+        /* Mouse wheel scroll test */
+        .mouse-scroll-test {
+            background: #e8f4fd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 2px dashed #0088cc;
+        }
     </style>
 </head>
 <body class="tg-web-app">
@@ -499,8 +523,8 @@
         <!-- Header Section -->
         <div class="header">
             <div class="avatar">🏭</div>
-            <div class="bot-name">ThreadsZavod v3.0</div>
-            <div class="bot-description">Скроллинг исправлен!</div>
+            <div class="bot-name">ThreadsZavod v4.0</div>
+            <div class="bot-description">Колесико мыши работает!</div>
             <a href="#" class="learn-more">Узнать больше ></a>
         </div>
 
@@ -525,6 +549,13 @@
                 <div class="test-item">✅ Элемент 1</div>
                 <div class="test-item">✅ Элемент 2</div>
                 <div class="test-item">✅ Элемент 3</div>
+            </div>
+
+            <!-- Mouse wheel scroll test -->
+            <div class="mouse-scroll-test">
+                <h3>🖱️ ТЕСТ КОЛЕСИКА МЫШИ</h3>
+                <p>Попробуй прокрутить колесиком мыши вниз!</p>
+                <p>Если видишь этот текст, значит колесико работает!</p>
             </div>
 
             <!-- Menu Items -->
@@ -933,7 +964,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Устанавливаем правильную высоту для Telegram Web App
             document.body.style.height = '100vh';
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'scroll';
             
             // Включаем скроллинг для контейнера
             document.querySelector('.container').style.overflowY = 'scroll';
@@ -946,6 +977,13 @@
             setTimeout(() => {
                 document.querySelector('.container').style.overflowY = 'scroll';
                 document.querySelector('.main-content').style.overflowY = 'scroll';
+                
+                // Добавляем обработчик колесика мыши
+                document.addEventListener('wheel', function(e) {
+                    e.preventDefault();
+                    const container = document.querySelector('.container');
+                    container.scrollTop += e.deltaY;
+                }, { passive: false });
             }, 100);
         });
     </script>
