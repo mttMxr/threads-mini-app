@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.12">
-    <title>Threads Factory Pro v22.12</title>
+    <meta name="version" content="22.13">
+    <title>Threads Factory Pro v22.13</title>
     <style>
         * {
             margin: 0;
@@ -496,7 +496,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.12</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.13</div>
             </div>
         </div>
         
@@ -1072,8 +1072,19 @@
         }
         
         function callMidjourneyAPI(type, prompt, params, imageUrl = null) {
-            const BASE_URL = 'https://api.kie.ai/api/v1/mj';
+            // Пробуем разные варианты эндпоинтов
+            const BASE_URLS = [
+                'https://api.kie.ai/api/v1/mj',
+                'https://api.kie.ai/mj',
+                'https://api.kie.ai/api/mj'
+            ];
             const API_KEY = '008016dd933ebb3715a956218253a571';
+            
+            console.log('=== API CALL DEBUG ===');
+            console.log('Type:', type);
+            console.log('Prompt:', prompt);
+            console.log('Params:', params);
+            console.log('ImageUrl:', imageUrl);
             
             const requestData = {
                 taskType: type === 'img2img' ? 'mj_img2img' : 'mj_txt2img',
@@ -1089,7 +1100,11 @@
                 requestData.fileUrl = imageUrl;
             }
             
-            console.log('Sending request:', requestData);
+            console.log('Request Data:', requestData);
+            
+            // Пробуем первый эндпоинт
+            const BASE_URL = BASE_URLS[0];
+            console.log('Trying URL:', `${BASE_URL}/generate`);
             
             fetch(`${BASE_URL}/generate`, {
                 method: 'POST',
@@ -1101,6 +1116,25 @@
             })
             .then(response => {
                 console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                if (!response.ok) {
+                    console.log('First endpoint failed, trying alternative...');
+                    // Если первый не работает, пробуем второй
+                    return fetch(`${BASE_URLS[1]}/generate`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${API_KEY}`
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+                }
+                return response;
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
                 return response.json();
             })
             .then(data => {
@@ -1109,11 +1143,13 @@
                 if (data.code === 200 && data.data && data.data.taskId) {
                     currentTaskId = data.data.taskId;
                     currentAttempts = 0;
+                    console.log('Task ID received:', data.data.taskId);
                     waitForCompletion(data.data.taskId, type);
                 } else {
                     isGenerating = false;
                     hideProgress();
                     const errorMsg = data.msg || data.error || 'Неизвестная ошибка';
+                    console.error('API Error:', errorMsg);
                     tg.showAlert(`❌ Ошибка: ${errorMsg}`);
                 }
             })
