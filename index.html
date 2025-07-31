@@ -6,8 +6,8 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="version" content="22.6">
-    <title>Threads Factory Pro v22.6</title>
+    <meta name="version" content="22.7">
+    <title>Threads Factory Pro v22.7</title>
     <style>
         * {
             margin: 0;
@@ -430,6 +430,67 @@
             font-size: 11px;
             font-weight: 600;
         }
+        
+        /* Встроенный прогресс-бар */
+        .inline-progress {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .progress-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .progress-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .progress-info {
+            flex: 1;
+        }
+        
+        .progress-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .progress-text {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .inline-progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e1e5e9;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        
+        .inline-progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -438,7 +499,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.6</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.7</div>
             </div>
         </div>
         
@@ -607,6 +668,20 @@
                         🎨 Генерировать
                     </button>
                 </div>
+                
+                <!-- Встроенный прогресс-бар -->
+                <div class="inline-progress" id="inlineProgress">
+                    <div class="progress-header">
+                        <div class="progress-icon">🎨</div>
+                        <div class="progress-info">
+                            <div class="progress-title">Генерация изображения...</div>
+                            <div class="progress-text" id="inlineProgressText">Генерация... (1/20)</div>
+                        </div>
+                    </div>
+                    <div class="inline-progress-bar">
+                        <div class="inline-progress-fill" id="inlineProgressFill"></div>
+                    </div>
+                </div>
             </div>
             
             <!-- Image-to-Image -->
@@ -658,6 +733,20 @@
                     <button class="btn btn-primary" onclick="generateImg2Img()">
                         🖼️ Генерировать
                     </button>
+                </div>
+                
+                <!-- Встроенный прогресс-бар -->
+                <div class="inline-progress" id="inlineProgressImg2Img">
+                    <div class="progress-header">
+                        <div class="progress-icon">🖼️</div>
+                        <div class="progress-info">
+                            <div class="progress-title">Генерация Image-to-Image...</div>
+                            <div class="progress-text" id="inlineProgressTextImg2Img">Генерация... (1/20)</div>
+                        </div>
+                    </div>
+                    <div class="inline-progress-bar">
+                        <div class="inline-progress-fill" id="inlineProgressFillImg2Img"></div>
+                    </div>
                 </div>
             </div>
             
@@ -815,17 +904,6 @@
                         Здесь будет отображаться ваш профиль и статистика использования.
                     </p>
                 </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Прогресс -->
-    <div class="progress-overlay" id="progressOverlay">
-        <div class="progress-content">
-            <div class="progress-title">🎨 Генерация изображения...</div>
-            <div class="progress-text" id="progressText">Генерация... (1/20)</div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
             </div>
         </div>
     </div>
@@ -1118,20 +1196,48 @@
         }
         
         function showProgress() {
-            document.getElementById('progressOverlay').style.display = 'flex';
-            updateProgress('Генерация... (1/20)');
+            const currentPage = document.querySelector('.page.active').id;
+            let progressId = 'inlineProgress';
+            
+            if (currentPage === 'mj-img2img') {
+                progressId = 'inlineProgressImg2Img';
+            }
+            
+            document.getElementById(progressId).style.display = 'block';
+            updateInlineProgress('Генерация... (1/20)', progressId);
         }
         
         function updateProgress(text) {
-            document.getElementById('progressText').textContent = text;
+            const currentPage = document.querySelector('.page.active').id;
+            let progressId = 'inlineProgress';
+            
+            if (currentPage === 'mj-img2img') {
+                progressId = 'inlineProgressImg2Img';
+            }
+            
+            updateInlineProgress(text, progressId);
+        }
+        
+        function updateInlineProgress(text, progressId = 'inlineProgress') {
+            const textId = progressId === 'inlineProgress' ? 'inlineProgressText' : 'inlineProgressTextImg2Img';
+            const fillId = progressId === 'inlineProgress' ? 'inlineProgressFill' : 'inlineProgressFillImg2Img';
+            
+            document.getElementById(textId).textContent = text;
             const progress = parseInt(text.match(/\d+/)[0]);
             const maxProgress = parseInt(text.match(/\/(\d+)/)[1]);
             const percentage = (progress / maxProgress) * 100;
-            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById(fillId).style.width = percentage + '%';
         }
         
         function hideProgress() {
-            document.getElementById('progressOverlay').style.display = 'none';
+            const currentPage = document.querySelector('.page.active').id;
+            let progressId = 'inlineProgress';
+            
+            if (currentPage === 'mj-img2img') {
+                progressId = 'inlineProgressImg2Img';
+            }
+            
+            document.getElementById(progressId).style.display = 'none';
         }
         
         function showResults(urls, type, taskId) {
