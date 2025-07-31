@@ -6,8 +6,8 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="version" content="20.1">
-    <title>Threads Factory Pro v20.1</title>
+    <meta name="version" content="20.2">
+    <title>Threads Factory Pro v20.2</title>
     <style>
         * {
             margin: 0;
@@ -1015,7 +1015,7 @@
                 </div>
                 <div class="header-text">
                     <div class="bot-name">THREADS FACTORY PRO</div>
-                    <div class="bot-description">Премиум автоматизация публикаций v20.1</div>
+                    <div class="bot-description">Премиум автоматизация публикаций v20.2</div>
                 </div>
             </div>
 
@@ -1429,6 +1429,26 @@
                     </select>
                 </div>
 
+                <div class="setting-group">
+                    <div class="setting-title">🎨 Стилизация</div>
+                    <select class="setting-input" id="mjStylization">
+                        <option value="0">0 - Реалистично</option>
+                        <option value="100" selected>100 - Сбалансированно</option>
+                        <option value="500">500 - Художественно</option>
+                        <option value="1000">1000 - Максимально стилизованно</option>
+                    </select>
+                </div>
+                
+                <div class="setting-group">
+                    <div class="setting-title">🎭 Креативность</div>
+                    <select class="setting-input" id="mjWeirdness">
+                        <option value="0">0 - Обычно</option>
+                        <option value="100" selected>100 - Сбалансированно</option>
+                        <option value="1500">1500 - Креативно</option>
+                        <option value="3000">3000 - Максимально креативно</option>
+                    </select>
+                </div>
+
                 <div class="btn-group">
                     <button class="btn btn-secondary" onclick="showPage('midjourney')">Отмена</button>
                     <button class="btn" onclick="generateMJImage()">🎨 Генерировать</button>
@@ -1595,6 +1615,8 @@
             const aspectRatio = document.getElementById('mjAspectRatio').value;
             const speed = document.getElementById('mjSpeed').value;
             const version = document.getElementById('mjVersion').value;
+            const stylization = document.getElementById('mjStylization').value;
+            const weirdness = document.getElementById('mjWeirdness').value;
             
             if (!prompt.trim()) {
                 tg.showAlert('Введите описание изображения!');
@@ -1609,7 +1631,9 @@
                 prompt: prompt,
                 aspectRatio: aspectRatio,
                 speed: speed,
-                version: version
+                version: version,
+                stylization: stylization,
+                weirdness: weirdness
             });
         }
 
@@ -1683,8 +1707,8 @@
                     prompt: params.prompt,
                     speed: params.speed || 'relaxed',
                     version: params.version || '7',
-                    stylization: 100, // 0-1000
-                    weirdness: 100,   // 0-3000
+                    stylization: params.stylization || 100, // 0-1000
+                    weirdness: params.weirdness || 100,   // 0-3000
                     waterMark: '',
                     callBackUrl: ''
                 };
@@ -1810,7 +1834,7 @@
             const BASE_URL = 'https://api.kie.ai/api/v1/mj';
             
             let attempts = 0;
-            const maxAttempts = 60; // 5 минут (5 секунд * 60)
+            const maxAttempts = 20; // 2 минуты (6 секунд * 20)
             
             while (attempts < maxAttempts) {
                 try {
@@ -1856,7 +1880,7 @@
                 }
                 
                 attempts++;
-                await new Promise(resolve => setTimeout(resolve, 5000)); // Ждем 5 секунд
+                await new Promise(resolve => setTimeout(resolve, 6000)); // Ждем 6 секунд
             }
             
             hideProgress();
