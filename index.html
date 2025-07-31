@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreadsZavod - Автоматизация публикаций</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            color: var(--tg-theme-text-color);
+            background: var(--tg-theme-bg-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            padding: 24px 20px;
+            background: var(--tg-theme-bg-color);
+            border-bottom: 1px solid var(--tg-theme-hint-color, rgba(255,255,255,0.1));
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 32px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .bot-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--tg-theme-text-color);
+        }
+
+        .bot-description {
+            font-size: 16px;
+            color: var(--tg-theme-hint-color);
+            margin-bottom: 16px;
+            opacity: 0.8;
+        }
+
+        .learn-more {
+            color: var(--tg-theme-button-color, #0088cc);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Search Bar */
+        .search-container {
+            padding: 16px 20px;
+            background: var(--tg-theme-bg-color);
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--tg-theme-hint-color, rgba(255,255,255,0.2));
+            border-radius: 8px;
+            background: var(--tg-theme-secondary-bg-color, rgba(255,255,255,0.05));
+            color: var(--tg-theme-text-color);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .search-icon {
+            width: 16px;
+            height: 16px;
+            opacity: 0.6;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 24px 0 16px;
+            color: var(--tg-theme-text-color);
+        }
+
+        /* Menu Items */
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--tg-theme-hint-color, rgba(255,255,255,0.1));
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            background: var(--tg-theme-secondary-bg-color, rgba(255,255,255,0.05));
+            margin: 0 -20px;
+            padding: 16px 20px;
+        }
+
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 18px;
+            color: white;
+        }
+
+        .menu-text {
+            flex: 1;
+        }
+
+        .menu-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--tg-theme-text-color);
+            margin-bottom: 2px;
+        }
+
+        .menu-subtitle {
+            font-size: 14px;
+            color: var(--tg-theme-hint-color);
+            opacity: 0.8;
+        }
+
+        .menu-arrow {
+            width: 16px;
+            height: 16px;
+            opacity: 0.5;
+        }
+
+        /* Steps Grid */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .step-card {
+            background: var(--tg-theme-secondary-bg-color, rgba(255,255,255,0.05));
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .step-card:hover {
+            border-color: var(--tg-theme-button-color, #0088cc);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .step-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .step-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--tg-theme-text-color);
+        }
+
+        .step-desc {
+            font-size: 12px;
+            color: var(--tg-theme-hint-color);
+            line-height: 1.3;
+        }
+
+        /* Buttons */
+        .btn {
+            border: 0;
+            border-radius: 8px;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--tg-theme-button-text-color, white);
+            background: var(--tg-theme-button-color, #0088cc);
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: var(--tg-theme-secondary-bg-color, rgba(255,255,255,0.1));
+            color: var(--tg-theme-text-color);
+            border: 1px solid var(--tg-theme-hint-color, rgba(255,255,255,0.2));
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            padding: 20px;
+            background: var(--tg-theme-secondary-bg-color, rgba(255,255,255,0.05));
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--tg-theme-hint-color, rgba(255,255,255,0.2));
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--tg-theme-button-color, #0088cc);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        /* Form Sections */
+        .form-section {
+            display: none;
+            padding: 20px;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--tg-theme-text-color);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--tg-theme-text-color);
+        }
+
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--tg-theme-hint-color, rgba(255,255,255,0.2));
+            border-radius: 8px;
+            background: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            font-size: 16px;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--tg-theme-button-color, #0088cc);
+            box-shadow: 0 0 0 3px rgba(0,136,204,0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+            margin-top: 0;
+        }
+
+        /* Status Indicators */
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-success {
+            background: #4CAF50;
+        }
+
+        .status-error {
+            background: #F44336;
+        }
+
+        .status-pending {
+            background: #FF9800;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: var(--tg-theme-hint-color);
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--tg-theme-secondary-bg-color, rgba(255,255,255,0.1));
+            border-top: 2px solid var(--tg-theme-button-color, #0088cc);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="avatar">🏭</div>
+            <div class="bot-name">ThreadsZavod</div>
+            <div class="bot-description">Автоматизация публикаций в Threads с помощью ИИ</div>
+            <a href="#" class="learn-more">Узнать больше ></a>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <div class="search-bar">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+                <span style="color: var(--tg-theme-hint-color);">Поиск настроек...</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="section-title">Настройки</div>
+
+            <!-- Menu Items -->
+            <div class="menu-item" onclick="showSection('quick-start')">
+                <div class="menu-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">🎯</div>
+                <div class="menu-text">
+                    <div class="menu-title">Быстрый старт</div>
+                    <div class="menu-subtitle">Настройка за 5 минут</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                </svg>
+            </div>
+
+            <div class="menu-item" onclick="showSection('api-keys')">
+                <div class="menu-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">🔑</div>
+                <div class="menu-text">
+                    <div class="menu-title">API Ключи</div>
+                    <div class="menu-subtitle">Настройка ключей доступа</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                </svg>
+            </div>
+
+            <div class="menu-item" onclick="showSection('content-plan')">
+                <div class="menu-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">📅</div>
+                <div class="menu-text">
+                    <div class="menu-title">Контент-план</div>
+                    <div class="menu-subtitle">Планирование публикаций</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                </svg>
+            </div>
+
+            <div class="menu-item" onclick="showSection('schedule')">
+                <div class="menu-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">⏰</div>
+                <div class="menu-text">
+                    <div class="menu-title">Расписание</div>
+                    <div class="menu-subtitle">Время публикаций</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                </svg>
+            </div>
+
+            <div class="menu-item" onclick="showSection('statistics')">
+                <div class="menu-icon" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">📊</div>
+                <div class="menu-text">
+                    <div class="menu-title">Статистика</div>
+                    <div class="menu-subtitle">Анализ результатов</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                </svg>
+            </div>
+
+            <!-- Quick Start Section -->
+            <div id="quick-start" class="form-section">
+                <div class="form-title">🎯 Быстрый старт</div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+
+                <div class="steps-grid">
+                    <div class="step-card" onclick="showStep(1)">
+                        <div class="step-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">🔑</div>
+                        <div class="step-title">API Ключи</div>
+                        <div class="step-desc">Настройка ключей</div>
+                    </div>
+                    <div class="step-card" onclick="showStep(2)">
+                        <div class="step-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">📝</div>
+                        <div class="step-title">Системный промпт</div>
+                        <div class="step-desc">Создание промпта</div>
+                    </div>
+                    <div class="step-card" onclick="showStep(3)">
+                        <div class="step-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">📅</div>
+                        <div class="step-title">Контент-план</div>
+                        <div class="step-desc">Настройка плана</div>
+                    </div>
+                    <div class="step-card" onclick="showStep(4)">
+                        <div class="step-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">⏰</div>
+                        <div class="step-title">Расписание</div>
+                        <div class="step-desc">Время публикаций</div>
+                    </div>
+                    <div class="step-card" onclick="showStep(5)">
+                        <div class="step-icon" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">✨</div>
+                        <div class="step-title">Тестирование</div>
+                        <div class="step-desc">Проверка настроек</div>
+                    </div>
+                    <div class="step-card" onclick="showStep(6)">
+                        <div class="step-icon" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">🚀</div>
+                        <div class="step-title">Запуск</div>
+                        <div class="step-desc">Активация комбайна</div>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="startSetup()">🎯 Начать настройку</button>
+            </div>
+
+            <!-- API Keys Section -->
+            <div id="api-keys" class="form-section">
+                <div class="form-title">🔑 API Ключи</div>
+                
+                <div class="input-group">
+                    <label>OpenAI API Key</label>
+                    <input type="password" id="openaiKey" placeholder="sk-...">
+                    <div style="margin-top: 8px;">
+                        <span class="status-indicator status-pending"></span>
+                        <span style="font-size: 12px; color: var(--tg-theme-hint-color);">Не настроен</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>4o Image API Key</label>
+                    <input type="password" id="kieKey" placeholder="aaa5f123518fb3a74e7e915dfe2b7832">
+                    <div style="margin-top: 8px;">
+                        <span class="status-indicator status-pending"></span>
+                        <span style="font-size: 12px; color: var(--tg-theme-hint-color);">Не настроен</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Threads Token</label>
+                    <input type="password" id="threadsToken" placeholder="threads_token_...">
+                    <div style="margin-top: 8px;">
+                        <span class="status-indicator status-pending"></span>
+                        <span style="font-size: 12px; color: var(--tg-theme-hint-color);">Не настроен</span>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="goBack()">Назад</button>
+                    <button class="btn" onclick="saveStep1()">Сохранить</button>
+                </div>
+            </div>
+
+            <!-- Content Plan Section -->
+            <div id="content-plan" class="form-section">
+                <div class="form-title">📅 Контент-план</div>
+                
+                <div class="input-group">
+                    <label>Постов в день</label>
+                    <input type="number" id="postsPerDay" min="1" max="10" value="3">
+                </div>
+
+                <div class="input-group">
+                    <label>Типы контента</label>
+                    <div style="margin-top: 12px;">
+                        <label style="display: flex; align-items: center; margin-bottom: 12px;">
+                            <input type="checkbox" id="contentTips" checked style="margin-right: 12px;">
+                            💡 Полезные советы
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 12px;">
+                            <input type="checkbox" id="contentStories" checked style="margin-right: 12px;">
+                            📖 Истории из опыта
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 12px;">
+                            <input type="checkbox" id="contentQuestions" checked style="margin-right: 12px;">
+                            ❓ Вопросы аудитории
+                        </label>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Генерация изображений</label>
+                    <select id="generateImages">
+                        <option value="yes">✅ Да, генерировать</option>
+                        <option value="no">❌ Нет, только текст</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="goBack()">Назад</button>
+                    <button class="btn" onclick="saveStep3()">Сохранить</button>
+                </div>
+            </div>
+
+            <!-- Schedule Section -->
+            <div id="schedule" class="form-section">
+                <div class="form-title">⏰ Расписание публикаций</div>
+                
+                <div class="input-group">
+                    <label>Время публикаций</label>
+                    <div style="margin-top: 12px;">
+                        <label style="display: flex; align-items: center; margin-bottom: 12px;">
+                            <input type="checkbox" id="timeMorning" checked style="margin-right: 12px;">
+                            🌅 Утро (9:00-11:00)
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 12px;">
+                            <input type="checkbox" id="timeAfternoon" checked style="margin-right: 12px;">
+                            ☀️ День (14:00-16:00)
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 12px;">
+                            <input type="checkbox" id="timeEvening" checked style="margin-right: 12px;">
+                            🌆 Вечер (19:00-21:00)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Дни недели</label>
+                    <div style="margin-top: 12px;">
+                        <label style="display: flex; align-items: center; margin-bottom: 12px;">
+                            <input type="checkbox" id="dayMonday" checked style="margin-right: 12px;">
+                            Понедельник
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 12px;">
+                            <input type="checkbox" id="dayTuesday" checked style="margin-right: 12px;">
+                            Вторник
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 12px;">
+                            <input type="checkbox" id="dayWednesday" checked style="margin-right: 12px;">
+                            Среда
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 12px;">
+                            <input type="checkbox" id="dayThursday" checked style="margin-right: 12px;">
+                            Четверг
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 12px;">
+                            <input type="checkbox" id="dayFriday" checked style="margin-right: 12px;">
+                            Пятница
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 12px;">
+                            <input type="checkbox" id="daySaturday" checked style="margin-right: 12px;">
+                            Суббота
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 12px;">
+                            <input type="checkbox" id="daySunday" checked style="margin-right: 12px;">
+                            Воскресенье
+                        </label>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="goBack()">Назад</button>
+                    <button class="btn" onclick="saveStep4()">Сохранить</button>
+                </div>
+            </div>
+
+            <!-- Statistics Section -->
+            <div id="statistics" class="form-section">
+                <div class="form-title">📊 Статистика</div>
+                
+                <div style="background: var(--tg-theme-secondary-bg-color, rgba(255,255,255,0.05)); padding: 20px; border-radius: 12px; margin: 20px 0;">
+                    <h3 style="margin-bottom: 16px; color: var(--tg-theme-text-color);">Последние 7 дней</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 24px; font-weight: 700; color: var(--tg-theme-button-color, #0088cc);">24</div>
+                            <div style="font-size: 12px; color: var(--tg-theme-hint-color);">Постов</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 24px; font-weight: 700; color: #4CAF50;">1,234</div>
+                            <div style="font-size: 12px; color: var(--tg-theme-hint-color);">Охват</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 24px; font-weight: 700; color: #FF9800;">89</div>
+                            <div style="font-size: 12px; color: var(--tg-theme-hint-color);">Лайки</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 24px; font-weight: 700; color: #9C27B0;">12</div>
+                            <div style="font-size: 12px; color: var(--tg-theme-hint-color);">Комментарии</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="goBack()">Назад</button>
+                    <button class="btn">Обновить статистику</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        let tg = window.Telegram.WebApp;
+        let currentStep = 0;
+        let setupData = {};
+
+        // Инициализация
+        tg.ready();
+        tg.expand();
+
+        function showSection(sectionId) {
+            // Скрываем все секции
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Показываем нужную секцию
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.add('active');
+            }
+        }
+
+        function updateProgress(step) {
+            const progress = (step / 6) * 100;
+            const progressFill = document.getElementById('progressFill');
+            if (progressFill) {
+                progressFill.style.width = progress + '%';
+            }
+        }
+
+        function showStep(step) {
+            currentStep = step;
+            updateProgress(step);
+            
+            // Здесь можно добавить логику для показа конкретного шага
+            showSection('quick-start');
+        }
+
+        function goBack() {
+            showSection('main');
+        }
+
+        function startSetup() {
+            showStep(1);
+        }
+
+        function saveStep1() {
+            setupData.openaiKey = document.getElementById('openaiKey').value;
+            setupData.kieKey = document.getElementById('kieKey').value;
+            setupData.threadsToken = document.getElementById('threadsToken').value;
+            
+            // Симуляция сохранения
+            setTimeout(() => {
+                showSection('main');
+            }, 1000);
+        }
+
+        function saveStep3() {
+            setupData.postsPerDay = document.getElementById('postsPerDay').value;
+            setupData.contentTypes = {
+                tips: document.getElementById('contentTips').checked,
+                stories: document.getElementById('contentStories').checked,
+                questions: document.getElementById('contentQuestions').checked
+            };
+            setupData.generateImages = document.getElementById('generateImages').value;
+            
+            setTimeout(() => {
+                showSection('main');
+            }, 1000);
+        }
+
+        function saveStep4() {
+            setupData.scheduleTimes = {
+                morning: document.getElementById('timeMorning').checked,
+                afternoon: document.getElementById('timeAfternoon').checked,
+                evening: document.getElementById('timeEvening').checked
+            };
+            setupData.scheduleDays = {
+                monday: document.getElementById('dayMonday').checked,
+                tuesday: document.getElementById('dayTuesday').checked,
+                wednesday: document.getElementById('dayWednesday').checked,
+                thursday: document.getElementById('dayThursday').checked,
+                friday: document.getElementById('dayFriday').checked,
+                saturday: document.getElementById('daySaturday').checked,
+                sunday: document.getElementById('daySunday').checked
+            };
+            
+            setTimeout(() => {
+                showSection('main');
+            }, 1000);
+        }
+    </script>
+</body>
+</html> 
