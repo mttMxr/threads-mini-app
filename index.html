@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.33">
-    <title>Threads Factory Pro v22.33</title>
+    <meta name="version" content="22.34">
+    <title>Threads Factory Pro v22.34</title>
     <style>
         * {
             margin: 0;
@@ -637,7 +637,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.33</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.34</div>
             </div>
         </div>
         
@@ -1800,16 +1800,16 @@
             loadArchive();
             loadHistory(); // Загружаем историю при старте
             
-            // Добавляем обработчики для показа перевода
-            const mjPrompt = document.getElementById('mjPrompt');
-            if (mjPrompt) {
-                mjPrompt.addEventListener('input', () => showTranslation('mjPrompt'));
-            }
+            // Убираем автоматический перевод при вводе
+            // const mjPrompt = document.getElementById('mjPrompt');
+            // if (mjPrompt) {
+            //     mjPrompt.addEventListener('input', () => showTranslation('mjPrompt'));
+            // }
             
-            const mjImg2ImgPrompt = document.getElementById('mjImg2ImgPrompt');
-            if (mjImg2ImgPrompt) {
-                mjImg2ImgPrompt.addEventListener('input', () => showTranslation('mjImg2ImgPrompt'));
-            }
+            // const mjImg2ImgPrompt = document.getElementById('mjImg2ImgPrompt');
+            // if (mjImg2ImgPrompt) {
+            //     mjImg2ImgPrompt.addEventListener('input', () => showTranslation('mjImg2ImgPrompt'));
+            // }
         });
         
         // Тестовая функция для проверки API
@@ -1819,8 +1819,21 @@
             
             console.log('=== API TEST ===');
             console.log('Testing API connection...');
+            console.log('API Key:', API_KEY.substring(0, 10) + '...');
+            console.log('Base URL:', BASE_URL);
             
             try {
+                // Сначала проверим доступность сервера
+                console.log('Testing server availability...');
+                const pingResponse = await fetch(`${BASE_URL}/generate`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`
+                    }
+                });
+                console.log('Ping response status:', pingResponse.status);
+                
+                // Теперь попробуем реальный запрос
                 const response = await fetch(`${BASE_URL}/generate`, {
                     method: 'POST',
                     headers: {
@@ -1835,21 +1848,29 @@
                         version: '6',
                         stylization: 100,
                         weirdness: 100
-                    }),
-                    timeout: 30000 // 30 секунд таймаут
+                    })
                 });
                 
                 console.log('Response status:', response.status);
-                const data = await response.json();
-                console.log('Test response:', data);
+                console.log('Response headers:', response.headers);
                 
-                if (data.code === 200) {
-                    console.log('✅ API работает!');
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Test response:', data);
+                    
+                    if (data.code === 200) {
+                        console.log('✅ API работает!');
+                    } else {
+                        console.log('❌ API ошибка:', data);
+                    }
                 } else {
-                    console.log('❌ API ошибка:', data);
+                    console.log('❌ HTTP Error:', response.status, response.statusText);
+                    const errorText = await response.text();
+                    console.log('Error response:', errorText);
                 }
             } catch (error) {
                 console.error('API test error:', error);
+                console.log('❌ Сеть недоступна или API не отвечает');
             }
         }
         
@@ -1857,6 +1878,12 @@
         window.addEventListener('load', () => {
             setTimeout(testAPI, 1000);
         });
+
+        // Убираем автоматический перевод при вводе
+        function showTranslation() {
+            // Убираем автоматический перевод - он будет только при генерации
+            console.log('Translation function called but disabled for now');
+        }
 
     </script>
 </body>
