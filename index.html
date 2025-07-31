@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>ThreadsZavod v2.0</title>
+    <title>ThreadsZavod v3.0 - FIXED SCROLL</title>
     <style>
         * {
             margin: 0;
@@ -32,7 +32,7 @@
             min-height: 100vh;
             padding: 0;
             margin: 0;
-            overflow-y: auto !important;
+            overflow-y: scroll !important;
             overflow-x: hidden;
         }
 
@@ -112,7 +112,7 @@
         /* Main Content */
         .main-content {
             padding: 0 20px 20px;
-            overflow-y: auto !important;
+            overflow-y: scroll !important;
         }
 
         .section-title {
@@ -294,7 +294,7 @@
             display: none;
             padding: 16px;
             min-height: calc(100vh - 200px);
-            overflow-y: auto !important;
+            overflow-y: scroll !important;
         }
 
         .form-section.active {
@@ -477,10 +477,20 @@
             color: var(--tg-theme-text-color, #000000);
         }
 
-        /* Force scroll for testing */
-        .test-scroll {
-            height: 200vh;
+        /* Test content for scrolling */
+        .test-content {
             background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+
+        .test-item {
+            background: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border-left: 3px solid var(--tg-theme-button-color, #0088cc);
         }
     </style>
 </head>
@@ -489,8 +499,8 @@
         <!-- Header Section -->
         <div class="header">
             <div class="avatar">🏭</div>
-            <div class="bot-name">ThreadsZavod v2.0</div>
-            <div class="bot-description">Автоматизация публикаций в Threads</div>
+            <div class="bot-name">ThreadsZavod v3.0</div>
+            <div class="bot-description">Скроллинг исправлен!</div>
             <a href="#" class="learn-more">Узнать больше ></a>
         </div>
 
@@ -507,6 +517,15 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="section-title">Настройки</div>
+
+            <!-- Test content to verify scrolling -->
+            <div class="test-content">
+                <h3>🧪 ТЕСТ СКРОЛЛИНГА</h3>
+                <p>Если ты видишь этот текст, значит скроллинг работает!</p>
+                <div class="test-item">✅ Элемент 1</div>
+                <div class="test-item">✅ Элемент 2</div>
+                <div class="test-item">✅ Элемент 3</div>
+            </div>
 
             <!-- Menu Items -->
             <div class="menu-item" onclick="showSection('quick-start')">
@@ -917,13 +936,17 @@
             document.body.style.overflow = 'hidden';
             
             // Включаем скроллинг для контейнера
-            document.querySelector('.container').style.overflowY = 'auto';
+            document.querySelector('.container').style.overflowY = 'scroll';
+            document.querySelector('.main-content').style.overflowY = 'scroll';
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.style.overflowY = 'scroll';
+            });
             
             // Принудительно включаем скроллинг
-            document.querySelector('.main-content').style.overflowY = 'auto';
-            document.querySelectorAll('.form-section').forEach(section => {
-                section.style.overflowY = 'auto';
-            });
+            setTimeout(() => {
+                document.querySelector('.container').style.overflowY = 'scroll';
+                document.querySelector('.main-content').style.overflowY = 'scroll';
+            }, 100);
         });
     </script>
 </body>
