@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.17">
-    <title>Threads Factory Pro v22.17</title>
+    <meta name="version" content="22.18">
+    <title>Threads Factory Pro v22.18</title>
     <style>
         * {
             margin: 0;
@@ -596,7 +596,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.17</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.18</div>
             </div>
         </div>
         
@@ -720,15 +720,6 @@
                 </div>
                 
                 <div class="setting-group">
-                    <div class="setting-title">⚡ Скорость</div>
-                    <select class="setting-input" id="mjSpeed">
-                        <option value="relaxed">Relaxed (Бесплатно)</option>
-                        <option value="fast">Fast (Быстро)</option>
-                        <option value="turbo">Turbo (Максимум)</option>
-                    </select>
-                </div>
-                
-                <div class="setting-group">
                     <div class="setting-title">🎨 Стилизация</div>
                     <div class="slider-container">
                         <input type="range" min="0" max="1000" value="100" class="slider" id="mjStylization" oninput="updateSliderValue(this, 'stylizationValue')">
@@ -818,15 +809,6 @@
                 </div>
                 
                 <div class="setting-group">
-                    <div class="setting-title">⚡ Скорость</div>
-                    <select class="setting-input" id="mjImg2ImgSpeed">
-                        <option value="relaxed">Relaxed (Бесплатно)</option>
-                        <option value="fast">Fast (Быстро)</option>
-                        <option value="turbo">Turbo (Максимум)</option>
-                    </select>
-                </div>
-                
-                <div class="setting-group">
                     <div class="setting-title">🖼 Версия модели</div>
                     <select class="setting-input" id="mjImg2ImgVersion">
                         <option value="7" selected>Midjourney v7</option>
@@ -870,15 +852,6 @@
                 <div class="setting-group">
                     <div class="setting-title">🖼️ URL изображения</div>
                     <input type="url" class="setting-input" id="mjVideoImageUrl" placeholder="https://example.com/image.jpg">
-                </div>
-                
-                <div class="setting-group">
-                    <div class="setting-title">⚡ Скорость</div>
-                    <select class="setting-input" id="mjVideoSpeed">
-                        <option value="relaxed">Relaxed (Бесплатно)</option>
-                        <option value="fast">Fast (Быстро)</option>
-                        <option value="turbo">Turbo (Максимум)</option>
-                    </select>
                 </div>
                 
                 <div class="setting-group">
@@ -1128,6 +1101,31 @@
             } catch (error) {
                 console.error('Prompt enhancement error:', error);
                 return originalPrompt; // Возвращаем оригинал при ошибке
+            }
+        }
+        
+        // Функция получения параметров генерации
+        function getGenerationParams() {
+            const currentPage = document.querySelector('.page.active').id;
+            
+            if (currentPage === 'mj-img2img') {
+                return {
+                    width: 1024,
+                    height: 1024,
+                    speed: 'turbo', // Всегда используем turbo
+                    version: document.getElementById('mjImg2ImgVersion')?.value || '7',
+                    stylization: document.getElementById('mjImg2ImgStylization')?.value || 100,
+                    weirdness: document.getElementById('mjImg2ImgWeirdness')?.value || 100
+                };
+            } else {
+                return {
+                    width: 1024,
+                    height: 1024,
+                    speed: 'turbo', // Всегда используем turbo
+                    version: document.getElementById('mjVersion')?.value || '7',
+                    stylization: document.getElementById('mjStylization')?.value || 100,
+                    weirdness: document.getElementById('mjWeirdness')?.value || 100
+                };
             }
         }
         
@@ -1560,30 +1558,6 @@
             document.getElementById(progressId).style.display = 'none';
         }
         
-        function getGenerationParams() {
-            const currentPage = document.querySelector('.page.active').id;
-            
-            if (currentPage === 'mj-img2img') {
-                return {
-                    width: 1024,
-                    height: 1024,
-                    speed: document.getElementById('mjImg2ImgSpeed')?.value || 'relaxed',
-                    version: document.getElementById('mjImg2ImgVersion')?.value || '7',
-                    stylization: document.getElementById('mjImg2ImgStylization')?.value || 100,
-                    weirdness: document.getElementById('mjImg2ImgWeirdness')?.value || 100
-                };
-            } else {
-                return {
-                    width: 1024,
-                    height: 1024,
-                    speed: document.getElementById('mjSpeed')?.value || 'relaxed',
-                    version: document.getElementById('mjVersion')?.value || '7',
-                    stylization: document.getElementById('mjStylization')?.value || 100,
-                    weirdness: document.getElementById('mjWeirdness')?.value || 100
-                };
-            }
-        }
-        
         function showResults(urls, type, taskId, originalPrompt) {
             const resultsGrid = document.getElementById('resultsGrid');
             resultsGrid.innerHTML = '';
@@ -1781,4 +1755,4 @@
         });
     </script>
 </body>
-</html> 
+</html>
