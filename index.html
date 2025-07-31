@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.11">
-    <title>Threads Factory Pro v22.11</title>
+    <meta name="version" content="22.12">
+    <title>Threads Factory Pro v22.12</title>
     <style>
         * {
             margin: 0;
@@ -496,7 +496,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.11</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.12</div>
             </div>
         </div>
         
@@ -1072,28 +1072,21 @@
         }
         
         function callMidjourneyAPI(type, prompt, params, imageUrl = null) {
-            const BASE_URL = 'https://api.kie.ai';
+            const BASE_URL = 'https://api.kie.ai/api/v1/mj';
             const API_KEY = '008016dd933ebb3715a956218253a571';
             
             const requestData = {
+                taskType: type === 'img2img' ? 'mj_img2img' : 'mj_txt2img',
                 prompt: prompt,
-                width: params.width || 1024,
-                height: params.height || 1024,
                 speed: params.speed || 'relaxed',
+                aspectRatio: params.aspectRatio || '1:1',
                 version: params.version || '7',
                 stylization: parseInt(params.stylization) || 100,
-                weirdness: parseInt(params.weirdness) || 100,
-                waterMark: '',
-                callBackUrl: ''
+                weirdness: parseInt(params.weirdness) || 100
             };
             
-            if (type === 'img2img') {
-                requestData.taskType = 'mj_img2img';
-                requestData.imageUrl = imageUrl;
-            } else if (type === 'video') {
-                requestData.taskType = 'mj_video';
-            } else {
-                requestData.taskType = 'mj_txt2img';
+            if (type === 'img2img' && imageUrl) {
+                requestData.fileUrl = imageUrl;
             }
             
             console.log('Sending request:', requestData);
@@ -1133,7 +1126,7 @@
         }
         
         async function waitForCompletion(taskId, type) {
-            const BASE_URL = 'https://api.kie.ai';
+            const BASE_URL = 'https://api.kie.ai/api/v1/mj';
             const API_KEY = '008016dd933ebb3715a956218253a571';
             
             currentAttempts++;
@@ -1141,7 +1134,7 @@
             updateProgress(progressText);
             
             try {
-                const response = await fetch(`${BASE_URL}/task-status?taskId=${taskId}`, {
+                const response = await fetch(`${BASE_URL}/record-info?taskId=${taskId}`, {
                     headers: {
                         'Authorization': `Bearer ${API_KEY}`
                     }
@@ -1151,19 +1144,20 @@
                 console.log('Status response:', data);
                 
                 if (data.code === 200 && data.data) {
-                    const status = data.data.status;
+                    const successFlag = data.data.successFlag;
                     
-                    if (status === 'SUCCESS' && data.data.images) {
+                    if (successFlag === 1 && data.data.resultInfoJson && data.data.resultInfoJson.resultUrls) {
                         isGenerating = false;
                         hideProgress();
-                        showResults(data.data.images, type, taskId);
+                        const urls = data.data.resultInfoJson.resultUrls.map(item => item.resultUrl);
+                        showResults(urls, type, taskId);
                         return;
-                    } else if (status === 'FAILED') {
+                    } else if (successFlag === 2 || successFlag === 3) {
                         isGenerating = false;
                         hideProgress();
                         tg.showAlert('❌ Генерация не удалась');
                         return;
-                    } else if (status === 'PENDING' || status === 'PROCESSING') {
+                    } else if (successFlag === 0) {
                         if (currentAttempts < maxAttempts) {
                             setTimeout(() => waitForCompletion(taskId, type), 6000);
                         } else {
@@ -1305,17 +1299,14 @@
             document.getElementById('resultsArea').style.display = 'none';
         }
         
-        function upscaleImage(url, index) {
-            const API_KEY = '008016dd933ebb3715a956218253a571';
+        function upscaleImage(imageUrl, index) {
             const BASE_URL = 'https://api.kie.ai/api/v1/mj';
-            
-            showProgress();
+            const API_KEY = '008016dd933ebb3715a956218253a571';
             
             const requestData = {
-                taskId: currentTaskId,
-                imageIndex: index - 1, // 0-3
-                waterMark: '',
-                callBackUrl: ''
+                taskType: 'mj_upscale',
+                fileUrl: imageUrl,
+                index: index
             };
             
             fetch(`${BASE_URL}/upscale`, {
@@ -1328,33 +1319,27 @@
             })
             .then(response => response.json())
             .then(data => {
-                console.log('Upscale response:', data);
-                
                 if (data.code === 200 && data.data && data.data.taskId) {
-                    waitForCompletion(data.data.taskId, 'upscale');
+                    tg.showAlert('🔍 Upscale запущен');
+                    // Можно добавить отслеживание upscale
                 } else {
-                    hideProgress();
-                    tg.showAlert(`❌ Ошибка апскейла: ${data.msg || 'Неизвестная ошибка'}`);
+                    tg.showAlert('❌ Ошибка upscale');
                 }
             })
             .catch(error => {
                 console.error('Upscale error:', error);
-                hideProgress();
-                tg.showAlert(`❌ Ошибка апскейла: ${error.message}`);
+                tg.showAlert('❌ Ошибка upscale');
             });
         }
         
-        function varyImage(url, index) {
-            const API_KEY = '008016dd933ebb3715a956218253a571';
+        function varyImage(imageUrl, index) {
             const BASE_URL = 'https://api.kie.ai/api/v1/mj';
-            
-            showProgress();
+            const API_KEY = '008016dd933ebb3715a956218253a571';
             
             const requestData = {
-                taskId: currentTaskId,
-                imageIndex: index, // 1-4
-                waterMark: '',
-                callBackUrl: ''
+                taskType: 'mj_vary',
+                fileUrl: imageUrl,
+                index: index
             };
             
             fetch(`${BASE_URL}/vary`, {
@@ -1367,19 +1352,16 @@
             })
             .then(response => response.json())
             .then(data => {
-                console.log('Vary response:', data);
-                
                 if (data.code === 200 && data.data && data.data.taskId) {
-                    waitForCompletion(data.data.taskId, 'vary');
+                    tg.showAlert('🔄 Vary запущен');
+                    // Можно добавить отслеживание vary
                 } else {
-                    hideProgress();
-                    tg.showAlert(`❌ Ошибка вариации: ${data.msg || 'Неизвестная ошибка'}`);
+                    tg.showAlert('❌ Ошибка vary');
                 }
             })
             .catch(error => {
                 console.error('Vary error:', error);
-                hideProgress();
-                tg.showAlert(`❌ Ошибка вариации: ${error.message}`);
+                tg.showAlert('❌ Ошибка vary');
             });
         }
         
