@@ -6,8 +6,8 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="version" content="22.0">
-    <title>Threads Factory Pro v22.0</title>
+    <meta name="version" content="22.2">
+    <title>Threads Factory Pro v22.2</title>
     <style>
         * {
             margin: 0;
@@ -371,6 +371,65 @@
             font-weight: 600;
             margin-right: 8px;
         }
+        
+        /* Стили для ползунков */
+        .slider-container {
+            margin-top: 8px;
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e1e5e9;
+            outline: none;
+            margin: 8px 0;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        
+        .slider-value {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .slider-label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .slider-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -379,7 +438,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.0</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.2</div>
             </div>
         </div>
         
@@ -505,22 +564,26 @@
                 
                 <div class="setting-group">
                     <div class="setting-title">🎨 Стилизация</div>
-                    <select class="setting-input" id="mjStylization">
-                        <option value="0">0 - Реалистично</option>
-                        <option value="100" selected>100 - Сбалансированно</option>
-                        <option value="500">500 - Художественно</option>
-                        <option value="1000">1000 - Максимально стилизованно</option>
-                    </select>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="1000" value="100" class="slider" id="mjStylization" oninput="updateSliderValue(this, 'stylizationValue')">
+                        <div class="slider-value">
+                            <span class="slider-label">Реалистично</span>
+                            <span class="slider-number" id="stylizationValue">100</span>
+                            <span class="slider-label">Стилизованно</span>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="setting-group">
                     <div class="setting-title">🎭 Креативность</div>
-                    <select class="setting-input" id="mjWeirdness">
-                        <option value="0">0 - Обычно</option>
-                        <option value="100" selected>100 - Сбалансированно</option>
-                        <option value="1500">1500 - Креативно</option>
-                        <option value="3000">3000 - Максимально креативно</option>
-                    </select>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="3000" value="100" class="slider" id="mjWeirdness" oninput="updateSliderValue(this, 'weirdnessValue')">
+                        <div class="slider-value">
+                            <span class="slider-label">Обычно</span>
+                            <span class="slider-number" id="weirdnessValue">100</span>
+                            <span class="slider-label">Креативно</span>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="setting-group">
@@ -1154,6 +1217,10 @@
         
         function downloadImage(url) {
             tg.showAlert('⬇️ Функция скачивания будет доступна в следующем обновлении');
+        }
+        
+        function updateSliderValue(slider, valueId) {
+            document.getElementById(valueId).textContent = slider.value;
         }
     </script>
 </body>
