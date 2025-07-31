@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.34">
-    <title>Threads Factory Pro v22.34</title>
+    <meta name="version" content="22.36">
+    <title>Threads Factory Pro v22.36</title>
     <style>
         * {
             margin: 0;
@@ -637,7 +637,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.34</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.36</div>
             </div>
         </div>
         
@@ -1100,27 +1100,76 @@
         let checkInterval = null;
         let generationHistory = [];
         
-            // Функция отправки промпта боту для перевода
-            async function translatePromptWithBot(russianText) {
+            // OpenAI API для перевода (возвращаем обратно)
+            const OPENAI_API_KEY = 'YOUR_OPENAI_API_KEY'; // Замените на ваш ключ
+            
+            // Функция перевода через OpenAI (используем прокси для обхода CORS)
+            async function translateWithOpenAI(russianText) {
                 try {
-                    console.log('=== BOT TRANSLATION DEBUG ===');
-                    console.log('Sending to bot for translation:', russianText);
+                    console.log('=== TRANSLATION DEBUG ===');
+                    console.log('Input text:', russianText);
                     
-                    // Отправляем данные боту через Telegram Web App API
-                    await tg.sendData(JSON.stringify({
-                        action: 'translate_prompt',
-                        prompt: russianText
-                    }));
+                    // Используем прокси для обхода CORS
+                    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                    const openaiUrl = 'https://api.openai.com/v1/chat/completions';
                     
-                    // Возвращаем оригинальный текст, так как перевод будет в чате
-                    return russianText;
+                    const response = await fetch(proxyUrl + encodeURIComponent(openaiUrl), {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${OPENAI_API_KEY}`
+                        },
+                        body: JSON.stringify({
+                            model: 'gpt-4o-mini',
+                            messages: [
+                                {
+                                    role: 'system',
+                                    content: `Ты - эксперт по переводу промптов для Midjourney. Переведи русский текст на английский язык, оптимизировав его для генерации изображений в Midjourney. 
+                    
+                    Правила:
+                    1. Переводи точно и естественно
+                    2. Добавляй качественные описания: "high quality", "detailed", "professional", "4k", "sharp focus"
+                    3. Используй художественные термины: "photorealistic", "beautiful", "stunning"
+                    4. Добавляй стили если нужно: "digital art", "oil painting", "watercolor"
+                    5. Оптимизируй для лучших результатов в Midjourney
+                    
+                    Примеры:
+                    - "мальчик с шариком" → "young boy holding a red balloon, high quality, detailed, professional, 4k, sharp focus, beautiful lighting"
+                    - "красивая девушка" → "beautiful young woman, photorealistic, high quality, detailed, professional, 4k, sharp focus, stunning portrait"
+                    - "кот в саду" → "cat in garden, high quality, detailed, professional, 4k, sharp focus, beautiful nature, photorealistic"`
+                                },
+                                {
+                                    role: 'user',
+                                    content: `Переведи этот промпт: "${russianText}"`
+                                }
+                            ],
+                            max_tokens: 200,
+                            temperature: 0.7
+                        })
+                    });
+                    
+                    console.log('OpenAI response status:', response.status);
+                    
+                    const data = await response.json();
+                    console.log('OpenAI response data:', data);
+                    
+                    if (data.choices && data.choices[0] && data.choices[0].message) {
+                        const translatedText = data.choices[0].message.content.trim();
+                        console.log('Translation successful:', translatedText);
+                        return translatedText;
+                    } else {
+                        console.error('OpenAI response error:', data);
+                        console.log('Returning original text due to error');
+                        return russianText; // Возвращаем оригинал при ошибке
+                    }
                 } catch (error) {
-                    console.error('Bot translation error:', error);
+                    console.error('OpenAI translation error:', error);
+                    console.log('Returning original text due to error');
                     return russianText; // Возвращаем оригинал при ошибке
                 }
             }
             
-            // Функция для улучшения промпта через бота
+            // Функция для улучшения промпта
             async function enhancePrompt(originalPrompt) {
                 try {
                     console.log('=== ENHANCE PROMPT DEBUG ===');
@@ -1130,11 +1179,10 @@
                     const hasRussianChars = /[а-яё]/i.test(originalPrompt);
                     
                     if (hasRussianChars) {
-                        console.log('Russian prompt detected, sending to bot for translation');
-                        // Отправляем в бот для перевода, но пока используем оригинал
-                        await translatePromptWithBot(originalPrompt);
-                        console.log('Translation sent to bot, using original for now');
-                        return originalPrompt; // Пока используем оригинал
+                        console.log('Russian prompt detected, translating with OpenAI');
+                        const enhancedPrompt = await translateWithOpenAI(originalPrompt);
+                        console.log('Enhanced prompt:', enhancedPrompt);
+                        return enhancedPrompt;
                     } else {
                         console.log('English prompt detected, using as is');
                         return originalPrompt;
@@ -1415,11 +1463,11 @@
             console.log('Prompt:', prompt);
             
             const requestData = {
-                taskType: type === 'img2img' ? 'mj_img2img' : 'mj_txt2img',
+                taskType: 'mj_txt2img',
                 prompt: prompt,
-                speed: params.speed || 'relaxed',
+                speed: params.speed || 'turbo',
                 aspectRatio: params.aspectRatio || '1:1',
-                version: params.version || '7',
+                version: params.version || '6', // Изменил на версию 6
                 stylization: parseInt(params.stylization) || 100,
                 weirdness: parseInt(params.weirdness) || 100
             };
@@ -1430,7 +1478,10 @@
             
             console.log('Request Data:', requestData);
             
-            fetch(`${BASE_URL}/generate`, {
+            // Пробуем альтернативный эндпоинт
+            const endpoint = '/submit-task'; // Попробуем другой эндпоинт
+            
+            fetch(`${BASE_URL}${endpoint}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1629,9 +1680,10 @@
             // Добавляем в архив
             addToArchive(urls, type, prompt);
             
-            // Добавляем в историю
-            // Пока что не показываем переведенный промпт, так как он будет в чате с ботом
-            addToHistory(prompt, urls, type, null);
+            // Добавляем в историю с переведенным промптом
+            // originalPrompt здесь - это переведенный промпт, который был отправлен в API
+            const enhancedPrompt = originalPrompt || null;
+            addToHistory(prompt, urls, type, enhancedPrompt);
             
             urls.forEach((url, index) => {
                 const resultItem = document.createElement('div');
