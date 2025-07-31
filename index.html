@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.48">
-    <title>Threads Factory Pro v22.48</title>
+    <meta name="version" content="22.49">
+    <title>Threads Factory Pro v22.49</title>
     <style>
         * {
             margin: 0;
@@ -601,6 +601,43 @@
             padding: 20px;
         }
         
+        .task-progress {
+            margin-top: 8px;
+        }
+        
+        .progress-dots {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+        }
+        
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: #ffc107;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+        
         /* История генераций */
         .generation-history {
             margin-top: 20px;
@@ -705,7 +742,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.48</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.49</div>
             </div>
         </div>
         
@@ -1961,6 +1998,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadArchive();
             loadHistory(); // Загружаем историю при старте
+            loadActiveTasks(); // Загружаем активные задачи при старте
             
             // Убираем автоматический перевод при вводе
             // const mjPrompt = document.getElementById('mjPrompt');
@@ -1993,18 +2031,39 @@
                 id: taskId,
                 type: type, // 'generate', 'upscale', 'vary'
                 description: description,
-                startTime: new Date(),
+                startTime: new Date().toISOString(), // Сохраняем как строку для localStorage
                 status: 'processing'
             };
             
             activeTasks.push(task);
+            saveActiveTasks();
             updateActiveTasksDisplay();
             console.log('✅ Добавлена активная задача:', task);
+        }
+        
+        // Функция сохранения активных задач
+        function saveActiveTasks() {
+            localStorage.setItem('activeTasks', JSON.stringify(activeTasks));
+        }
+        
+        // Функция загрузки активных задач
+        function loadActiveTasks() {
+            const saved = localStorage.getItem('activeTasks');
+            if (saved) {
+                activeTasks = JSON.parse(saved);
+                // Конвертируем строки времени обратно в объекты Date
+                activeTasks.forEach(task => {
+                    task.startTime = new Date(task.startTime);
+                });
+                updateActiveTasksDisplay();
+                console.log('✅ Загружены активные задачи:', activeTasks);
+            }
         }
         
         // Функция удаления активной задачи
         function removeActiveTask(taskId) {
             activeTasks = activeTasks.filter(task => task.id !== taskId);
+            saveActiveTasks();
             updateActiveTasksDisplay();
             console.log('✅ Удалена активная задача:', taskId);
         }
@@ -2024,14 +2083,34 @@
                     <div class="task-info">
                         <div class="task-type">${getTaskTypeIcon(task.type)} ${task.type.toUpperCase()}</div>
                         <div class="task-description">${task.description}</div>
-                        <div class="task-time">${formatTime(task.startTime)}</div>
+                        <div class="task-time" id="task-time-${task.id}">${formatTime(task.startTime)}</div>
                     </div>
                     <div class="task-status">
                         <div class="status-indicator processing">⏳ Обрабатывается...</div>
+                        <div class="task-progress">
+                            <div class="progress-dots">
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `).join('');
         }
+        
+        // Функция обновления времени для всех активных задач
+        function updateActiveTasksTime() {
+            activeTasks.forEach(task => {
+                const timeElement = document.getElementById(`task-time-${task.id}`);
+                if (timeElement) {
+                    timeElement.textContent = formatTime(task.startTime);
+                }
+            });
+        }
+        
+        // Запускаем обновление времени каждую секунду
+        setInterval(updateActiveTasksTime, 1000);
         
         // Функция получения иконки типа задачи
         function getTaskTypeIcon(type) {
@@ -2081,6 +2160,9 @@
                         removeActiveTask(taskId);
                         showAlert('✅ Готово! Результат получен');
                         
+                        // Скрываем прогресс-бар
+                        hideProgress();
+                        
                         // Показываем результат
                         if (data.data.resultInfoJson && data.data.resultInfoJson.resultUrls) {
                             const urls = data.data.resultInfoJson.resultUrls.map(item => item.resultUrl);
@@ -2090,6 +2172,9 @@
                         console.log('❌ Задача провалилась');
                         removeActiveTask(taskId);
                         showAlert('❌ Задача провалилась: ' + (data.data.errorMessage || 'Неизвестная ошибка'));
+                        
+                        // Скрываем прогресс-бар
+                        hideProgress();
                     } else {
                         // Продолжаем отслеживание
                         setTimeout(checkStatus, 5000);
