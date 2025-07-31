@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.25">
-    <title>Threads Factory Pro v22.25</title>
+    <meta name="version" content="22.26">
+    <title>Threads Factory Pro v22.26</title>
     <style>
         * {
             margin: 0;
@@ -620,83 +620,7 @@
             margin-left: 8px;
         }
         
-        /* Стили для всплывающих подсказок */
-        .setting-title-with-help {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            position: relative;
-        }
-        
-        .help-icon {
-            width: 16px;
-            height: 16px;
-            background: #667eea;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-            flex-shrink: 0;
-        }
-        
-        .help-icon:hover {
-            background: #5a6fd8;
-            transform: scale(1.1);
-        }
-        
-        .tooltip {
-            position: absolute;
-            background: #333;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 11px;
-            width: 200px;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            pointer-events: none;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            margin-top: 4px;
-            line-height: 1.3;
-            text-align: left;
-        }
-        
-        .help-icon:hover .tooltip {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .tooltip::after {
-            content: '';
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 4px solid transparent;
-            border-right: 4px solid transparent;
-            border-bottom: 4px solid #333;
-        }
-        
-        /* Адаптивность для мобильных устройств */
-        @media (max-width: 480px) {
-            .tooltip {
-                width: 180px;
-                font-size: 10px;
-                padding: 6px 10px;
-            }
-        }
+
     </style>
 </head>
 <body>
@@ -705,7 +629,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.25</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.26</div>
             </div>
         </div>
         
@@ -837,15 +761,7 @@
                 </div>
                 
                 <div class="setting-group">
-                    <div class="setting-title-with-help">
-                        <span>🎨 Стилизация</span>
-                        <div class="help-icon">
-                            ?
-                            <div class="tooltip">
-                                Контролирует художественный стиль изображения. Низкие значения = более реалистично, высокие = более стилизованно
-                            </div>
-                        </div>
-                    </div>
+                    <div class="setting-title">🎨 Стилизация</div>
                     <div class="slider-container">
                         <input type="range" min="0" max="1000" value="100" class="slider" id="mjStylization" oninput="updateSliderValue(this, 'stylizationValue')">
                         <div class="slider-value">
@@ -857,15 +773,7 @@
                 </div>
                 
                 <div class="setting-group">
-                    <div class="setting-title-with-help">
-                        <span>🎭 Креативность</span>
-                        <div class="help-icon">
-                            ?
-                            <div class="tooltip">
-                                Управляет необычностью и креативностью изображения. Высокие значения создают более странные и уникальные результаты
-                            </div>
-                        </div>
-                    </div>
+                    <div class="setting-title">🎭 Креативность</div>
                     <div class="slider-container">
                         <input type="range" min="0" max="3000" value="100" class="slider" id="mjWeirdness" oninput="updateSliderValue(this, 'weirdnessValue')">
                         <div class="slider-value">
