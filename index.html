@@ -1680,7 +1680,8 @@
                 let taskType = '';
                 let payload = {
                     speed: params.speed || 'relaxed',
-                    version: params.version || '7'
+                    version: params.version || '7',
+                    stylization: 100 // Добавляем stylization с правильным значением
                 };
                 
                 if (type === 'text2img') {
@@ -1699,9 +1700,6 @@
                 }
                 
                 payload.taskType = taskType;
-                
-                // Убираем stylization из payload - он вызывает ошибку
-                delete payload.stylization;
                 
                 console.log('Sending payload:', payload);
                 
