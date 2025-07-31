@@ -929,6 +929,78 @@
         .stat-number.posts { color: #11998e; }
         .stat-number.views { color: #f093fb; }
         .stat-number.engagement { color: #4facfe; }
+
+        /* Results Area */
+        .results-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(25px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .results-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .result-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .result-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .result-title {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+        }
+
+        .result-url {
+            font-size: 10px;
+            color: rgba(255,255,255,0.6);
+            word-break: break-all;
+            margin-top: 4px;
+        }
+
+        /* MJ Content */
+        .mj-content {
+            padding: 20px;
+        }
     </style>
 </head>
 <body class="tg-web-app">
@@ -1362,6 +1434,119 @@
                 </div>
             </div>
         </div>
+
+            <!-- Image-to-Image Page -->
+            <div id="mj-img2img-page" class="page">
+                <div class="page-header">
+                    <div class="back-button" onclick="showPage('midjourney')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                        </svg>
+                    </div>
+                    <div class="page-title">Image-to-Image</div>
+                </div>
+                <div class="mj-content">
+                    <div class="setting-group">
+                        <div class="setting-title">📝 Промпт</div>
+                        <textarea class="setting-input" placeholder="Опишите как изменить изображение..." id="mjImg2ImgPrompt" rows="4"></textarea>
+                    </div>
+
+                    <div class="setting-group">
+                        <div class="setting-title">🖼️ URL изображения</div>
+                        <input type="url" class="setting-input" placeholder="https://example.com/image.jpg" id="mjImageUrl">
+                    </div>
+
+                    <div class="setting-group">
+                        <div class="setting-title">📐 Соотношение сторон</div>
+                        <select class="setting-input" id="mjImg2ImgAspectRatio">
+                            <option value="1:1">1:1 Квадрат</option>
+                            <option value="16:9">16:9 Широкий</option>
+                            <option value="9:16">9:16 Портрет</option>
+                            <option value="4:3">4:3 Стандарт</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-group">
+                        <div class="setting-title">⚡ Скорость</div>
+                        <select class="setting-input" id="mjImg2ImgSpeed">
+                            <option value="relaxed">🐌 Relaxed (Бесплатно)</option>
+                            <option value="fast">⚡ Fast (Стандарт)</option>
+                            <option value="turbo">🚀 Turbo (Премиум)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-group">
+                        <div class="setting-title">🎨 Версия модели</div>
+                        <select class="setting-input" id="mjImg2ImgVersion">
+                            <option value="7">🎨 Midjourney v7</option>
+                            <option value="6.1">🖼️ Midjourney v6.1</option>
+                            <option value="niji6">🌸 Niji v6 (Аниме)</option>
+                        </select>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="showPage('midjourney')">Отмена</button>
+                        <button class="btn" onclick="generateMJImg2Img()">🖼️ Генерировать</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image-to-Video Page -->
+            <div id="mj-img2video-page" class="page">
+                <div class="page-header">
+                    <div class="back-button" onclick="showPage('midjourney')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                        </svg>
+                    </div>
+                    <div class="page-title">Image-to-Video</div>
+                </div>
+                <div class="mj-content">
+                    <div class="setting-group">
+                        <div class="setting-title">📝 Промпт</div>
+                        <textarea class="setting-input" placeholder="Опишите движение и эффекты для видео..." id="mjVideoPrompt" rows="4"></textarea>
+                    </div>
+
+                    <div class="setting-group">
+                        <div class="setting-title">🖼️ URL изображения</div>
+                        <input type="url" class="setting-input" placeholder="https://example.com/image.jpg" id="mjVideoImageUrl">
+                    </div>
+
+                    <div class="setting-group">
+                        <div class="setting-title">⚡ Скорость</div>
+                        <select class="setting-input" id="mjVideoSpeed">
+                            <option value="relaxed">🐌 Relaxed (Бесплатно)</option>
+                            <option value="fast">⚡ Fast (Стандарт)</option>
+                            <option value="turbo">🚀 Turbo (Премиум)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-group">
+                        <div class="setting-title">🎨 Версия модели</div>
+                        <select class="setting-input" id="mjVideoVersion">
+                            <option value="7">🎨 Midjourney v7</option>
+                            <option value="6.1">🖼️ Midjourney v6.1</option>
+                            <option value="niji6">🌸 Niji v6 (Аниме)</option>
+                        </select>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="showPage('midjourney')">Отмена</button>
+                        <button class="btn" onclick="generateMJVideo()">🎬 Генерировать</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Area -->
+            <div id="mj-results" class="results-area" style="display: none;">
+                <div class="results-header">
+                    <h3 style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 700;">🎨 Результаты генерации</h3>
+                    <button class="btn btn-secondary" onclick="hideResults()" style="padding: 8px 16px; font-size: 12px;">Закрыть</button>
+                </div>
+                <div id="results-content" class="results-content">
+                    <!-- Результаты будут добавлены сюда -->
+                </div>
+            </div>
     </div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -1436,6 +1621,102 @@
             };
             
             tg.sendData(JSON.stringify(data));
+        }
+
+        function generateMJImg2Img() {
+            const prompt = document.getElementById('mjImg2ImgPrompt').value;
+            const imageUrl = document.getElementById('mjImageUrl').value;
+            const aspectRatio = document.getElementById('mjImg2ImgAspectRatio').value;
+            const speed = document.getElementById('mjImg2ImgSpeed').value;
+            const version = document.getElementById('mjImg2ImgVersion').value;
+            
+            if (!prompt.trim()) {
+                tg.showAlert('Введите описание изменений!');
+                return;
+            }
+            
+            if (!imageUrl.trim()) {
+                tg.showAlert('Введите URL изображения!');
+                return;
+            }
+            
+            // Показываем прогресс
+            tg.showAlert('🖼️ Генерация Image-to-Image...\n\nЭто может занять 1-2 минуты.');
+            
+            // Отправляем данные в бот
+            const data = {
+                action: 'generate_mj_img2img',
+                prompt: prompt,
+                imageUrl: imageUrl,
+                aspectRatio: aspectRatio,
+                speed: speed,
+                version: version
+            };
+            
+            tg.sendData(JSON.stringify(data));
+        }
+
+        function generateMJVideo() {
+            const prompt = document.getElementById('mjVideoPrompt').value;
+            const imageUrl = document.getElementById('mjVideoImageUrl').value;
+            const speed = document.getElementById('mjVideoSpeed').value;
+            const version = document.getElementById('mjVideoVersion').value;
+            
+            if (!prompt.trim()) {
+                tg.showAlert('Введите описание движения!');
+                return;
+            }
+            
+            if (!imageUrl.trim()) {
+                tg.showAlert('Введите URL изображения!');
+                return;
+            }
+            
+            // Показываем прогресс
+            tg.showAlert('🎬 Генерация Image-to-Video...\n\nЭто может занять 2-3 минуты.');
+            
+            // Отправляем данные в бот
+            const data = {
+                action: 'generate_mj_video',
+                prompt: prompt,
+                imageUrl: imageUrl,
+                speed: speed,
+                version: version
+            };
+            
+            tg.sendData(JSON.stringify(data));
+        }
+
+        function showResults(results, type) {
+            const resultsArea = document.getElementById('mj-results');
+            const resultsContent = document.getElementById('results-content');
+            
+            resultsContent.innerHTML = '';
+            
+            results.forEach((result, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                const isVideo = type === 'video';
+                const mediaElement = isVideo ? 'video' : 'img';
+                const mediaUrl = result.resultUrl || result.url || result;
+                
+                resultItem.innerHTML = `
+                    <${mediaElement} src="${mediaUrl}" class="result-image" ${isVideo ? 'controls' : ''} ${isVideo ? 'autoplay' : ''} ${isVideo ? 'muted' : ''}>
+                        ${isVideo ? 'Ваш браузер не поддерживает видео.' : ''}
+                    </${mediaElement}>
+                    <div class="result-title">${isVideo ? 'Видео' : 'Изображение'} ${index + 1}</div>
+                    <div class="result-url">${mediaUrl}</div>
+                `;
+                
+                resultsContent.appendChild(resultItem);
+            });
+            
+            resultsArea.style.display = 'block';
+        }
+
+        function hideResults() {
+            document.getElementById('mj-results').style.display = 'none';
         }
 
         // Обработка нажатий на кнопки
