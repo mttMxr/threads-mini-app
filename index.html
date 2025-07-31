@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.15">
-    <title>Threads Factory Pro v22.15</title>
+    <meta name="version" content="22.16">
+    <title>Threads Factory Pro v22.16</title>
     <style>
         * {
             margin: 0;
@@ -596,7 +596,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.15</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.16</div>
             </div>
         </div>
         
@@ -701,8 +701,11 @@
                 <button class="back-btn" onclick="showPage('midjourney')">← Назад</button>
                 
                 <div class="setting-group">
-                    <div class="setting-title">🎨 Генерация изображений</div>
-                    <textarea class="setting-input" id="mjPrompt" placeholder="Опишите что хотите создать..." rows="3"></textarea>
+                    <div class="setting-title">🎨 Промпт для генерации</div>
+                    <textarea class="setting-input" id="mjPrompt" placeholder="Опишите желаемое изображение на русском языке..." rows="3"></textarea>
+                    <div class="translation-info" id="translationInfo" style="display: none; font-size: 12px; color: #666; margin-top: 4px;">
+                        🔄 Перевод: <span id="translatedText"></span>
+                    </div>
                 </div>
                 
                 <div class="setting-group">
@@ -1059,6 +1062,163 @@
         let checkInterval = null;
         let generationHistory = [];
         
+        // Словарь для перевода русских слов на английский
+        const translationDict = {
+            // Основные слова
+            'мальчик': 'boy',
+            'девочка': 'girl',
+            'ребенок': 'child',
+            'человек': 'person',
+            'мужчина': 'man',
+            'женщина': 'woman',
+            'парень': 'guy',
+            'девушка': 'girl',
+            
+            // Цвета
+            'красный': 'red',
+            'синий': 'blue',
+            'зеленый': 'green',
+            'желтый': 'yellow',
+            'белый': 'white',
+            'черный': 'black',
+            'розовый': 'pink',
+            'оранжевый': 'orange',
+            'фиолетовый': 'purple',
+            'серый': 'gray',
+            'коричневый': 'brown',
+            
+            // Предметы
+            'шарик': 'balloon',
+            'воздушный шарик': 'balloon',
+            'цветок': 'flower',
+            'дерево': 'tree',
+            'дом': 'house',
+            'машина': 'car',
+            'книга': 'book',
+            'телефон': 'phone',
+            'компьютер': 'computer',
+            'стол': 'table',
+            'стул': 'chair',
+            'окно': 'window',
+            'дверь': 'door',
+            
+            // Места
+            'парк': 'park',
+            'улица': 'street',
+            'дом': 'home',
+            'комната': 'room',
+            'кухня': 'kitchen',
+            'спальня': 'bedroom',
+            'ванная': 'bathroom',
+            'сад': 'garden',
+            'лес': 'forest',
+            'море': 'sea',
+            'горы': 'mountains',
+            'город': 'city',
+            'деревня': 'village',
+            
+            // Действия
+            'держит': 'holding',
+            'сидит': 'sitting',
+            'стоит': 'standing',
+            'идет': 'walking',
+            'бежит': 'running',
+            'играет': 'playing',
+            'читает': 'reading',
+            'пишет': 'writing',
+            'рисует': 'drawing',
+            'смотрит': 'looking',
+            'улыбается': 'smiling',
+            'смеется': 'laughing',
+            
+            // Описания
+            'красивый': 'beautiful',
+            'милый': 'cute',
+            'большой': 'big',
+            'маленький': 'small',
+            'высокий': 'tall',
+            'низкий': 'short',
+            'толстый': 'fat',
+            'худой': 'thin',
+            'молодой': 'young',
+            'старый': 'old',
+            'новый': 'new',
+            'старый': 'old',
+            
+            // Стили
+            'фотография': 'photograph',
+            'рисунок': 'drawing',
+            'картина': 'painting',
+            'иллюстрация': 'illustration',
+            'портрет': 'portrait',
+            'пейзаж': 'landscape',
+            'натюрморт': 'still life',
+            
+            // Время
+            'день': 'day',
+            'ночь': 'night',
+            'утро': 'morning',
+            'вечер': 'evening',
+            'солнечно': 'sunny',
+            'пасмурно': 'cloudy',
+            'дождливо': 'rainy',
+            
+            // Дополнительные слова
+            'с': 'with',
+            'в': 'in',
+            'на': 'on',
+            'под': 'under',
+            'над': 'above',
+            'рядом': 'near',
+            'далеко': 'far',
+            'внутри': 'inside',
+            'снаружи': 'outside'
+        };
+        
+        // Функция перевода русского текста на английский
+        function translateToEnglish(russianText) {
+            let englishText = russianText.toLowerCase();
+            
+            // Заменяем русские слова на английские
+            for (const [russian, english] of Object.entries(translationDict)) {
+                const regex = new RegExp(`\\b${russian}\\b`, 'gi');
+                englishText = englishText.replace(regex, english);
+            }
+            
+            // Убираем лишние пробелы
+            englishText = englishText.replace(/\s+/g, ' ').trim();
+            
+            // Если перевод не изменился, возвращаем оригинал
+            if (englishText === russianText.toLowerCase()) {
+                return russianText; // Возвращаем оригинал если перевод не сработал
+            }
+            
+            return englishText;
+        }
+        
+        // Функция для улучшения промпта
+        function enhancePrompt(originalPrompt) {
+            let enhancedPrompt = translateToEnglish(originalPrompt);
+            
+            // Добавляем улучшения для Midjourney
+            const improvements = [
+                'high quality',
+                'detailed',
+                'professional',
+                '4k',
+                'sharp focus'
+            ];
+            
+            // Добавляем улучшения если их нет
+            improvements.forEach(improvement => {
+                if (!enhancedPrompt.includes(improvement)) {
+                    enhancedPrompt += `, ${improvement}`;
+                }
+            });
+            
+            return enhancedPrompt;
+        }
+        
         // Функции для модального окна
         function openImageModal(imageUrl) {
             document.getElementById('modalImage').src = imageUrl;
@@ -1120,23 +1280,47 @@
             }
         }
         
+        // Функция для показа перевода в реальном времени
+        function showTranslation(inputId) {
+            const input = document.getElementById(inputId);
+            const translationInfo = document.getElementById('translationInfo');
+            const translatedText = document.getElementById('translatedText');
+            
+            if (input && input.value.trim()) {
+                const enhanced = enhancePrompt(input.value);
+                if (enhanced !== input.value.toLowerCase()) {
+                    translationInfo.style.display = 'block';
+                    translatedText.textContent = enhanced;
+                } else {
+                    translationInfo.style.display = 'none';
+                }
+            } else {
+                translationInfo.style.display = 'none';
+            }
+        }
+        
         function generateImage() {
             if (isGenerating) {
                 tg.showAlert('⏳ Генерация уже запущена. Дождитесь завершения.');
                 return;
             }
             
-            const prompt = document.getElementById('mjPrompt').value;
-            if (!prompt.trim()) {
+            const originalPrompt = document.getElementById('mjPrompt').value;
+            if (!originalPrompt.trim()) {
                 tg.showAlert('❌ Введите промпт для генерации');
                 return;
             }
+            
+            // Улучшаем промпт
+            const enhancedPrompt = enhancePrompt(originalPrompt);
+            console.log('Original prompt:', originalPrompt);
+            console.log('Enhanced prompt:', enhancedPrompt);
             
             isGenerating = true;
             showProgress();
             
             const params = getGenerationParams();
-            callMidjourneyAPI('txt2img', prompt, params);
+            callMidjourneyAPI('txt2img', enhancedPrompt, params, originalPrompt);
         }
         
         function generateImg2Img() {
@@ -1145,10 +1329,10 @@
                 return;
             }
             
-            const prompt = document.getElementById('mjImg2ImgPrompt').value;
+            const originalPrompt = document.getElementById('mjImg2ImgPrompt').value;
             const imageUrl = document.getElementById('mjImg2ImgUrl').value;
             
-            if (!prompt.trim()) {
+            if (!originalPrompt.trim()) {
                 tg.showAlert('❌ Введите промпт для генерации');
                 return;
             }
@@ -1158,11 +1342,16 @@
                 return;
             }
             
+            // Улучшаем промпт
+            const enhancedPrompt = enhancePrompt(originalPrompt);
+            console.log('Original prompt:', originalPrompt);
+            console.log('Enhanced prompt:', enhancedPrompt);
+            
             isGenerating = true;
             showProgress();
             
             const params = getGenerationParams();
-            callMidjourneyAPI('img2img', prompt, params, imageUrl);
+            callMidjourneyAPI('img2img', enhancedPrompt, params, imageUrl, originalPrompt);
         }
         
         function generateVideo() {
@@ -1246,7 +1435,7 @@
             hideProgress();
         }
         
-        function callMidjourneyAPI(type, prompt, params, imageUrl = null) {
+        function callMidjourneyAPI(type, prompt, params, imageUrl = null, originalPrompt = null) {
             const BASE_URL = 'https://api.kie.ai/api/v1/mj';
             const API_KEY = '008016dd933ebb3715a956218253a571';
             
@@ -1293,7 +1482,7 @@
                     console.log('Task ID received:', data.data.taskId);
                     
                     // Запускаем адаптивную проверку
-                    startAdaptiveCheck(data.data.taskId, type);
+                    startAdaptiveCheck(data.data.taskId, type, originalPrompt);
                 } else {
                     isGenerating = false;
                     hideProgress();
@@ -1310,7 +1499,7 @@
             });
         }
         
-        function startAdaptiveCheck(taskId, type) {
+        function startAdaptiveCheck(taskId, type, originalPrompt) {
             // Очищаем предыдущий интервал
             if (checkInterval) {
                 clearInterval(checkInterval);
@@ -1331,7 +1520,7 @@
                         clearInterval(checkInterval);
                         isGenerating = false;
                         hideProgress();
-                        showResults(result.urls, type, taskId);
+                        showResults(result.urls, type, taskId, originalPrompt);
                         tg.showAlert('✅ Генерация завершена!');
                     } else if (result.failed) {
                         // Ошибка
@@ -1472,12 +1661,13 @@
             }
         }
         
-        function showResults(urls, type, taskId) {
+        function showResults(urls, type, taskId, originalPrompt) {
             const resultsGrid = document.getElementById('resultsGrid');
             resultsGrid.innerHTML = '';
             
             // Получаем промпт
-            const prompt = document.getElementById('mjPrompt')?.value || 
+            const prompt = originalPrompt || 
+                          document.getElementById('mjPrompt')?.value || 
                           document.getElementById('mjImg2ImgPrompt')?.value || 
                           document.getElementById('mjVideoPrompt')?.value || 
                           'Сгенерированное изображение';
@@ -1654,6 +1844,17 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadArchive();
             loadHistory(); // Загружаем историю при старте
+            
+            // Добавляем обработчики для показа перевода
+            const mjPrompt = document.getElementById('mjPrompt');
+            if (mjPrompt) {
+                mjPrompt.addEventListener('input', () => showTranslation('mjPrompt'));
+            }
+            
+            const mjImg2ImgPrompt = document.getElementById('mjImg2ImgPrompt');
+            if (mjImg2ImgPrompt) {
+                mjImg2ImgPrompt.addEventListener('input', () => showTranslation('mjImg2ImgPrompt'));
+            }
         });
     </script>
 </body>
