@@ -3,12 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <meta http-equiv="max-age" content="0">
-    <meta name="version" content="22.10">
-    <title>Threads Factory Pro v22.10</title>
+    <meta name="version" content="22.11">
+    <title>Threads Factory Pro v22.11</title>
     <style>
         * {
             margin: 0;
@@ -500,7 +496,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.10</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.11</div>
             </div>
         </div>
         
@@ -1458,27 +1454,6 @@
         // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', function() {
             loadArchive();
-            
-            // Очистка кэша только при первой загрузке
-            if (!localStorage.getItem('cacheCleared')) {
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                        for(let registration of registrations) {
-                            registration.unregister();
-                        }
-                    });
-                }
-                
-                if ('caches' in window) {
-                    caches.keys().then(function(names) {
-                        for (let name of names) {
-                            caches.delete(name);
-                        }
-                    });
-                }
-                
-                localStorage.setItem('cacheCleared', 'true');
-            }
         });
     </script>
 </body>
