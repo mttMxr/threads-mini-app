@@ -976,6 +976,19 @@
                     </svg>
                 </div>
 
+                <div class="menu-item" onclick="showPage('midjourney')">
+                    <div class="menu-icon info">
+                        <span>🎨</span>
+                    </div>
+                    <div class="menu-text">
+                        <div class="menu-title">Midjourney AI</div>
+                        <div class="menu-subtitle">Генерация изображений и видео</div>
+                    </div>
+                    <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                    </svg>
+                </div>
+
                 <div class="menu-item" onclick="showPage('settings')">
                     <div class="menu-icon warning">
                         <span>⚙️</span>
@@ -1232,6 +1245,123 @@
                 </div>
             </div>
         </div>
+
+        <!-- Midjourney Page -->
+        <div id="midjourney-page" class="page">
+            <div class="page-header">
+                <div class="back-button" onclick="showPage('main')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                    </svg>
+                </div>
+                <div class="page-title">Midjourney AI</div>
+            </div>
+            <div class="midjourney-content">
+                <div class="section-title">🎨 AI Генератор изображений</div>
+                
+                <div class="menu-item" onclick="showPage('mj-text2img')">
+                    <div class="menu-icon primary">
+                        <span>🎨</span>
+                    </div>
+                    <div class="menu-text">
+                        <div class="menu-title">Text-to-Image</div>
+                        <div class="menu-subtitle">Создание изображений из текста</div>
+                    </div>
+                    <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                    </svg>
+                </div>
+
+                <div class="menu-item" onclick="showPage('mj-img2img')">
+                    <div class="menu-icon success">
+                        <span>🖼️</span>
+                    </div>
+                    <div class="menu-text">
+                        <div class="menu-title">Image-to-Image</div>
+                        <div class="menu-subtitle">Изменение существующих изображений</div>
+                    </div>
+                    <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                    </svg>
+                </div>
+
+                <div class="menu-item" onclick="showPage('mj-img2video')">
+                    <div class="menu-icon warning">
+                        <span>🎬</span>
+                    </div>
+                    <div class="menu-text">
+                        <div class="menu-title">Image-to-Video</div>
+                        <div class="menu-subtitle">Создание видео из изображений</div>
+                    </div>
+                    <svg class="menu-arrow" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                    </svg>
+                </div>
+
+                <div class="glass-effect" style="padding: 20px; margin: 20px 0;">
+                    <h3 style="margin-bottom: 16px; color: #ffffff; font-size: 16px; font-weight: 700;">💡 Особенности Midjourney</h3>
+                    <div style="font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.5;">
+                        ✅ Поддержка любых языков<br>
+                        ✅ 4 изображения за раз<br>
+                        ✅ 3 скорости генерации<br>
+                        ✅ Автоматический апскейл<br>
+                        ✅ Быстрая генерация<br>
+                        ✅ Высокое качество
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Text-to-Image Page -->
+        <div id="mj-text2img-page" class="page">
+            <div class="page-header">
+                <div class="back-button" onclick="showPage('midjourney')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                    </svg>
+                </div>
+                <div class="page-title">Text-to-Image</div>
+            </div>
+            <div class="mj-content">
+                <div class="setting-group">
+                    <div class="setting-title">📝 Промпт</div>
+                    <textarea class="setting-input" placeholder="Опишите изображение на любом языке..." id="mjPrompt" rows="4"></textarea>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-title">📐 Соотношение сторон</div>
+                    <select class="setting-input" id="mjAspectRatio">
+                        <option value="1:1">1:1 Квадрат</option>
+                        <option value="16:9">16:9 Широкий</option>
+                        <option value="9:16">9:16 Портрет</option>
+                        <option value="4:3">4:3 Стандарт</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-title">⚡ Скорость</div>
+                    <select class="setting-input" id="mjSpeed">
+                        <option value="relaxed">🐌 Relaxed (Бесплатно)</option>
+                        <option value="fast">⚡ Fast (Стандарт)</option>
+                        <option value="turbo">🚀 Turbo (Премиум)</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-title">🎨 Версия модели</div>
+                    <select class="setting-input" id="mjVersion">
+                        <option value="7">🎨 Midjourney v7</option>
+                        <option value="6.1">🖼️ Midjourney v6.1</option>
+                        <option value="niji6">🌸 Niji v6 (Аниме)</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="showPage('midjourney')">Отмена</button>
+                    <button class="btn" onclick="generateMJImage()">🎨 Генерировать</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -1280,6 +1410,32 @@
             };
             
             tg.showAlert(stepMessages[stepNumber] || 'Шаг ' + stepNumber);
+        }
+
+        function generateMJImage() {
+            const prompt = document.getElementById('mjPrompt').value;
+            const aspectRatio = document.getElementById('mjAspectRatio').value;
+            const speed = document.getElementById('mjSpeed').value;
+            const version = document.getElementById('mjVersion').value;
+            
+            if (!prompt.trim()) {
+                tg.showAlert('Введите описание изображения!');
+                return;
+            }
+            
+            // Показываем прогресс
+            tg.showAlert('🎨 Генерация изображения...\n\nЭто может занять 1-2 минуты.');
+            
+            // Отправляем данные в бот
+            const data = {
+                action: 'generate_mj_image',
+                prompt: prompt,
+                aspectRatio: aspectRatio,
+                speed: speed,
+                version: version
+            };
+            
+            tg.sendData(JSON.stringify(data));
         }
 
         // Обработка нажатий на кнопки
