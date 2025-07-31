@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.27">
-    <title>Threads Factory Pro v22.27</title>
+    <meta name="version" content="22.28">
+    <title>Threads Factory Pro v22.28</title>
     <style>
         * {
             margin: 0;
@@ -561,9 +561,17 @@
         }
         
         .history-prompt {
+            font-size: 14px;
             font-weight: 600;
             color: #333;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
+        }
+        
+        .history-enhanced-prompt {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 4px;
+            font-style: italic;
         }
         
         .history-timestamp {
@@ -629,7 +637,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.27</div>
+                <div class="bot-description">Премиум автоматизация публикаций v22.28</div>
             </div>
         </div>
         
@@ -1208,10 +1216,11 @@
         }
         
         // Функции для истории генераций
-        function addToHistory(prompt, urls, type) {
+        function addToHistory(prompt, urls, type, enhancedPrompt = null) {
             const historyItem = {
                 id: Date.now(),
                 prompt: prompt,
+                enhancedPrompt: enhancedPrompt,
                 urls: urls,
                 type: type,
                 timestamp: new Date().toLocaleString('ru-RU')
@@ -1234,6 +1243,7 @@
                 
                 historyItem.innerHTML = `
                     <div class="history-prompt">${item.prompt}</div>
+                    ${item.enhancedPrompt ? `<div class="history-enhanced-prompt">🔄 ${item.enhancedPrompt}</div>` : ''}
                     <div class="history-timestamp">${item.timestamp} • ${item.type}</div>
                     <div class="history-images">
                         ${item.urls.map((url, index) => `
@@ -1640,8 +1650,10 @@
             // Добавляем в архив
             addToArchive(urls, type, prompt);
             
-            // Добавляем в историю
-            addToHistory(prompt, urls, type);
+            // Добавляем в историю с переработанным промптом
+            // Если есть originalPrompt, значит это переработанный промпт от OpenAI
+            const enhancedPrompt = originalPrompt ? originalPrompt : null;
+            addToHistory(prompt, urls, type, enhancedPrompt);
             
             urls.forEach((url, index) => {
                 const resultItem = document.createElement('div');
