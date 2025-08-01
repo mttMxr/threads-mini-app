@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="22.55">
-    <title>Threads Factory Pro v22.55</title>
+    <meta name="version" content="23.0">
+    <title>Threads Factory Pro v23.0</title>
     <style>
         * {
             margin: 0;
@@ -289,6 +289,40 @@
             font-size: 12px;
             font-weight: 600;
             margin-right: 8px;
+        }
+        
+        /* Стили для формы подключения Threads API */
+        .input-group {
+            margin-bottom: 16px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            background: white;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .input-group input[type="password"] {
+            font-family: monospace;
+            letter-spacing: 2px;
         }
         
         /* Стили для ползунков */
@@ -840,8 +874,8 @@
             <!-- Главное меню -->
             <div class="page active" id="main-menu">
                 <div class="menu-item" onclick="showPage('quick-start')">
-                    <h3>🎯 БЫСТРЫЙ СТАРТ</h3>
-                    <p>6-шаговый комбайн для автоматических публикаций</p>
+                    <h3>🧵 THREADS</h3>
+                    <p>Подключение и управление Threads API</p>
                 </div>
                 
                 <div class="menu-item" onclick="showPage('midjourney')">
@@ -865,12 +899,12 @@
                 </div>
             </div>
             
-            <!-- Быстрый старт -->
+            <!-- THREADS -->
             <div class="page" id="quick-start">
                 <button class="back-btn" onclick="showPage('main-menu')">← Назад</button>
                 
                 <div class="step-guide">
-                    <div class="step-title">🎯 БЫСТРЫЙ СТАРТ - 6 ШАГОВ</div>
+                    <div class="step-title">🧵 THREADS API - ПОДКЛЮЧЕНИЕ</div>
                     <div class="step-content">
                         <div><span class="step-number">1</span>Подключите Threads аккаунт</div>
                         <div><span class="step-number">2</span>Настройте контент-план</div>
@@ -882,13 +916,26 @@
                 </div>
                 
                 <div class="setting-group">
-                    <div class="setting-title">📝 Шаг 1: Подключение аккаунта</div>
+                    <div class="setting-title">🔗 Подключение Threads API</div>
                     <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
-                        Для начала работы необходимо подключить ваш Threads аккаунт к системе.
+                        Для работы с Threads API необходимо получить Access Token от Meta Developer Console.
                     </p>
-                    <button class="btn btn-primary" onclick="connectAccount()">
-                        🔗 Подключить Threads
+                    
+                    <div class="input-group">
+                        <label for="threadsAccessToken">Access Token:</label>
+                        <input type="password" id="threadsAccessToken" placeholder="Введите ваш Threads Access Token">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="threadsUserId">User ID:</label>
+                        <input type="text" id="threadsUserId" placeholder="Введите ваш Threads User ID">
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="connectThreadsAccount()">
+                        🔗 Подключить Threads API
                     </button>
+                    
+                    <div id="threadsStatus" style="margin-top: 12px; padding: 8px; border-radius: 6px; display: none;"></div>
                 </div>
             </div>
             
@@ -1247,10 +1294,12 @@
                 
                 <div class="setting-group">
                     <div class="setting-title">🔗 Подключенные аккаунты</div>
-                    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
-                        Threads аккаунт: <span style="color: #667eea; font-weight: 600;">Подключен</span>
-                    </p>
-                    <button class="btn btn-secondary">Изменить</button>
+                    <div id="threadsAccountStatus">
+                        <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+                            Threads аккаунт: <span style="color: #999; font-weight: 600;">Не подключен</span>
+                        </p>
+                        <button class="btn btn-secondary" onclick="showPage('quick-start')">Подключить</button>
+                    </div>
                 </div>
             </div>
             
@@ -1300,8 +1349,135 @@
             document.getElementById(pageId).classList.add('active');
         }
         
+        // Глобальные переменные для Threads API
+        let threadsAccessToken = null;
+        let threadsUserId = null;
+        
         function connectAccount() {
             console.log('🔗 Функция подключения аккаунта будет доступна в следующем обновлении');
+        }
+        
+        // Функция подключения Threads API
+        async function connectThreadsAccount() {
+            const accessToken = document.getElementById('threadsAccessToken').value.trim();
+            const userId = document.getElementById('threadsUserId').value.trim();
+            const statusDiv = document.getElementById('threadsStatus');
+            
+            if (!accessToken || !userId) {
+                showStatus('❌ Заполните все поля', 'error');
+                return;
+            }
+            
+            try {
+                // Показываем индикатор загрузки
+                showStatus('🔄 Проверяем подключение...', 'loading');
+                
+                // Тестируем подключение к Threads API
+                const testResponse = await fetch(`https://graph.threads.net/v1.0/${userId}?fields=id,username,name&access_token=${accessToken}`);
+                
+                if (!testResponse.ok) {
+                    throw new Error(`HTTP ${testResponse.status}: Ошибка подключения к Threads API`);
+                }
+                
+                const userData = await testResponse.json();
+                
+                // Сохраняем данные в localStorage
+                localStorage.setItem('threadsAccessToken', accessToken);
+                localStorage.setItem('threadsUserId', userId);
+                localStorage.setItem('threadsUsername', userData.username || 'Unknown');
+                
+                // Обновляем глобальные переменные
+                threadsAccessToken = accessToken;
+                threadsUserId = userId;
+                
+                // Показываем успех
+                showStatus(`✅ Подключено! Пользователь: @${userData.username}`, 'success');
+                
+                // Обновляем статус в настройках
+                updateThreadsAccountStatus(true, userData.username);
+                
+                console.log('🔗 Threads API успешно подключен:', userData);
+                
+            } catch (error) {
+                console.error('❌ Ошибка подключения Threads API:', error);
+                showStatus(`❌ Ошибка: ${error.message}`, 'error');
+            }
+        }
+        
+        // Функция отображения статуса
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('threadsStatus');
+            statusDiv.textContent = message;
+            statusDiv.style.display = 'block';
+            
+            // Убираем старые классы
+            statusDiv.className = '';
+            
+            // Добавляем стили в зависимости от типа
+            if (type === 'success') {
+                statusDiv.style.backgroundColor = '#d4edda';
+                statusDiv.style.color = '#155724';
+                statusDiv.style.border = '1px solid #c3e6cb';
+            } else if (type === 'error') {
+                statusDiv.style.backgroundColor = '#f8d7da';
+                statusDiv.style.color = '#721c24';
+                statusDiv.style.border = '1px solid #f5c6cb';
+            } else if (type === 'loading') {
+                statusDiv.style.backgroundColor = '#d1ecf1';
+                statusDiv.style.color = '#0c5460';
+                statusDiv.style.border = '1px solid #bee5eb';
+            }
+        }
+        
+        // Функция обновления статуса аккаунта в настройках
+        function updateThreadsAccountStatus(isConnected, username = null) {
+            const statusDiv = document.getElementById('threadsAccountStatus');
+            
+            if (isConnected && username) {
+                statusDiv.innerHTML = `
+                    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+                        Threads аккаунт: <span style="color: #28a745; font-weight: 600;">Подключен (@${username})</span>
+                    </p>
+                    <button class="btn btn-secondary" onclick="disconnectThreadsAccount()">Отключить</button>
+                `;
+            } else {
+                statusDiv.innerHTML = `
+                    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+                        Threads аккаунт: <span style="color: #999; font-weight: 600;">Не подключен</span>
+                    </p>
+                    <button class="btn btn-secondary" onclick="showPage('quick-start')">Подключить</button>
+                `;
+            }
+        }
+        
+        // Функция отключения Threads API
+        function disconnectThreadsAccount() {
+            localStorage.removeItem('threadsAccessToken');
+            localStorage.removeItem('threadsUserId');
+            localStorage.removeItem('threadsUsername');
+            
+            threadsAccessToken = null;
+            threadsUserId = null;
+            
+            updateThreadsAccountStatus(false);
+            showStatus('✅ Threads API отключен', 'success');
+        }
+        
+        // Загружаем сохраненные данные при запуске
+        function loadThreadsAccount() {
+            const savedToken = localStorage.getItem('threadsAccessToken');
+            const savedUserId = localStorage.getItem('threadsUserId');
+            const savedUsername = localStorage.getItem('threadsUsername');
+            
+            if (savedToken && savedUserId) {
+                threadsAccessToken = savedToken;
+                threadsUserId = savedUserId;
+                updateThreadsAccountStatus(true, savedUsername);
+                
+                // Заполняем поля в форме подключения
+                document.getElementById('threadsAccessToken').value = savedToken;
+                document.getElementById('threadsUserId').value = savedUserId;
+            }
         }
         
         let currentTaskId = null;
@@ -2325,6 +2501,8 @@
         // Вызываем тест при загрузке
         window.addEventListener('load', () => {
             setTimeout(testAPI, 1000);
+            // Загружаем сохраненные данные Threads API
+            loadThreadsAccount();
         });
 
     </script>
