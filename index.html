@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="23.2">
-    <title>Threads Factory Pro v23.2</title>
+    <meta name="version" content="23.3">
+    <title>Threads Factory Pro v23.3</title>
     <style>
         * {
             margin: 0;
@@ -866,7 +866,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v23.2</div>
+                <div class="bot-description">Премиум автоматизация публикаций v23.3</div>
             </div>
         </div>
         
@@ -934,7 +934,8 @@
                             1. Перейдите на <a href="https://developers.facebook.com/" target="_blank">Facebook Developers</a><br>
                             2. Создайте приложение → Добавьте продукт "Facebook Login"<br>
                             3. В настройках приложения получите Access Token<br>
-                            4. User ID можно найти в профиле Facebook
+                            4. User ID можно найти в профиле Facebook<br>
+                            5. <strong>ВАЖНО:</strong> Добавьте разрешения: "user_profile", "user_posts"
                         </small>
                     </div>
                     
@@ -1413,7 +1414,23 @@
                 }
                 
                 if (!testResponse || !testResponse.ok) {
-                    throw new Error(`Не удалось подключиться к Facebook Graph API. Последняя ошибка: ${lastError}`);
+                    // Если все API endpoints не работают, предлагаем демо-режим
+                    if (confirm('Не удалось подключиться к Facebook Graph API. Хотите протестировать в демо-режиме?')) {
+                        // Демо-режим для тестирования
+                        localStorage.setItem('threadsAccessToken', accessToken);
+                        localStorage.setItem('threadsUserId', userId);
+                        localStorage.setItem('threadsUsername', 'demo_user');
+                        localStorage.setItem('threadsDemoMode', 'true');
+                        
+                        threadsAccessToken = accessToken;
+                        threadsUserId = userId;
+                        
+                        showStatus('✅ Демо-режим активирован! (API не подключен)', 'success');
+                        updateThreadsAccountStatus(true, 'demo_user');
+                        return;
+                    } else {
+                        throw new Error(`Не удалось подключиться к Facebook Graph API. Последняя ошибка: ${lastError}`);
+                    }
                 }
                 
                 if (!testResponse.ok) {
@@ -1425,7 +1442,7 @@
                     } else if (testResponse.status === 401) {
                         throw new Error('Access Token недействителен или истек.');
                     } else if (testResponse.status === 403) {
-                        throw new Error('Нет прав доступа к API. Проверьте разрешения приложения.');
+                        throw new Error('Нет прав доступа к API. Проверьте разрешения приложения. Добавьте разрешения: "user_profile", "user_posts", "pages_read_engagement" в настройках Facebook App.');
                     } else if (testResponse.status === 404) {
                         throw new Error('Пользователь не найден. Проверьте User ID.');
                     } else if (testResponse.status === 500) {
@@ -1529,11 +1546,17 @@
             const savedToken = localStorage.getItem('threadsAccessToken');
             const savedUserId = localStorage.getItem('threadsUserId');
             const savedUsername = localStorage.getItem('threadsUsername');
+            const isDemoMode = localStorage.getItem('threadsDemoMode');
             
             if (savedToken && savedUserId) {
                 threadsAccessToken = savedToken;
                 threadsUserId = savedUserId;
-                updateThreadsAccountStatus(true, savedUsername);
+                
+                if (isDemoMode === 'true') {
+                    updateThreadsAccountStatus(true, savedUsername + ' (Демо)');
+                } else {
+                    updateThreadsAccountStatus(true, savedUsername);
+                }
                 
                 // Заполняем поля в форме подключения
                 document.getElementById('threadsAccessToken').value = savedToken;
