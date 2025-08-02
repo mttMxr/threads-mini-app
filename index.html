@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="23.3">
-    <title>Threads Factory Pro v23.3</title>
+    <meta name="version" content="23.4">
+    <title>Threads Factory Pro v23.4</title>
     <style>
         * {
             margin: 0;
@@ -866,7 +866,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v23.3</div>
+                <div class="bot-description">Премиум автоматизация публикаций v23.4</div>
             </div>
         </div>
         
@@ -1380,11 +1380,12 @@
                 // Показываем индикатор загрузки
                 showStatus('🔄 Проверяем подключение...', 'loading');
                 
-                // Пробуем несколько вариантов API endpoints
+                // Пробуем Threads API endpoints
                 let apiEndpoints = [
+                    `https://graph.facebook.com/v18.0/me?fields=id,username,name&access_token=${accessToken}`,
                     `https://graph.facebook.com/v18.0/${userId}?fields=id,username,name&access_token=${accessToken}`,
-                    `https://graph.facebook.com/v17.0/${userId}?fields=id,username,name&access_token=${accessToken}`,
-                    `https://graph.facebook.com/v16.0/${userId}?fields=id,username,name&access_token=${accessToken}`
+                    `https://graph.facebook.com/v17.0/me?fields=id,username,name&access_token=${accessToken}`,
+                    `https://graph.facebook.com/v18.0/me/threads?access_token=${accessToken}`
                 ];
                 
                 let testResponse = null;
