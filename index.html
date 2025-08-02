@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="23.9">
-    <title>Threads Factory Pro v23.9</title>
+    <meta name="version" content="24.0">
+    <title>Threads Factory Pro v24.0</title>
     <style>
         * {
             margin: 0;
@@ -977,7 +977,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v23.9</div>
+                <div class="bot-description">Премиум автоматизация публикаций v24.0</div>
             </div>
         </div>
         
@@ -1721,6 +1721,7 @@
                 setTimeout(() => {
                     showAlert('🎉 Threads API подключен! Переходим к настройке контент-плана...');
                     updateStepStatus(1, '✅');
+                    localStorage.setItem('threadsConnected', 'true');
                     showPage('content-plan');
                 }, 2000);
                 
@@ -1876,12 +1877,36 @@
             localStorage.removeItem('threadsAccessToken');
             localStorage.removeItem('threadsUserId');
             localStorage.removeItem('threadsUsername');
+            localStorage.removeItem('threadsConnected');
             
             threadsAccessToken = null;
             threadsUserId = null;
             
             updateThreadsAccountStatus(false);
+            updateStepStatus(1, '⏳');
             showStatus('✅ Threads API отключен', 'success');
+        }
+        
+        // Функция отображения успешного подключения
+        function showConnectionSuccess() {
+            const statusDiv = document.getElementById('threadsStatus');
+            if (statusDiv) {
+                statusDiv.innerHTML = `
+                    <div style="background: #d4edda; color: #155724; padding: 12px; border-radius: 8px; border: 1px solid #c3e6cb; margin-top: 12px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 18px;">✅</span>
+                            <div>
+                                <strong>Threads API подключен!</strong><br>
+                                <small>Пользователь: @${localStorage.getItem('threadsUsername') || 'Unknown'}</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary" onclick="disconnectThreadsAccount()" style="margin-top: 8px; font-size: 12px;">
+                            🔌 Отключить
+                        </button>
+                    </div>
+                `;
+                statusDiv.style.display = 'block';
+            }
         }
         
         // Загружаем сохраненные данные при запуске
@@ -1890,6 +1915,7 @@
             const savedUserId = localStorage.getItem('threadsUserId');
             const savedUsername = localStorage.getItem('threadsUsername');
             const isDemoMode = localStorage.getItem('threadsDemoMode');
+            const isConnected = localStorage.getItem('threadsConnected');
             
             if (savedToken && savedUserId) {
                 threadsAccessToken = savedToken;
@@ -1904,6 +1930,12 @@
                 // Заполняем поля в форме подключения
                 document.getElementById('threadsAccessToken').value = savedToken;
                 document.getElementById('threadsUserId').value = savedUserId;
+                
+                // Если подключение было успешным, показываем статус
+                if (isConnected === 'true') {
+                    updateStepStatus(1, '✅');
+                    showConnectionSuccess();
+                }
             }
         }
         
