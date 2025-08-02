@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="23.0">
-    <title>Threads Factory Pro v23.0</title>
+    <meta name="version" content="23.1">
+    <title>Threads Factory Pro v23.1</title>
     <style>
         * {
             margin: 0;
@@ -929,6 +929,13 @@
                     <div class="input-group">
                         <label for="threadsUserId">User ID:</label>
                         <input type="text" id="threadsUserId" placeholder="Введите ваш Threads User ID">
+                        <small class="form-text text-muted" style="font-size: 12px; color: #666; margin-top: 5px;">
+                            💡 <strong>Как получить токен:</strong><br>
+                            1. Перейдите на <a href="https://developers.facebook.com/" target="_blank">Facebook Developers</a><br>
+                            2. Создайте приложение → Добавьте продукт "Facebook Login"<br>
+                            3. В настройках приложения получите Access Token<br>
+                            4. User ID можно найти в профиле Facebook
+                        </small>
                     </div>
                     
                     <button class="btn btn-primary" onclick="connectThreadsAccount()">
@@ -1372,19 +1379,50 @@
                 // Показываем индикатор загрузки
                 showStatus('🔄 Проверяем подключение...', 'loading');
                 
-                // Тестируем подключение к Threads API
-                const testResponse = await fetch(`https://graph.threads.net/v1.0/${userId}?fields=id,username,name&access_token=${accessToken}`);
+                let testResponse;
+                
+                // Пробуем сначала с прокси
+                try {
+                    testResponse = await fetch(`https://cors-anywhere.herokuapp.com/https://graph.facebook.com/v18.0/${userId}?fields=id,username,name&access_token=${accessToken}`, {
+                        method: 'GET',
+                        headers: {
+                            'Origin': window.location.origin
+                        }
+                    });
+                } catch (proxyError) {
+                    console.log('Прокси недоступен, пробуем прямой запрос...');
+                    // Если прокси недоступен, пробуем прямой запрос (может не работать из-за CORS)
+                    testResponse = await fetch(`https://graph.facebook.com/v18.0/${userId}?fields=id,username,name&access_token=${accessToken}`);
+                }
                 
                 if (!testResponse.ok) {
-                    throw new Error(`HTTP ${testResponse.status}: Ошибка подключения к Threads API`);
+                    const errorText = await testResponse.text();
+                    console.error('API Response:', errorText);
+                    
+                    if (testResponse.status === 400) {
+                        throw new Error('Неверный Access Token или User ID. Проверьте данные.');
+                    } else if (testResponse.status === 401) {
+                        throw new Error('Access Token недействителен или истек.');
+                    } else if (testResponse.status === 403) {
+                        throw new Error('Нет прав доступа к API. Проверьте разрешения приложения.');
+                    } else if (testResponse.status === 404) {
+                        throw new Error('Пользователь не найден. Проверьте User ID.');
+                    } else {
+                        throw new Error(`HTTP ${testResponse.status}: Ошибка подключения к Facebook Graph API. Проверьте правильность токена и ID пользователя.`);
+                    }
                 }
                 
                 const userData = await testResponse.json();
                 
+                // Проверяем, что получили данные пользователя
+                if (!userData.id || !userData.username) {
+                    throw new Error('Не удалось получить данные пользователя. Проверьте права доступа.');
+                }
+                
                 // Сохраняем данные в localStorage
                 localStorage.setItem('threadsAccessToken', accessToken);
                 localStorage.setItem('threadsUserId', userId);
-                localStorage.setItem('threadsUsername', userData.username || 'Unknown');
+                localStorage.setItem('threadsUsername', userData.username);
                 
                 // Обновляем глобальные переменные
                 threadsAccessToken = accessToken;
