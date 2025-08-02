@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="23.1">
-    <title>Threads Factory Pro v23.1</title>
+    <meta name="version" content="23.2">
+    <title>Threads Factory Pro v23.2</title>
     <style>
         * {
             margin: 0;
@@ -866,7 +866,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v22.55</div>
+                <div class="bot-description">Премиум автоматизация публикаций v23.2</div>
             </div>
         </div>
         
@@ -1379,20 +1379,41 @@
                 // Показываем индикатор загрузки
                 showStatus('🔄 Проверяем подключение...', 'loading');
                 
-                let testResponse;
+                // Пробуем несколько вариантов API endpoints
+                let apiEndpoints = [
+                    `https://graph.facebook.com/v18.0/${userId}?fields=id,username,name&access_token=${accessToken}`,
+                    `https://graph.facebook.com/v17.0/${userId}?fields=id,username,name&access_token=${accessToken}`,
+                    `https://graph.facebook.com/v16.0/${userId}?fields=id,username,name&access_token=${accessToken}`
+                ];
                 
-                // Пробуем сначала с прокси
-                try {
-                    testResponse = await fetch(`https://cors-anywhere.herokuapp.com/https://graph.facebook.com/v18.0/${userId}?fields=id,username,name&access_token=${accessToken}`, {
-                        method: 'GET',
-                        headers: {
-                            'Origin': window.location.origin
+                let testResponse = null;
+                let lastError = null;
+                
+                for (let endpoint of apiEndpoints) {
+                    try {
+                        console.log(`Пробуем endpoint: ${endpoint}`);
+                        testResponse = await fetch(endpoint, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+                        
+                        if (testResponse.ok) {
+                            console.log('Успешный запрос к API');
+                            break;
+                        } else {
+                            console.log(`HTTP ${testResponse.status} для ${endpoint}`);
+                            lastError = `HTTP ${testResponse.status}`;
                         }
-                    });
-                } catch (proxyError) {
-                    console.log('Прокси недоступен, пробуем прямой запрос...');
-                    // Если прокси недоступен, пробуем прямой запрос (может не работать из-за CORS)
-                    testResponse = await fetch(`https://graph.facebook.com/v18.0/${userId}?fields=id,username,name&access_token=${accessToken}`);
+                    } catch (error) {
+                        console.log(`Ошибка для ${endpoint}:`, error.message);
+                        lastError = error.message;
+                    }
+                }
+                
+                if (!testResponse || !testResponse.ok) {
+                    throw new Error(`Не удалось подключиться к Facebook Graph API. Последняя ошибка: ${lastError}`);
                 }
                 
                 if (!testResponse.ok) {
@@ -1407,6 +1428,8 @@
                         throw new Error('Нет прав доступа к API. Проверьте разрешения приложения.');
                     } else if (testResponse.status === 404) {
                         throw new Error('Пользователь не найден. Проверьте User ID.');
+                    } else if (testResponse.status === 500) {
+                        throw new Error('Ошибка сервера Facebook API. Попробуйте позже или используйте другой токен.');
                     } else {
                         throw new Error(`HTTP ${testResponse.status}: Ошибка подключения к Facebook Graph API. Проверьте правильность токена и ID пользователя.`);
                     }
