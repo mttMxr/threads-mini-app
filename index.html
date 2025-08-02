@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="23.6">
-    <title>Threads Factory Pro v23.6</title>
+    <meta name="version" content="23.7">
+    <title>Threads Factory Pro v23.7</title>
     <style>
         * {
             margin: 0;
@@ -866,7 +866,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v23.6</div>
+                <div class="bot-description">Премиум автоматизация публикаций v23.7</div>
             </div>
         </div>
         
@@ -939,14 +939,101 @@
                         </small>
                     </div>
                     
-                                    <button class="btn btn-primary" onclick="connectThreadsAccount()">
-                    🔗 Подключить Threads API
-                </button>
-                <button class="btn btn-secondary" onclick="showPage('content-plan')" style="margin-left: 10px;">
-                    ⏭️ Продолжить без подключения
-                </button>
+                    <div class="button-group" style="margin-top: 15px;">
+                        <button class="btn btn-primary" onclick="connectThreadsAccount()">
+                            🔗 Подключить Threads API
+                        </button>
+                        <button class="btn btn-secondary" onclick="showPage('content-plan')" style="margin-left: 10px;">
+                            ⏭️ Продолжить без подключения
+                        </button>
+                    </div>
                     
                     <div id="threadsStatus" style="margin-top: 12px; padding: 8px; border-radius: 6px; display: none;"></div>
+                </div>
+            </div>
+            
+            <!-- Content Plan -->
+            <div class="page" id="content-plan">
+                <button class="back-btn" onclick="showPage('quick-start')">← Назад</button>
+                
+                <div class="setting-group">
+                    <div class="setting-title">📅 Настройка контент-плана</div>
+                    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+                        Создайте план публикаций для вашего Threads аккаунта.
+                    </p>
+                    
+                    <div class="input-group">
+                        <label for="contentTheme">Тематика контента:</label>
+                        <select class="setting-input" id="contentTheme">
+                            <option value="business">Бизнес и предпринимательство</option>
+                            <option value="technology">Технологии и IT</option>
+                            <option value="lifestyle">Лайфстайл и мотивация</option>
+                            <option value="education">Образование и саморазвитие</option>
+                            <option value="entertainment">Развлечения и юмор</option>
+                            <option value="custom">Своя тематика</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="postFrequency">Частота публикаций:</label>
+                        <select class="setting-input" id="postFrequency">
+                            <option value="daily">Ежедневно</option>
+                            <option value="twice_daily">2 раза в день</option>
+                            <option value="weekly">Еженедельно</option>
+                            <option value="custom">Своя частота</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="contentGoals">Цели контента:</label>
+                        <textarea class="setting-input" id="contentGoals" placeholder="Опишите ваши цели для контента..." rows="3"></textarea>
+                    </div>
+                    
+                    <div class="button-group" style="margin-top: 15px;">
+                        <button class="btn btn-primary" onclick="saveContentPlan()">
+                            💾 Сохранить план
+                        </button>
+                        <button class="btn btn-secondary" onclick="showPage('prompts')" style="margin-left: 10px;">
+                            ⏭️ Следующий шаг
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Prompts -->
+            <div class="page" id="prompts">
+                <button class="back-btn" onclick="showPage('content-plan')">← Назад</button>
+                
+                <div class="setting-group">
+                    <div class="setting-title">✍️ Создание промптов</div>
+                    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+                        Создайте промпты для автоматической генерации постов.
+                    </p>
+                    
+                    <div class="input-group">
+                        <label for="promptTemplate">Шаблон промпта:</label>
+                        <textarea class="setting-input" id="promptTemplate" placeholder="Создайте посты о {тема} в стиле {стиль}..." rows="4"></textarea>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="promptStyle">Стиль постов:</label>
+                        <select class="setting-input" id="promptStyle">
+                            <option value="professional">Профессиональный</option>
+                            <option value="casual">Неформальный</option>
+                            <option value="motivational">Мотивационный</option>
+                            <option value="educational">Образовательный</option>
+                            <option value="humorous">Юмористический</option>
+                        </select>
+                    </div>
+                    
+                    <div class="button-group" style="margin-top: 15px;">
+                        <button class="btn btn-primary" onclick="savePrompts()">
+                            💾 Сохранить промпты
+                        </button>
+                        <button class="btn btn-secondary" onclick="showPage('midjourney')" style="margin-left: 10px;">
+                            ⏭️ Следующий шаг
+                        </button>
+                    </div>
                 </div>
             </div>
             
@@ -1548,6 +1635,40 @@
                     stepNumberSpan.innerHTML = `${stepNumber} ${status}`;
                 }
             }
+        }
+        
+        // Функция сохранения контент-плана
+        function saveContentPlan() {
+            const theme = document.getElementById('contentTheme').value;
+            const frequency = document.getElementById('postFrequency').value;
+            const goals = document.getElementById('contentGoals').value;
+            
+            localStorage.setItem('contentTheme', theme);
+            localStorage.setItem('postFrequency', frequency);
+            localStorage.setItem('contentGoals', goals);
+            
+            showAlert('✅ Контент-план сохранен!');
+            updateStepStatus(2, '✅');
+            
+            setTimeout(() => {
+                showPage('prompts');
+            }, 1500);
+        }
+        
+        // Функция сохранения промптов
+        function savePrompts() {
+            const template = document.getElementById('promptTemplate').value;
+            const style = document.getElementById('promptStyle').value;
+            
+            localStorage.setItem('promptTemplate', template);
+            localStorage.setItem('promptStyle', style);
+            
+            showAlert('✅ Промпты сохранены!');
+            updateStepStatus(3, '✅');
+            
+            setTimeout(() => {
+                showPage('midjourney');
+            }, 1500);
         }
         
         // Функция отключения Threads API
