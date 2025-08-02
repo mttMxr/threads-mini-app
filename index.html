@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="23.8">
-    <title>Threads Factory Pro v23.8</title>
+    <meta name="version" content="23.9">
+    <title>Threads Factory Pro v23.9</title>
     <style>
         * {
             margin: 0;
@@ -465,6 +465,23 @@
             color: white;
             cursor: pointer;
             font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .time-slot {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .remove-time-btn {
+            padding: 4px 8px;
+            border: 1px solid #ff4757;
+            border-radius: 4px;
+            background: #ff4757;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
             font-weight: bold;
         }
         }
@@ -960,7 +977,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v23.8</div>
+                <div class="bot-description">Премиум автоматизация публикаций v23.9</div>
             </div>
         </div>
         
@@ -1048,7 +1065,7 @@
             
             <!-- Content Plan -->
             <div class="page" id="content-plan">
-                <button class="back-btn" onclick="showPage('quick-start')">← Назад</button>
+                <button class="back-btn" onclick="showPage('quick-start')">← Назад к подключению</button>
                 
                 <div class="setting-group">
                     <div class="setting-title">📅 Настройка контент-плана</div>
@@ -1091,20 +1108,26 @@
                             <div class="frequency-row">
                                 <label>Дни недели:</label>
                                 <div class="day-selector">
-                                    <button type="button" class="day-btn" data-day="1">Пн</button>
-                                    <button type="button" class="day-btn" data-day="2">Вт</button>
-                                    <button type="button" class="day-btn" data-day="3">Ср</button>
-                                    <button type="button" class="day-btn" data-day="4">Чт</button>
-                                    <button type="button" class="day-btn" data-day="5">Пт</button>
-                                    <button type="button" class="day-btn" data-day="6">Сб</button>
-                                    <button type="button" class="day-btn" data-day="0">Вс</button>
+                                    <button type="button" class="day-btn" data-day="1" onclick="selectDay(this)">Пн</button>
+                                    <button type="button" class="day-btn" data-day="2" onclick="selectDay(this)">Вт</button>
+                                    <button type="button" class="day-btn" data-day="3" onclick="selectDay(this)">Ср</button>
+                                    <button type="button" class="day-btn" data-day="4" onclick="selectDay(this)">Чт</button>
+                                    <button type="button" class="day-btn" data-day="5" onclick="selectDay(this)">Пт</button>
+                                    <button type="button" class="day-btn" data-day="6" onclick="selectDay(this)">Сб</button>
+                                    <button type="button" class="day-btn" data-day="0" onclick="selectDay(this)">Вс</button>
                                 </div>
                             </div>
                             <div class="frequency-row">
                                 <label>Время публикаций:</label>
                                 <div class="time-selector">
-                                    <input type="time" class="time-input" value="09:00">
-                                    <input type="time" class="time-input" value="18:00">
+                                    <div class="time-slot">
+                                        <input type="time" class="time-input" value="09:00">
+                                        <button type="button" class="remove-time-btn" onclick="removeTimeSlot(this)">×</button>
+                                    </div>
+                                    <div class="time-slot">
+                                        <input type="time" class="time-input" value="18:00">
+                                        <button type="button" class="remove-time-btn" onclick="removeTimeSlot(this)">×</button>
+                                    </div>
                                     <button type="button" class="add-time-btn" onclick="addTimeSlot()">+</button>
                                 </div>
                             </div>
@@ -1129,7 +1152,7 @@
             
             <!-- Prompts -->
             <div class="page" id="prompts">
-                <button class="back-btn" onclick="showPage('content-plan')">← Назад</button>
+                <button class="back-btn" onclick="showPage('content-plan')">← Назад к контент-плану</button>
                 
                 <div class="setting-group">
                     <div class="setting-title">✍️ Создание промптов</div>
@@ -1828,12 +1851,24 @@
         // Функция добавления временного слота
         function addTimeSlot() {
             const timeSelector = document.querySelector('.time-selector');
-            const newTimeInput = document.createElement('input');
-            newTimeInput.type = 'time';
-            newTimeInput.className = 'time-input';
-            newTimeInput.value = '12:00';
+            const newTimeSlot = document.createElement('div');
+            newTimeSlot.className = 'time-slot';
+            newTimeSlot.innerHTML = `
+                <input type="time" class="time-input" value="12:00">
+                <button type="button" class="remove-time-btn" onclick="removeTimeSlot(this)">×</button>
+            `;
             
-            timeSelector.insertBefore(newTimeInput, timeSelector.lastElementChild);
+            timeSelector.insertBefore(newTimeSlot, timeSelector.lastElementChild);
+        }
+        
+        // Функция удаления временного слота
+        function removeTimeSlot(button) {
+            const timeSlot = button.parentElement;
+            if (document.querySelectorAll('.time-slot').length > 1) {
+                timeSlot.remove();
+            } else {
+                showAlert('❌ Должен быть хотя бы один временной слот');
+            }
         }
         
         // Функция отключения Threads API
