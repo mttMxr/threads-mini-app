@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="24.1">
-    <title>Threads Factory Pro v24.1</title>
+    <meta name="version" content="24.2">
+    <title>Threads Factory Pro v24.2</title>
     <style>
         * {
             margin: 0;
@@ -664,6 +664,90 @@
         .item-status {
             font-size: 16px;
         }
+        
+        /* Стили для новой структуры распаковки */
+        .unpacking-overview {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .unpacking-section {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .unpacking-section.priority {
+            border-color: #6c5ce7;
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+        }
+        
+        .unpacking-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.15);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .section-header h4 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .priority-badge {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .section-description {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .ai-status {
+            background: #f8f9ff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .advice-box {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .advice-icon {
+            font-size: 24px;
+            margin-top: 2px;
+        }
+        
+        .advice-content {
+            flex: 1;
+            font-size: 14px;
+            color: #2d3436;
+            line-height: 1.4;
+        }
         }
         
         .slider-number {
@@ -1157,7 +1241,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v24.1</div>
+                <div class="bot-description">Премиум автоматизация публикаций v24.2</div>
             </div>
         </div>
         
@@ -1243,7 +1327,7 @@
                 </div>
             </div>
             
-            <!-- Threads Factory Main Menu -->
+            <!-- Threads Factory -->
             <div class="page" id="threads-factory">
                 <button class="back-btn" onclick="showPage('main-menu')">← Назад</button>
                 
@@ -1301,193 +1385,81 @@
                 
                 <div class="setting-group">
                     <div class="setting-title">📋 СОЗДАНИЕ ВАШЕГО ИИ-ДВОЙНИКА</div>
+                    <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
+                        Заполните информацию о себе в любом порядке:
+                    </p>
                     
-                    <div class="status-overview">
-                        <div class="status-item">
-                            <span class="status-label">Статус:</span>
-                            <span class="status-value status-inactive">🔴 Не настроен</span>
+                    <div class="unpacking-overview">
+                        <div class="unpacking-section priority">
+                            <div class="section-header">
+                                <h4>📦 Распаковка продукта [0/4]</h4>
+                                <span class="priority-badge">⭐ ПРИОРИТЕТ</span>
+                            </div>
+                            <p class="section-description">Опишите ваш основной продукт или услугу</p>
+                            <button class="btn btn-primary" onclick="showPage('unpacking-product')">
+                                📦 Начать распаковку продукта
+                            </button>
                         </div>
-                        <div class="status-item">
-                            <span class="status-label">Заполнено:</span>
-                            <span class="status-value">0/27 параметров</span>
+                        
+                        <div class="unpacking-section priority">
+                            <div class="section-header">
+                                <h4>👥 Распаковка аудитории [0/6]</h4>
+                                <span class="priority-badge">⭐ ПРИОРИТЕТ</span>
+                            </div>
+                            <p class="section-description">Опишите вашу целевую аудиторию</p>
+                            <button class="btn btn-primary" onclick="showPage('unpacking-audience')">
+                                👥 Начать распаковку аудитории
+                            </button>
                         </div>
-                        <div class="status-item">
-                            <span class="status-label">ИИ готовность:</span>
-                            <span class="status-value">0% (минимум 40% для старта)</span>
+                        
+                        <div class="unpacking-section">
+                            <div class="section-header">
+                                <h4>📖 Распаковка кейсов [0/6]</h4>
+                            </div>
+                            <p class="section-description">Истории успеха ваших клиентов</p>
+                            <button class="btn btn-secondary" onclick="showPage('unpacking-cases')">
+                                📖 Начать распаковку кейсов
+                            </button>
+                        </div>
+                        
+                        <div class="unpacking-section">
+                            <div class="section-header">
+                                <h4>💡 Распаковка личности Lite [0/6]</h4>
+                            </div>
+                            <p class="section-description">Ваш личный опыт и стиль общения</p>
+                            <button class="btn btn-secondary" onclick="showPage('unpacking-personality-lite')">
+                                💡 Начать распаковку личности Lite
+                            </button>
+                        </div>
+                        
+                        <div class="unpacking-section">
+                            <div class="section-header">
+                                <h4>🎯 Распаковка личности Pro [0/5]</h4>
+                            </div>
+                            <p class="section-description">Экспертные знания и миссия</p>
+                            <button class="btn btn-secondary" onclick="showPage('unpacking-personality-pro')">
+                                🎯 Начать распаковку личности Pro
+                            </button>
                         </div>
                     </div>
                     
-                    <div class="unpacking-sections">
-                        <div class="unpacking-section">
-                            <h4>📦 Распаковка продукта [0/4]</h4>
-                            <div class="section-items">
-                                <div class="section-item" onclick="showUnpackingForm('product', 'main')">
-                                    <span class="item-icon">📦</span>
-                                    <span class="item-text">Основной продукт/услуга</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('product', 'advantages')">
-                                    <span class="item-icon">🏆</span>
-                                    <span class="item-text">Преимущества над конкурентами</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('product', 'values')">
-                                    <span class="item-icon">💎</span>
-                                    <span class="item-text">Ценности для клиентов</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('product', 'freebies')">
-                                    <span class="item-icon">🎁</span>
-                                    <span class="item-text">Бесплатные материалы</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                            </div>
+                    <div class="ai-status">
+                        <div class="status-item">
+                            <span class="status-label">🧠 ИИ знает о вас:</span>
+                            <span class="status-value" id="aiKnowledge">2/27 параметров</span>
                         </div>
-                        
-                        <div class="unpacking-section">
-                            <h4>👥 Распаковка аудитории [0/6]</h4>
-                            <div class="section-items">
-                                <div class="section-item" onclick="showUnpackingForm('audience', 'demographics')">
-                                    <span class="item-icon">👤</span>
-                                    <span class="item-text">Возраст и география</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('audience', 'family')">
-                                    <span class="item-icon">👨‍👩‍👧‍👦</span>
-                                    <span class="item-text">Семейное положение</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('audience', 'interests')">
-                                    <span class="item-icon">🎯</span>
-                                    <span class="item-text">Интересы аудитории</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('audience', 'problems')">
-                                    <span class="item-icon">😰</span>
-                                    <span class="item-text">Главные проблемы</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('audience', 'solutions')">
-                                    <span class="item-icon">💡</span>
-                                    <span class="item-text">Действия для решения проблем</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('audience', 'help')">
-                                    <span class="item-icon">🤝</span>
-                                    <span class="item-text">Кому можете помочь</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="unpacking-section">
-                            <h4>🏆 Распаковка кейсов [0/6]</h4>
-                            <div class="section-items">
-                                <div class="section-item" onclick="showUnpackingForm('cases', 'client_name')">
-                                    <span class="item-icon">👤</span>
-                                    <span class="item-text">Имя клиента/ученика</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('cases', 'discovery')">
-                                    <span class="item-icon">🔍</span>
-                                    <span class="item-text">Как узнал о вас</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('cases', 'goals')">
-                                    <span class="item-icon">🎯</span>
-                                    <span class="item-text">Цели клиента</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('cases', 'problems_before')">
-                                    <span class="item-icon">😰</span>
-                                    <span class="item-text">Проблемы до работы с вами</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('cases', 'results')">
-                                    <span class="item-icon">📈</span>
-                                    <span class="item-text">Достигнутые результаты</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('cases', 'what_helped')">
-                                    <span class="item-icon">💡</span>
-                                    <span class="item-text">Что помогло достичь результатов</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="unpacking-section">
-                            <h4>💡 Распаковка личности Lite [0/6]</h4>
-                            <div class="section-items">
-                                <div class="section-item" onclick="showUnpackingForm('personality_lite', 'interesting_topics')">
-                                    <span class="item-icon">💭</span>
-                                    <span class="item-text">Интересные темы</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('personality_lite', 'frequent_questions')">
-                                    <span class="item-icon">❓</span>
-                                    <span class="item-text">Частые вопросы знакомых</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('personality_lite', 'personal_experience')">
-                                    <span class="item-icon">📚</span>
-                                    <span class="item-text">Личный опыт</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('personality_lite', 'advice_for_newbies')">
-                                    <span class="item-icon">🎓</span>
-                                    <span class="item-text">Совет новичку</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('personality_lite', 'transformation')">
-                                    <span class="item-icon">🔄</span>
-                                    <span class="item-text">Трансформация от советов</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('personality_lite', 'communication_style')">
-                                    <span class="item-icon">💬</span>
-                                    <span class="item-text">Стиль общения</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="unpacking-section">
-                            <h4>🎯 Распаковка личности Pro [0/5]</h4>
-                            <div class="section-items">
-                                <div class="section-item" onclick="showUnpackingForm('personality_pro', 'client_problems')">
-                                    <span class="item-icon">🎯</span>
-                                    <span class="item-text">Решаемые проблемы клиентов</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('personality_pro', 'unique_approach')">
-                                    <span class="item-icon">✨</span>
-                                    <span class="item-text">Уникальный подход</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('personality_pro', 'audience_mistakes')">
-                                    <span class="item-icon">❌</span>
-                                    <span class="item-text">Главные ошибки аудитории</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('personality_pro', 'information_format')">
-                                    <span class="item-icon">📋</span>
-                                    <span class="item-text">Формат подачи информации</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                                <div class="section-item" onclick="showUnpackingForm('personality_pro', 'mission')">
-                                    <span class="item-icon">🌟</span>
-                                    <span class="item-text">Миссия как эксперта</span>
-                                    <span class="item-status">⭕</span>
-                                </div>
-                            </div>
+                        <div class="status-item">
+                            <span class="status-label">📊 Готовность к генерации:</span>
+                            <span class="status-value" id="aiReadiness">15% (минимум 40% для старта)</span>
                         </div>
                     </div>
                     
-                    <div style="margin-top: 20px; text-align: center;">
-                        <button class="btn btn-primary" onclick="startUnpacking()">
-                            🚀 НАЧАТЬ РАСПАКОВКУ
-                        </button>
+                    <div class="advice-box">
+                        <div class="advice-icon">💡</div>
+                        <div class="advice-content">
+                            <strong>Совет:</strong> Начните с "Продукта" и "Аудитории" - 
+                            этого хватит для первых постов!
+                        </div>
                     </div>
                 </div>
             </div>
