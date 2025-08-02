@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="24.0">
-    <title>Threads Factory Pro v24.0</title>
+    <meta name="version" content="24.1">
+    <title>Threads Factory Pro v24.1</title>
     <style>
         * {
             margin: 0;
@@ -483,6 +483,186 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: bold;
+        }
+        
+        /* Стили для Threads Factory */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .menu-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .menu-item:hover {
+            border-color: #6c5ce7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.15);
+        }
+        
+        .menu-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .menu-item h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .menu-item p {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .progress-bar {
+            background: #f0f0f0;
+            border-radius: 10px;
+            height: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #6c5ce7, #a29bfe);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10px;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-inactive {
+            background: #ffe0e0;
+            color: #d63031;
+        }
+        
+        .status-active {
+            background: #e0ffe0;
+            color: #00b894;
+        }
+        
+        .content-count {
+            font-size: 12px;
+            color: #6c5ce7;
+            font-weight: 600;
+        }
+        
+        /* Стили для распаковки личности */
+        .status-overview {
+            background: #f8f9ff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .status-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .status-label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .status-value {
+            font-weight: 600;
+        }
+        
+        .status-inactive {
+            color: #d63031;
+        }
+        
+        .unpacking-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .unpacking-section {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+        }
+        
+        .unpacking-section h4 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .section-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .section-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .section-item:hover {
+            background: #f8f9ff;
+        }
+        
+        .item-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .item-text {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .item-status {
+            font-size: 16px;
         }
         }
         
@@ -977,7 +1157,7 @@
             <div class="header-icon">🏭</div>
             <div class="header-text">
                 <div class="bot-name">THREADS FACTORY PRO</div>
-                <div class="bot-description">Премиум автоматизация публикаций v24.0</div>
+                <div class="bot-description">Премиум автоматизация публикаций v24.1</div>
             </div>
         </div>
         
@@ -1063,88 +1243,250 @@
                 </div>
             </div>
             
-            <!-- Content Plan -->
-            <div class="page" id="content-plan">
-                <button class="back-btn" onclick="showPage('quick-start')">← Назад к подключению</button>
+            <!-- Threads Factory Main Menu -->
+            <div class="page" id="threads-factory">
+                <button class="back-btn" onclick="showPage('main-menu')">← Назад</button>
                 
                 <div class="setting-group">
-                    <div class="setting-title">📅 Настройка контент-плана</div>
-                    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
-                        Создайте план публикаций для вашего Threads аккаунта.
+                    <div class="setting-title">🧵 THREADS FACTORY</div>
+                    <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
+                        Премиум автоматизация публикаций в Threads
                     </p>
                     
-                    <div class="input-group">
-                        <label for="contentTheme">Тематика контента:</label>
-                        <input type="text" class="setting-input" id="contentTheme" placeholder="Например: IT-новости, советы по программированию, обзоры технологий...">
-                        <small class="form-text text-muted" style="font-size: 12px; color: #666; margin-top: 5px;">
-                            💡 <strong>Примеры тематик:</strong><br>
-                            • IT-новости и технологии<br>
-                            • Советы по программированию<br>
-                            • Обзоры гаджетов и приложений<br>
-                            • Мотивация и продуктивность<br>
-                            • Образование и саморазвитие<br>
-                            • Бизнес и предпринимательство
-                        </small>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="postFrequency">Частота публикаций:</label>
-                        <div class="frequency-selector">
-                            <button type="button" class="frequency-btn active" onclick="selectFrequency('daily')">
-                                📅 Ежедневно
-                            </button>
-                            <button type="button" class="frequency-btn" onclick="selectFrequency('twice_daily')">
-                                ⏰ 2 раза в день
-                            </button>
-                            <button type="button" class="frequency-btn" onclick="selectFrequency('weekly')">
-                                📊 Еженедельно
-                            </button>
-                            <button type="button" class="frequency-btn" onclick="selectFrequency('custom')">
-                                ⚙️ Настроить
-                            </button>
+                    <div class="menu-grid">
+                        <div class="menu-item" onclick="showPage('personality-unpacking')">
+                            <div class="menu-icon">📋</div>
+                            <h3>РАСПАКОВКА ЛИЧНОСТИ</h3>
+                            <p>Создайте ИИ-двойника для автоматической генерации контента</p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                                <span class="progress-text">0% заполнено</span>
+                            </div>
                         </div>
                         
-                        <div id="customFrequency" class="custom-frequency" style="display: none; margin-top: 10px;">
-                            <div class="frequency-row">
-                                <label>Дни недели:</label>
-                                <div class="day-selector">
-                                    <button type="button" class="day-btn" data-day="1" onclick="selectDay(this)">Пн</button>
-                                    <button type="button" class="day-btn" data-day="2" onclick="selectDay(this)">Вт</button>
-                                    <button type="button" class="day-btn" data-day="3" onclick="selectDay(this)">Ср</button>
-                                    <button type="button" class="day-btn" data-day="4" onclick="selectDay(this)">Чт</button>
-                                    <button type="button" class="day-btn" data-day="5" onclick="selectDay(this)">Пт</button>
-                                    <button type="button" class="day-btn" data-day="6" onclick="selectDay(this)">Сб</button>
-                                    <button type="button" class="day-btn" data-day="0" onclick="selectDay(this)">Вс</button>
+                        <div class="menu-item" onclick="showPage('autopilot')">
+                            <div class="menu-icon">🤖</div>
+                            <h3>АВТОПИЛОТ</h3>
+                            <p>Автоматическая генерация и публикация контента</p>
+                            <div class="status-badge status-inactive">🔴 Не настроен</div>
+                        </div>
+                        
+                        <div class="menu-item" onclick="showPage('create-content')">
+                            <div class="menu-icon">📝</div>
+                            <h3>СОЗДАТЬ КОНТЕНТ</h3>
+                            <p>Ручное создание постов с ИИ-помощниками</p>
+                            <div class="content-count">5 черновиков</div>
+                        </div>
+                        
+                        <div class="menu-item" onclick="showPage('monitoring')">
+                            <div class="menu-icon">📊</div>
+                            <h3>МОНИТОРИНГ</h3>
+                            <p>Аналитика и статистика ваших постов</p>
+                            <div class="status-badge status-active">📈 Новые данные</div>
+                        </div>
+                        
+                        <div class="menu-item" onclick="showPage('settings')">
+                            <div class="menu-icon">⚙️</div>
+                            <h3>НАСТРОЙКИ</h3>
+                            <p>Управление системой и подключениями</p>
+                            <div class="status-badge status-active">✅ Настроено</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Personality Unpacking -->
+            <div class="page" id="personality-unpacking">
+                <button class="back-btn" onclick="showPage('threads-factory')">← Назад к Threads Factory</button>
+                
+                <div class="setting-group">
+                    <div class="setting-title">📋 СОЗДАНИЕ ВАШЕГО ИИ-ДВОЙНИКА</div>
+                    
+                    <div class="status-overview">
+                        <div class="status-item">
+                            <span class="status-label">Статус:</span>
+                            <span class="status-value status-inactive">🔴 Не настроен</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Заполнено:</span>
+                            <span class="status-value">0/27 параметров</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">ИИ готовность:</span>
+                            <span class="status-value">0% (минимум 40% для старта)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="unpacking-sections">
+                        <div class="unpacking-section">
+                            <h4>📦 Распаковка продукта [0/4]</h4>
+                            <div class="section-items">
+                                <div class="section-item" onclick="showUnpackingForm('product', 'main')">
+                                    <span class="item-icon">📦</span>
+                                    <span class="item-text">Основной продукт/услуга</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('product', 'advantages')">
+                                    <span class="item-icon">🏆</span>
+                                    <span class="item-text">Преимущества над конкурентами</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('product', 'values')">
+                                    <span class="item-icon">💎</span>
+                                    <span class="item-text">Ценности для клиентов</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('product', 'freebies')">
+                                    <span class="item-icon">🎁</span>
+                                    <span class="item-text">Бесплатные материалы</span>
+                                    <span class="item-status">⭕</span>
                                 </div>
                             </div>
-                            <div class="frequency-row">
-                                <label>Время публикаций:</label>
-                                <div class="time-selector">
-                                    <div class="time-slot">
-                                        <input type="time" class="time-input" value="09:00">
-                                        <button type="button" class="remove-time-btn" onclick="removeTimeSlot(this)">×</button>
-                                    </div>
-                                    <div class="time-slot">
-                                        <input type="time" class="time-input" value="18:00">
-                                        <button type="button" class="remove-time-btn" onclick="removeTimeSlot(this)">×</button>
-                                    </div>
-                                    <button type="button" class="add-time-btn" onclick="addTimeSlot()">+</button>
+                        </div>
+                        
+                        <div class="unpacking-section">
+                            <h4>👥 Распаковка аудитории [0/6]</h4>
+                            <div class="section-items">
+                                <div class="section-item" onclick="showUnpackingForm('audience', 'demographics')">
+                                    <span class="item-icon">👤</span>
+                                    <span class="item-text">Возраст и география</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('audience', 'family')">
+                                    <span class="item-icon">👨‍👩‍👧‍👦</span>
+                                    <span class="item-text">Семейное положение</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('audience', 'interests')">
+                                    <span class="item-icon">🎯</span>
+                                    <span class="item-text">Интересы аудитории</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('audience', 'problems')">
+                                    <span class="item-icon">😰</span>
+                                    <span class="item-text">Главные проблемы</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('audience', 'solutions')">
+                                    <span class="item-icon">💡</span>
+                                    <span class="item-text">Действия для решения проблем</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('audience', 'help')">
+                                    <span class="item-icon">🤝</span>
+                                    <span class="item-text">Кому можете помочь</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="unpacking-section">
+                            <h4>🏆 Распаковка кейсов [0/6]</h4>
+                            <div class="section-items">
+                                <div class="section-item" onclick="showUnpackingForm('cases', 'client_name')">
+                                    <span class="item-icon">👤</span>
+                                    <span class="item-text">Имя клиента/ученика</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('cases', 'discovery')">
+                                    <span class="item-icon">🔍</span>
+                                    <span class="item-text">Как узнал о вас</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('cases', 'goals')">
+                                    <span class="item-icon">🎯</span>
+                                    <span class="item-text">Цели клиента</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('cases', 'problems_before')">
+                                    <span class="item-icon">😰</span>
+                                    <span class="item-text">Проблемы до работы с вами</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('cases', 'results')">
+                                    <span class="item-icon">📈</span>
+                                    <span class="item-text">Достигнутые результаты</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('cases', 'what_helped')">
+                                    <span class="item-icon">💡</span>
+                                    <span class="item-text">Что помогло достичь результатов</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="unpacking-section">
+                            <h4>💡 Распаковка личности Lite [0/6]</h4>
+                            <div class="section-items">
+                                <div class="section-item" onclick="showUnpackingForm('personality_lite', 'interesting_topics')">
+                                    <span class="item-icon">💭</span>
+                                    <span class="item-text">Интересные темы</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('personality_lite', 'frequent_questions')">
+                                    <span class="item-icon">❓</span>
+                                    <span class="item-text">Частые вопросы знакомых</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('personality_lite', 'personal_experience')">
+                                    <span class="item-icon">📚</span>
+                                    <span class="item-text">Личный опыт</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('personality_lite', 'advice_for_newbies')">
+                                    <span class="item-icon">🎓</span>
+                                    <span class="item-text">Совет новичку</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('personality_lite', 'transformation')">
+                                    <span class="item-icon">🔄</span>
+                                    <span class="item-text">Трансформация от советов</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('personality_lite', 'communication_style')">
+                                    <span class="item-icon">💬</span>
+                                    <span class="item-text">Стиль общения</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="unpacking-section">
+                            <h4>🎯 Распаковка личности Pro [0/5]</h4>
+                            <div class="section-items">
+                                <div class="section-item" onclick="showUnpackingForm('personality_pro', 'client_problems')">
+                                    <span class="item-icon">🎯</span>
+                                    <span class="item-text">Решаемые проблемы клиентов</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('personality_pro', 'unique_approach')">
+                                    <span class="item-icon">✨</span>
+                                    <span class="item-text">Уникальный подход</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('personality_pro', 'audience_mistakes')">
+                                    <span class="item-icon">❌</span>
+                                    <span class="item-text">Главные ошибки аудитории</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('personality_pro', 'information_format')">
+                                    <span class="item-icon">📋</span>
+                                    <span class="item-text">Формат подачи информации</span>
+                                    <span class="item-status">⭕</span>
+                                </div>
+                                <div class="section-item" onclick="showUnpackingForm('personality_pro', 'mission')">
+                                    <span class="item-icon">🌟</span>
+                                    <span class="item-text">Миссия как эксперта</span>
+                                    <span class="item-status">⭕</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="input-group">
-                        <label for="contentGoals">Цели контента:</label>
-                        <textarea class="setting-input" id="contentGoals" placeholder="Опишите ваши цели для контента..." rows="3"></textarea>
-                    </div>
-                    
-                    <div style="margin-top: 20px; display: flex; gap: 10px;">
-                        <button class="btn btn-primary" onclick="saveContentPlan()">
-                            💾 Сохранить план
-                        </button>
-                        <button class="btn btn-secondary" onclick="showPage('prompts')">
-                            ⏭️ Следующий шаг
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button class="btn btn-primary" onclick="startUnpacking()">
+                            🚀 НАЧАТЬ РАСПАКОВКУ
                         </button>
                     </div>
                 </div>
